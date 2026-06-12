@@ -1,0 +1,67 @@
+# uptodate-tldr configuration
+# Any value here can be overridden by an environment variable of the same
+# name (uppercased). See .env.example for the full list.
+
+topic: "artificial intelligence"
+
+# Number of items to summarize in the final digest (2-6)
+top_n: 4
+
+sources:
+  hackernews:
+    enabled: true
+    # Algolia HN search endpoint, max stories to pull before ranking
+    max_results: 30
+  reddit:
+    enabled: true
+    # Subreddits to search, in addition to the topic-based search
+    subreddits:
+      - MachineLearning
+      - artificial
+      - technology
+    max_results: 30
+  arxiv:
+    enabled: true
+    # arXiv category to scope the search, e.g. cs.AI, cs.LG
+    category: "cs.AI"
+    max_results: 20
+  linkedin:
+    enabled: false
+    # See sources/linkedin.py for the fragility tradeoffs of this source.
+    max_results: 15
+
+ranking:
+  # Half-life (in hours) used for the recency-weighting decay function.
+  recency_half_life_hours: 24
+  # Multiplier applied to an item's score when the same story (by URL/title
+  # similarity) appears across 2+ sources.
+  cross_source_bonus: 1.5
+  # Weight applied to an arXiv item's citation count when computing score.
+  citation_weight: 2.0
+
+persona:
+  prompt: >
+    You are a sharp, no-nonsense technical analyst writing a daily digest for
+    senior engineers and researchers. Be direct, skip the filler, and call
+    out when something is overhyped or genuinely significant. Assume the
+    reader is technically fluent.
+
+llm:
+  model: "claude-sonnet-4-6"
+  max_tokens: 2000
+
+delivery:
+  markdown:
+    enabled: true
+    output_dir: "./output"
+  email:
+    enabled: false
+    to: ""
+    from: ""
+  substack:
+    enabled: false
+    publication_url: ""
+
+schedule:
+  # 24-hour time, local timezone, used by scheduler.py
+  daily_time: "07:00"
