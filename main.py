@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from typing import Any
 
@@ -49,15 +50,23 @@ _DELIVERY_MODULES = {
 
 
 def ingest(topic: str, sources_config: dict[str, Any]) -> list[Item]:
-    items: list[Item] = []
-    for name, source in _SOURCES.items():
-        source_config = sources_config.get(name, {})
-        if not source_config.get("enabled", False):
-            continue
+    enabled = {
+        name: source
+        for name, source in _SOURCES.items()
+        if sources_config.get(name, {}).get("enabled", False)
+    }
 
-        fetched = source.safe_fetch(topic, source_config)
-        logger.info("Source %r returned %d items", name, len(fetched))
-        items.extend(fetched)
+    items: list[Item] = []
+
+    def _fetch(name: str, source: Source) -> tuple[str, list[Item]]:
+        return name, source.safe_fetch(topic, sources_config.get(name, {}))
+
+    with ThreadPoolExecutor(max_workers=len(enabled) or 1) as pool:
+        futures = {pool.submit(_fetch, n, s): n for n, s in enabled.items()}
+        for future in as_completed(futures):
+            name, fetched = future.result()
+            logger.info("Source %r returned %d items", name, len(fetched))
+            items.extend(fetched)
 
     return items
 

@@ -1,10 +1,7 @@
 """Configuration loading: merges config.yaml with environment variable overrides.
 
-Any top-level or nested scalar key in config.yaml can be overridden by an
-environment variable with the same name, uppercased (e.g. `topic` ->
-`TOPIC`, `persona.prompt` -> `PERSONA_PROMPT`). This keeps a single source
-of truth for defaults (config.yaml) while letting secrets and per-deploy
-overrides live in the environment.
+Supported env var overrides: TOPIC, TOP_N, PERSONA_PROMPT (see _ENV_OVERRIDES).
+Add new entries to _ENV_OVERRIDES to make additional config keys overridable.
 """
 
 from __future__ import annotations

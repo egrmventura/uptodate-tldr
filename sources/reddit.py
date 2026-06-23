@@ -21,7 +21,7 @@ from typing import Any
 
 import requests
 
-from sources.base import Item, Source
+from sources.base import Item, Source, parse_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,7 @@ class RedditSource(Source):
                     title=title,
                     url=f"https://reddit.com{permalink}" if permalink else data.get("url", ""),
                     score=data.get("score", 0) or 0,
-                    published_at=_parse_created_utc(data.get("created_utc")),
+                    published_at=parse_timestamp(data.get("created_utc")),
                     summary_raw=(data.get("selftext") or "")[:500],
                 )
             )
@@ -129,12 +129,8 @@ def _submission_to_item(submission: Any) -> Item:
         title=submission.title,
         url=f"https://reddit.com{submission.permalink}",
         score=submission.score or 0,
-        published_at=_parse_created_utc(submission.created_utc),
+        published_at=parse_timestamp(submission.created_utc),
         summary_raw=(submission.selftext or "")[:500],
     )
 
 
-def _parse_created_utc(created_utc: float | None) -> datetime:
-    if created_utc is None:
-        return datetime.now(timezone.utc)
-    return datetime.fromtimestamp(created_utc, tz=timezone.utc)

@@ -14,7 +14,7 @@ from typing import Any
 
 import requests
 
-from sources.base import Item, Source
+from sources.base import Item, Source, parse_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class HackerNewsSource(Source):
             # "Ask HN" / "Show HN" text posts that have no external link.
             url = hit.get("url") or f"https://news.ycombinator.com/item?id={object_id}"
 
-            created_at = _parse_timestamp(hit.get("created_at_i"))
+            created_at = parse_timestamp(hit.get("created_at_i"))
             story_text = hit.get("story_text") or ""
 
             items.append(
@@ -77,7 +77,3 @@ def _seven_days_ago_timestamp() -> int:
     return int(datetime.now(timezone.utc).timestamp()) - 7 * 24 * 60 * 60
 
 
-def _parse_timestamp(ts: int | None) -> datetime:
-    if ts is None:
-        return datetime.now(timezone.utc)
-    return datetime.fromtimestamp(ts, tz=timezone.utc)

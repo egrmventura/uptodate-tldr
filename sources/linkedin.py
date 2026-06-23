@@ -29,12 +29,11 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime, timezone
 from typing import Any
 
 import requests
 
-from sources.base import Item, Source
+from sources.base import Item, Source, parse_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +85,7 @@ class LinkedInSource(Source):
             title = post.get("text", "")[:120] or "(untitled LinkedIn post)"
             url = post.get("postUrl") or post.get("url", "")
             if not url:
+                logger.debug("Dropping LinkedIn item without URL: %s", title[:60])
                 continue
 
             items.append(
@@ -94,7 +94,7 @@ class LinkedInSource(Source):
                     title=title,
                     url=url,
                     score=post.get("numLikes", 0) or 0,
-                    published_at=_parse_posted_at(post.get("postedAt")),
+                    published_at=parse_timestamp(post.get("postedAt"), epoch_ms=True),
                     summary_raw=(post.get("text") or "")[:500],
                 )
             )
@@ -102,24 +102,3 @@ class LinkedInSource(Source):
         return items
 
 
-def _parse_posted_at(value: Any) -> datetime:
-    """Best-effort parse of a provider-specific timestamp field.
-
-    RapidAPI LinkedIn providers are inconsistent about timestamp format
-    (ISO strings, relative strings like "2d", or epoch millis). We fall
-    back to "now" rather than failing the whole item, since recency
-    weighting degrading gracefully is preferable to dropping the item.
-    """
-    if isinstance(value, (int, float)):
-        try:
-            return datetime.fromtimestamp(value / 1000, tz=timezone.utc)
-        except (ValueError, OSError):
-            return datetime.now(timezone.utc)
-
-    if isinstance(value, str):
-        try:
-            return datetime.fromisoformat(value.replace("Z", "+00:00"))
-        except ValueError:
-            return datetime.now(timezone.utc)
-
-    return datetime.now(timezone.utc)
