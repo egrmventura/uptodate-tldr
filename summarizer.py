@@ -75,4 +75,7 @@ def summarize(items: list[Item], config: dict[str, Any]) -> str:
         ],
     )
 
-    return "".join(block.text for block in response.content if block.type == "text")
+    digest = "".join(block.text for block in response.content if block.type == "text")
+    if not digest.strip():
+        raise RuntimeError("LLM returned an empty digest — nothing to deliver")
+    return digest

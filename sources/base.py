@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -30,6 +30,31 @@ class Item:
     summary_raw: str
     # Optional, source-specific extras (e.g. arXiv citation count).
     extra: dict[str, Any] = field(default_factory=dict)
+
+
+def parse_timestamp(value: int | float | str | None, epoch_ms: bool = False) -> datetime:
+    """Best-effort timestamp parse — shared across all source modules.
+
+    Handles Unix epoch (seconds or milliseconds), ISO 8601 strings, and None.
+    Falls back to now(UTC) rather than failing the item.
+    """
+    if value is None:
+        return datetime.now(timezone.utc)
+
+    if isinstance(value, (int, float)):
+        try:
+            ts = value / 1000 if epoch_ms else value
+            return datetime.fromtimestamp(ts, tz=timezone.utc)
+        except (ValueError, OSError):
+            return datetime.now(timezone.utc)
+
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return datetime.now(timezone.utc)
+
+    return datetime.now(timezone.utc)
 
 
 class Source(ABC):

@@ -35,7 +35,8 @@ def _normalize_title(title: str) -> str:
 
 
 def _dedup_key(item: Item) -> str:
-    return item.url.rstrip("/") if item.url else _normalize_title(item.title)
+    normalized = _normalize_title(item.title)
+    return normalized if normalized else item.url.rstrip("/")
 
 
 def _recency_weight(published_at: datetime, half_life_hours: float, now: datetime) -> float:
@@ -61,7 +62,7 @@ def rank_items(items: list[Item], ranking_config: dict[str, Any], top_n: int) ->
     for group in groups.values():
         # Keep the highest-engagement representative for display, but score
         # using the combined signal from every source that surfaced it.
-        representative = max(group, key=lambda i: i.score)
+        representative = max(group, key=lambda i: i.score + citation_weight * i.extra.get("citations", 0))
         sources_seen = {i.source for i in group}
 
         base_score = 0.0
