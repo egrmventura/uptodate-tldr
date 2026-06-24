@@ -4,3 +4,4 @@ __pycache__/
 .env
 output/*.md
 !output/.gitkeep
+uptodate-tldr
