@@ -2,7 +2,7 @@
 # Any value here can be overridden by an environment variable of the same
 # name (uppercased). See .env.example for the full list.
 
-topic: "artificial intelligence"
+topic: "New Claude Code Features"
 
 # Number of items to summarize in the final digest (2-6)
 top_n: 4
@@ -13,7 +13,7 @@ sources:
     # Algolia HN search endpoint, max stories to pull before ranking
     max_results: 30
   reddit:
-    enabled: true
+    enabled: false
     # Subreddits to search, in addition to the topic-based search
     subreddits:
       - MachineLearning
@@ -23,7 +23,7 @@ sources:
   arxiv:
     enabled: true
     # arXiv category to scope the search, e.g. cs.AI, cs.LG
-    category: "cs.AI"
+    category: "cs.SE"
     max_results: 20
   linkedin:
     enabled: false
