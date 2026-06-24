@@ -39,7 +39,7 @@ def load_config() -> dict[str, Any]:
 
     for env_var, path in _ENV_OVERRIDES.items():
         raw = os.environ.get(env_var)
-        if raw is None:
+        if not raw:
             continue
         if path == ("top_n",):
             _set_nested(config, path, int(raw))
