@@ -12,14 +12,6 @@ sources:
     enabled: true
     # Algolia HN search endpoint, max stories to pull before ranking
     max_results: 30
-  reddit:
-    enabled: false
-    # Subreddits to search, in addition to the topic-based search
-    subreddits:
-      - MachineLearning
-      - artificial
-      - technology
-    max_results: 30
   arxiv:
     enabled: true
     # arXiv category to scope the search, e.g. cs.AI, cs.LG

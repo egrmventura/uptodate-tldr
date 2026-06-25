@@ -36,25 +36,27 @@ scheduler.py     APScheduler wrapper that runs main.run_pipeline daily
 config.py        loads config.yaml, applies env var overrides
 ```
 
-### Why these four sources
+### Why these sources
 
 - **Hacker News (Algolia API)** — free, unauthenticated, stable, and a
   reliable proxy for "the tech industry is currently talking about this."
   Chosen as the reference implementation because it's the lowest-risk
-  integration in the project; if you're adding a fifth source, this is the
+  integration in the project; if you're adding a new source, this is the
   module to copy.
-- **Reddit** — broader and noisier than HN, but covers topics HN doesn't
-  (e.g. niche subreddits for a specific tool or community). Supports both
-  PRAW (authenticated, recommended) and Reddit's public `.json` endpoints
-  (unauthenticated, rate-limited, useful for quick testing).
 - **arXiv** — the only source with a *quality* signal independent of social
   engagement (citations, eventually). Important for technical topics where
   "what's trending on social media" and "what's actually a significant
   result" diverge.
 - **LinkedIn** — included because professional/industry commentary often
-  surfaces stories before they hit HN/Reddit, but it's the least stable
+  surfaces stories before they hit HN, but it's the least stable
   integration by a wide margin (see Known Limitations). **Disabled by
   default.**
+
+> **Note:** Reddit was removed as a source in June 2026 after Reddit ended
+> self-service API access and confirmed that neither the Data API nor Devvit
+> can be used for content scraping. See Reddit's
+> [Responsible Builder Policy](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy)
+> for details.
 
 ### How ranking works
 
@@ -129,7 +131,6 @@ variables (see `.env.example`). Key fields:
 | `topic` | Search/filter string applied to every source. Override with `TOPIC` env var. |
 | `top_n` | Number of items to summarize (2–6 recommended). |
 | `sources.<name>.enabled` | Toggle each source independently. |
-| `sources.reddit.subreddits` | Subreddits to search in addition to topic search. |
 | `sources.arxiv.category` | arXiv category to scope results (e.g. `cs.AI`, `cs.LG`). |
 | `ranking.*` | Recency half-life, cross-source bonus, citation weight (see above). |
 | `persona.prompt` | System prompt defining the digest's voice. Override with `PERSONA_PROMPT` env var. |
@@ -163,10 +164,6 @@ variables (see `.env.example`). Key fields:
   manually extracting a session cookie from a browser (`SUBSTACK_COOKIE`).
   It's the most likely channel to silently break (expired cookie, changed
   endpoint shape) and is disabled by default; treat it as best-effort.
-- **The Reddit public-JSON fallback** (used when `REDDIT_CLIENT_ID`/`SECRET`
-  aren't set) is unauthenticated and aggressively rate-limited by Reddit —
-  fine for local testing, not recommended for a scheduled daily run.
-
 ## Extending with a new source
 
 1. Create `sources/<name>.py` with a class extending `sources.base.Source`,
