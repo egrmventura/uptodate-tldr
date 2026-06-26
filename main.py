@@ -29,7 +29,6 @@ from sources.arxiv import ArxivSource
 from sources.base import Item, Source
 from sources.hackernews import HackerNewsSource
 from sources.linkedin import LinkedInSource
-from sources.reddit import RedditSource
 from summarizer import summarize
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -37,7 +36,6 @@ logger = logging.getLogger(__name__)
 
 _SOURCES: dict[str, Source] = {
     "hackernews": HackerNewsSource(),
-    "reddit": RedditSource(),
     "arxiv": ArxivSource(),
     "linkedin": LinkedInSource(),
 }
