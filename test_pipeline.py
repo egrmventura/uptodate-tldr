@@ -12,6 +12,9 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import json
+from pathlib import Path
+
 from config import load_config
 from sources.base import Item, parse_timestamp
 from sources.hackernews import HackerNewsSource
@@ -180,6 +183,315 @@ def test_markdown_delivery():
         record("markdown_has_body", "Test digest content" in content)
 
 
+# ---------- GROUPER (unit — no API call) ----------
+
+def test_grouper_format_items():
+    from grouper import _format_items
+    items = [
+        Item(source="hn", title="Alpha", url="https://a.com", score=10,
+             published_at=datetime.now(timezone.utc), summary_raw="Summary A"),
+        Item(source="arxiv", title="Beta", url="https://b.com", score=5,
+             published_at=datetime.now(timezone.utc), summary_raw="Summary B"),
+    ]
+    block = _format_items(items)
+    record("grouper_format_indexes", "0." in block and "1." in block)
+    record("grouper_format_sources", "[hn]" in block and "[arxiv]" in block)
+    record("grouper_format_titles", "Alpha" in block and "Beta" in block)
+
+
+def test_grouper_parse_assignments():
+    from grouper import _parse_assignments
+    raw = '{"assignments": [{"index": 0, "topic": "Anthropic MCP"}, {"index": 1, "topic": "Anthropic MCP"}]}'
+    result = _parse_assignments(raw, n_items=2)
+    record("grouper_parse_valid", result == {0: "Anthropic MCP", 1: "Anthropic MCP"})
+
+    bad = "not json at all"
+    record("grouper_parse_bad_json", _parse_assignments(bad, 2) == {})
+
+    oob = '{"assignments": [{"index": 99, "topic": "X"}]}'
+    record("grouper_parse_oob_index", _parse_assignments(oob, 2) == {})
+
+    missing_key = '{"wrong_key": []}'
+    record("grouper_parse_missing_key", _parse_assignments(missing_key, 2) == {})
+
+
+def test_grouper_topic_group():
+    from grouper import TopicGroup
+    now = datetime.now(timezone.utc)
+    items = [
+        Item(source="hn", title="A", url="https://a.com", score=1, published_at=now, summary_raw=""),
+        Item(source="arxiv", title="B", url="https://b.com", score=2, published_at=now, summary_raw=""),
+    ]
+    g = TopicGroup(label="Test Topic", items=items)
+    record("grouper_topic_label", g.label == "Test Topic")
+    record("grouper_topic_item_count", len(g.items) == 2)
+    start, end = g.date_range
+    record("grouper_date_range_valid", start <= end)
+
+
+# ---------- ANALYSIS_MD DELIVERY (unit) ----------
+
+def test_analysis_md_render():
+    from delivery.analysis_md import render
+    from store import GroupAnalysis
+    now = datetime.now(timezone.utc)
+    analyses = [
+        GroupAnalysis(
+            topic="Anthropic MCP", run_date=date.today(),
+            period_start=now, period_end=now,
+            agreements=["Both confirm stability"],
+            contradictions=["HN vs arXiv on adoption"],
+            debunks=[],
+            unresolved=["Scale question open"],
+            sources=[
+                Item(source="hn", title="MCP post", url="https://hn.com/1",
+                     score=100, published_at=now, summary_raw=""),
+            ],
+        ),
+        GroupAnalysis(
+            topic="OpenAI o3", run_date=date.today(),
+            period_start=now, period_end=now,
+            agreements=[], contradictions=[], debunks=[], unresolved=[],
+            sources=[
+                Item(source="arxiv", title="o3 paper", url="https://arxiv.org/1",
+                     score=5, published_at=now, summary_raw=""),
+            ],
+        ),
+    ]
+    md = render(analyses, "AI/ML", date(2026, 6, 29))
+    record("analysis_md_has_header", "Analysis Digest (2026-06-29)" in md)
+    record("analysis_md_has_topic_section", "## Anthropic MCP" in md)
+    record("analysis_md_has_agreement", "Both confirm stability" in md)
+    record("analysis_md_none_for_empty", "*(none)*" in md)
+    record("analysis_md_source_link", "[MCP post](https://hn.com/1)" in md)
+
+
+def test_analysis_md_empty():
+    from delivery.analysis_md import render
+    md = render([], "AI/ML", date(2026, 6, 29))
+    record("analysis_md_empty_graceful", "No topic groups" in md)
+
+
+def test_analysis_md_deliver():
+    import tempfile
+    from delivery.analysis_md import deliver
+    from store import GroupAnalysis
+    now = datetime.now(timezone.utc)
+    analyses = [
+        GroupAnalysis(
+            topic="Test Topic", run_date=date.today(),
+            period_start=now, period_end=now,
+            agreements=["agreed"], contradictions=[], debunks=[], unresolved=[],
+            sources=[],
+        ),
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        config = {"delivery": {"analysis_md": {"output_dir": tmp}}}
+        path = deliver(analyses, "AI/ML", config, date(2026, 6, 29))
+        record("analysis_md_file_written", path.exists())
+        record("analysis_md_filename", path.name == "analysis-2026-06-29.md")
+
+
+# ---------- TIMELINE (unit) ----------
+
+def test_timeline_render():
+    import tempfile
+    from datetime import timedelta
+    from store import Store, GroupAnalysis
+    from timeline import render_timeline
+    base = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        for i in range(3):
+            a = GroupAnalysis(
+                topic="Anthropic MCP", run_date=date.today(),
+                period_start=base + timedelta(days=i * 60),
+                period_end=base + timedelta(days=i * 60 + 5),
+                agreements=[f"Agreement {i}"],
+                contradictions=[], debunks=[],
+                unresolved=[f"Open question {i}"],
+                sources=[],
+            )
+            db.save_run([a], date.today(), is_backfill=True)
+        md = render_timeline("Anthropic MCP", db)
+        record("timeline_has_header", "# Topic Timeline: Anthropic MCP" in md)
+        record("timeline_has_period_label", "Jan 2025" in md)
+        record("timeline_has_agreement", "Agreement 0" in md)
+        record("timeline_ordered", md.index("Agreement 0") < md.index("Agreement 2"))
+
+        empty = render_timeline("Unknown Topic", db)
+        record("timeline_empty_returns_empty_string", empty == "")
+
+
+def test_timeline_md_deliver():
+    import tempfile
+    from datetime import timedelta
+    from store import Store, GroupAnalysis
+    from delivery.timeline_md import deliver, _slugify
+    record("timeline_md_slugify_spaces", _slugify("Anthropic MCP") == "anthropic-mcp")
+    record("timeline_md_slugify_special", _slugify("OpenAI o3!") == "openai-o3")
+
+    base = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        a = GroupAnalysis(
+            topic="Anthropic MCP", run_date=date.today(),
+            period_start=base, period_end=base + timedelta(days=1),
+            agreements=["agreed"], contradictions=[], debunks=[], unresolved=[],
+            sources=[],
+        )
+        db.save_run([a], date.today(), is_backfill=True)
+        config = {"delivery": {"analysis_md": {"output_dir": tmp}}}
+        path = deliver("Anthropic MCP", db, config)
+        record("timeline_md_file_written", path is not None and path.exists())
+        record("timeline_md_filename", path is not None and path.name == "timeline-anthropic-mcp.md")
+
+        no_path = deliver("Unknown Topic", db, config)
+        record("timeline_md_missing_topic_returns_none", no_path is None)
+
+
+# ---------- ANALYST (unit — no API call) ----------
+
+def test_analyst_format_items():
+    from grouper import TopicGroup
+    from analyst import _format_items
+    now = datetime.now(timezone.utc)
+    items = [
+        Item(source="hn", title="MCP announced", url="https://hn.com/1", score=50,
+             published_at=now, summary_raw="Anthropic released MCP."),
+        Item(source="arxiv", title="MCP evaluation", url="https://arxiv.org/1", score=10,
+             published_at=now, summary_raw="We evaluate MCP adoption."),
+    ]
+    group = TopicGroup(label="Anthropic MCP", items=items)
+    block = _format_items(group)
+    record("analyst_format_numbering", "1." in block and "2." in block)
+    record("analyst_format_urls", "https://hn.com/1" in block and "https://arxiv.org/1" in block)
+    record("analyst_format_excerpts", "Anthropic released MCP" in block)
+
+
+def test_analyst_parse_response():
+    from analyst import _parse_response
+    valid = json.dumps({
+        "agreements": ["Both confirm MCP is stable"],
+        "contradictions": ["HN says wide adoption; arXiv finds <5%"],
+        "debunks": [],
+        "unresolved": ["Performance at scale unknown"],
+    })
+    result = _parse_response(valid)
+    record("analyst_parse_valid", result is not None)
+    record("analyst_parse_agreements", result["agreements"] == ["Both confirm MCP is stable"])
+    record("analyst_parse_empty_list", result["debunks"] == [])
+
+    record("analyst_parse_bad_json", _parse_response("not json") is None)
+    record("analyst_parse_missing_field", _parse_response('{"agreements": []}') is None)
+
+    wrong_type = json.dumps({"agreements": "string", "contradictions": [], "debunks": [], "unresolved": []})
+    record("analyst_parse_wrong_type", _parse_response(wrong_type) is None)
+
+
+def test_analyst_analyze_all_skips_none():
+    from grouper import TopicGroup
+    from analyst import analyze_all
+    now = datetime.now(timezone.utc)
+    # Empty groups list — should return empty without API call
+    result = analyze_all([], {})
+    record("analyst_analyze_all_empty", result == [])
+
+
+# ---------- STORE (unit — temp db) ----------
+
+def test_store_init():
+    import tempfile
+    from store import Store
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        record("store_init_creates_db", db.db_path.exists())
+        record("store_empty_topics", db.topics() == [])
+        record("store_latest_run_none", db.latest_run_id() is None)
+
+
+def test_store_save_and_retrieve():
+    import tempfile
+    from store import Store, GroupAnalysis
+    now = datetime.now(timezone.utc)
+    analysis = GroupAnalysis(
+        topic="Anthropic MCP",
+        run_date=date.today(),
+        period_start=now,
+        period_end=now,
+        agreements=["Both sources confirm X"],
+        contradictions=["HN says A, arXiv says B"],
+        debunks=[],
+        unresolved=["Scale question open"],
+        sources=[
+            Item(source="hn", title="MCP post", url="https://hn.com/1", score=100,
+                 published_at=now, summary_raw="excerpt"),
+        ],
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        run_id = db.save_run([analysis], date.today())
+        record("store_save_returns_id", isinstance(run_id, int) and run_id > 0)
+        record("store_latest_run_id", db.latest_run_id() == run_id)
+
+        by_run = db.get_run(run_id)
+        record("store_get_run_count", len(by_run) == 1)
+        a = by_run[0]
+        record("store_topic_roundtrip", a.topic == "Anthropic MCP")
+        record("store_agreements_roundtrip", a.agreements == ["Both sources confirm X"])
+        record("store_sources_roundtrip", len(a.sources) == 1 and a.sources[0].title == "MCP post")
+
+        timeline = db.get_timeline("Anthropic MCP")
+        record("store_timeline_count", len(timeline) == 1)
+        record("store_topics_list", db.topics() == ["Anthropic MCP"])
+
+
+def test_store_idempotency():
+    import tempfile
+    from store import Store, GroupAnalysis
+    now = datetime.now(timezone.utc)
+    analysis = GroupAnalysis(
+        topic="Duplicate Topic",
+        run_date=date.today(),
+        period_start=now,
+        period_end=now,
+        agreements=["agreed"],
+        contradictions=[],
+        debunks=[],
+        unresolved=[],
+        sources=[],
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        db.save_run([analysis], date.today(), is_backfill=True)
+        db.save_run([analysis], date.today(), is_backfill=True)
+        timeline = db.get_timeline("Duplicate Topic")
+        record("store_idempotent_no_duplicate", len(timeline) == 1)
+
+
+def test_store_timeline_ordering():
+    import tempfile
+    from store import Store, GroupAnalysis
+    from datetime import timedelta
+    base = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        db = Store(Path(tmp) / "test.db")
+        for i in range(3):
+            a = GroupAnalysis(
+                topic="Ordering Test",
+                run_date=date.today(),
+                period_start=base + timedelta(days=i * 30),
+                period_end=base + timedelta(days=i * 30 + 1),
+                agreements=[f"month {i}"],
+                contradictions=[], debunks=[], unresolved=[], sources=[],
+            )
+            db.save_run([a], date.today(), is_backfill=True)
+        timeline = db.get_timeline("Ordering Test")
+        record("store_timeline_ordered", len(timeline) == 3)
+        starts = [t.period_start for t in timeline]
+        record("store_timeline_asc", starts == sorted(starts))
+
+
 # ---------- END-TO-END (without LLM call) ----------
 
 def test_e2e_ingest_and_rank(topic: str):
@@ -227,6 +539,31 @@ def main():
 
     print("\n[Delivery — Markdown]")
     test_markdown_delivery()
+
+    print("\n[Grouper — Unit]")
+    test_grouper_format_items()
+    test_grouper_parse_assignments()
+    test_grouper_topic_group()
+
+    print("\n[Analysis MD Delivery — Unit]")
+    test_analysis_md_render()
+    test_analysis_md_empty()
+    test_analysis_md_deliver()
+
+    print("\n[Timeline — Unit]")
+    test_timeline_render()
+    test_timeline_md_deliver()
+
+    print("\n[Analyst — Unit]")
+    test_analyst_format_items()
+    test_analyst_parse_response()
+    test_analyst_analyze_all_skips_none()
+
+    print("\n[Store — Unit]")
+    test_store_init()
+    test_store_save_and_retrieve()
+    test_store_idempotency()
+    test_store_timeline_ordering()
 
     print("\n[End-to-End — Ingest + Rank]")
     test_e2e_ingest_and_rank(topic)

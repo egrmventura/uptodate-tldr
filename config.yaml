@@ -4,6 +4,15 @@
 
 topic: "New Claude Code Features"
 
+# Topics for the comparative analysis pipeline (analyze.py).
+# Each topic runs a separate source query; results are grouped, analyzed,
+# and written into a single daily analysis digest.
+topics:
+  - "AI Tools"
+  - "Data Engineering"
+  - "New Codex Features"
+  - "AI Memory"
+
 # Number of items to summarize in the final digest (2-6)
 top_n: 4
 
@@ -44,6 +53,9 @@ llm:
 
 delivery:
   markdown:
+    enabled: true
+    output_dir: "./output"
+  analysis_md:
     enabled: true
     output_dir: "./output"
   email:
