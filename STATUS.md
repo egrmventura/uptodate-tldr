@@ -4,23 +4,24 @@ _Last updated: 2026-07-01_
 
 ## Where things stand
 
-- **Branch:** `feature/test-eval` (PR pending to `staging`)
-- **`staging` HEAD:** `d08192c` — Merge PR #10 (orchestration commands + STATUS.md)
+- **Branch:** `feature/scraper-wire` (PR pending to `staging`)
+- **`staging` HEAD:** `db59dbc` — Merge PR #13 (RSS/Atom source)
 
 ## Done
 
 - **Comparative analysis pipeline** (`analyze.py`) merged to `staging` (PR #6): `ingest → group → analyze → persist → deliver`, parallel to the untouched TLDR pipeline in `main.py`. Modules: `grouper.py`, `analyst.py`, `store.py` (SQLite at `output/analyses.db`), `timeline.py`, `delivery/analysis_md.py`, `delivery/timeline_md.py`.
-- **Analyst token fix:** `max_tokens` scales dynamically `min(1500 + n_items * 300, 3000)` — resolved the truncation that skipped large groups. Documented in `CLAUDE.md`.
-- **Goal-prompt command files** merged (PR #9): `goal-scraper`, `goal-rss`, `goal-scraper-wire`, `goal-timeline-seed`, `goal-auto-discovery`, plus `.claude/commands/README.md`.
-- **Orchestration/workflow commands** merged (PR #10): `goal-batch-orchestration`, `summarize`, `goal-pipeline-glue`, `goal-resilience-pass`, `goal-test-eval`, `iterate`, `session-status`, plus the `STATUS.md` method.
-- **`goal-test-eval` executed (this session):** fixed the 4 pytest fixture errors via `topic`/`config` fixtures; suite is now **28 passed, 0 errors, 0 warnings** (script mode 94/94). Added `eval_harness.py` — offline LLM-output eval scoring grouper/analyst parsing against recorded responses (8/8), wired into pytest via `test_eval_harness_all_pass`.
+- **Analyst token fix:** `max_tokens` scales dynamically `min(1500 + n_items * 300, 3000)`. Documented in `CLAUDE.md`.
+- **Goal-prompt command files** (PR #9) and **orchestration/workflow commands + STATUS.md method** (PR #10) merged under `.claude/commands/`.
+- **`goal-test-eval`** (PR #11): fixed the 4 pytest fixture errors via `topic`/`config` fixtures; added `eval_harness.py` (offline LLM-output eval). Suite fully green.
+- **`goal-scraper`** (PR #12): `scraper.py` — URL → title/author/date/body, strips boilerplate, never raises, paywalled/blocked → `None`. 3 offline HTML fixtures + mocked-network tests.
+- **`goal-rss`** (PR #13): `sources/rss.py` — feedparser-backed Atom/RSS source, mapped to `Item`, dual-registered (`_SOURCES` + `config.yaml`, disabled by default). 3 offline feed fixtures.
+- **`goal-scraper-wire` (this session):** wired the scraper into `ingest()` as optional best-effort enrichment (`enrich_items`), gated by `scraping.enabled`, running through `ThreadPoolExecutor`. Attaches full body to `item.extra["body"]`; blocked/failed fetches leave the excerpt intact; both `main.py` and `analyze.py` pass scraping config. **Suite: 42 passed.**
 
 ## Pending / next
 
-- **Full-text scraping** not yet built. → run `/goal-scraper`, then `/goal-scraper-wire`.
-- **RSS source** not yet built. → run `/goal-rss`.
 - **Timeline never seeded** with real historical data. → run `/goal-timeline-seed` (or `--backfill`).
 - **Source auto-discovery** still a dual registry (`_SOURCES` in `main.py` + `config.yaml`). → run `/goal-auto-discovery` last.
+- **Downstream body adoption:** enrichment populates `item.extra["body"]`, but grouper/analyst/summarizer still read `summary_raw`. A future `/goal-pipeline-glue` pass could route `extra["body"]` into those formatters for richer analysis.
 
 ## Known issues
 
@@ -29,4 +30,4 @@ _Last updated: 2026-07-01_
 
 ## Recommended next command
 
-`/goal-scraper` — build the full-text article scraper now that the suite is green; then `/goal-rss` (parallel) and `/goal-scraper-wire`.
+`/goal-timeline-seed` — seed the analysis timeline with historical backfill now that sources (HN, arXiv, RSS) and full-text enrichment are in place.

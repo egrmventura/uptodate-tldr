@@ -44,6 +44,7 @@ def run_analysis(is_backfill: bool = False, date_from: date | None = None, date_
     # Use `topics` list if present; fall back to single `topic` for compatibility.
     topics = config.get("topics") or [config["topic"]]
     sources_config = config.get("sources", {})
+    scraping_config = config.get("scraping", {})
 
     if is_backfill and date_from and date_to:
         logger.info("Backfill mode: %s → %s", date_from, date_to)
@@ -57,7 +58,7 @@ def run_analysis(is_backfill: bool = False, date_from: date | None = None, date_
 
     for topic in topics:
         logger.info("Ingesting topic=%r (backfill=%s)", topic, is_backfill)
-        items = ingest(topic, sources_config)
+        items = ingest(topic, sources_config, scraping_config)
         if not items:
             logger.warning("No items for topic=%r — skipping", topic)
             continue
