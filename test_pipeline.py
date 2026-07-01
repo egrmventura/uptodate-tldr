@@ -508,6 +508,68 @@ def test_store_timeline_ordering():
         record("store_timeline_asc", starts == sorted(starts))
 
 
+# ---------- SCRAPER (offline — saved HTML fixtures) ----------
+
+_SCRAPER_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "scraper"
+
+
+def _load_fixture(name: str) -> str:
+    return (_SCRAPER_FIXTURES / name).read_text(encoding="utf-8")
+
+
+def test_scraper_standard_article():
+    from scraper import _extract
+    art = _extract("https://example.com/mcp", _load_fixture("standard_article.html"), min_body_chars=200)
+    record("scraper_standard_parsed", art is not None)
+    if art:
+        record("scraper_title_prefers_og", art.title == "Anthropic Ships MCP 2.0")
+        record("scraper_author_from_meta", art.author == "Jane Developer")
+        record("scraper_date_parsed", art.published_at is not None and art.published_at.year == 2026)
+        record("scraper_body_has_content", "streaming tool results" in art.body)
+        # Boilerplate must be stripped.
+        record("scraper_strips_nav", "Home" not in art.body)
+        record("scraper_strips_footer", "All rights reserved" not in art.body)
+        record("scraper_strips_aside", "Related" not in art.body)
+        record("scraper_strips_ad", "newsletter" not in art.body)
+
+
+def test_scraper_minimal_article():
+    from scraper import _extract
+    art = _extract("https://example.com/plain", _load_fixture("minimal_article.html"), min_body_chars=200)
+    record("scraper_minimal_parsed", art is not None)
+    if art:
+        record("scraper_title_from_title_tag", art.title == "A Plain Post Without Meta Tags")
+        record("scraper_author_none_when_absent", art.author is None)
+        record("scraper_date_none_when_absent", art.published_at is None)
+        record("scraper_body_fallback_container", "densest container" in art.body)
+
+
+def test_scraper_paywalled_returns_none():
+    from scraper import _extract
+    art = _extract("https://example.com/paywall", _load_fixture("paywalled.html"), min_body_chars=200)
+    record("scraper_paywalled_skipped", art is None)
+
+
+def test_scraper_network_failure_returns_none():
+    from unittest.mock import patch
+    import requests
+    from scraper import scrape
+    with patch("scraper.requests.get", side_effect=requests.RequestException("boom")):
+        result = scrape("https://example.com/down")
+    record("scraper_network_failure_none", result is None)
+
+
+def test_scraper_scrape_success_mocked():
+    from unittest.mock import patch, MagicMock
+    from scraper import scrape
+    fake = MagicMock()
+    fake.text = _load_fixture("standard_article.html")
+    fake.raise_for_status = MagicMock()
+    with patch("scraper.requests.get", return_value=fake):
+        result = scrape("https://example.com/mcp")
+    record("scraper_scrape_success", result is not None and result.title == "Anthropic Ships MCP 2.0")
+
+
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
 
 def test_eval_harness_all_pass():
@@ -596,6 +658,13 @@ def main():
     test_store_save_and_retrieve()
     test_store_idempotency()
     test_store_timeline_ordering()
+
+    print("\n[Scraper — Offline Fixtures]")
+    test_scraper_standard_article()
+    test_scraper_minimal_article()
+    test_scraper_paywalled_returns_none()
+    test_scraper_network_failure_returns_none()
+    test_scraper_scrape_success_mocked()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()

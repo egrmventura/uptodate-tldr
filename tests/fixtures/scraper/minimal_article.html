@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A Plain Post Without Meta Tags</title>
+</head>
+<body>
+  <div id="content">
+    <p>This article has no Open Graph tags, no author meta, and no published-time
+       meta. The scraper must still recover the title from the title element.</p>
+    <p>Body extraction should fall back to the densest container of paragraphs
+       when there is no explicit article element wrapping the content.</p>
+    <p>There is enough text here to comfortably clear the minimum body length
+       threshold, so this page should parse into a real ScrapedArticle.</p>
+  </div>
+</body>
+</html>
