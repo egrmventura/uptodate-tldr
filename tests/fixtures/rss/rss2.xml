@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example RSS 2.0 Feed</title>
+    <link>https://example.com/</link>
+    <description>A sample RSS 2.0 feed for tests.</description>
+    <item>
+      <title>RSS Item One: Vector Databases</title>
+      <link>https://example.com/rss/1</link>
+      <guid>https://example.com/rss/1</guid>
+      <pubDate>Mon, 12 May 2026 14:00:00 GMT</pubDate>
+      <author>bob@example.com (Bob Newsfeed)</author>
+      <description>An overview of vector database tradeoffs for retrieval.</description>
+    </item>
+    <item>
+      <title>RSS Item Two: Embedding Drift</title>
+      <link>https://example.com/rss/2</link>
+      <guid>https://example.com/rss/2</guid>
+      <pubDate>Tue, 13 May 2026 16:30:00 GMT</pubDate>
+      <author>bob@example.com (Bob Newsfeed)</author>
+      <description>How embedding drift affects long-lived indexes over time.</description>
+    </item>
+  </channel>
+</rss>

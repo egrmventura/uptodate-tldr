@@ -508,6 +508,63 @@ def test_store_timeline_ordering():
         record("store_timeline_asc", starts == sorted(starts))
 
 
+# ---------- RSS SOURCE (offline — saved feed fixtures) ----------
+
+_RSS_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "rss"
+
+
+def _rss_path(name: str) -> str:
+    return str(_RSS_FIXTURES / name)
+
+
+def test_rss_atom_feed():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("atom.xml")]})
+    record("rss_atom_count", len(items) == 2, f"{len(items)} items")
+    if items:
+        first = items[0]
+        record("rss_atom_source", first.source == "rss")
+        record("rss_atom_title", first.title == "Atom Entry One: MCP Streaming")
+        record("rss_atom_url", first.url == "https://example.com/atom/1")
+        record("rss_atom_author_in_extra", first.extra.get("author") == "Ada Atomsmith")
+        record("rss_atom_date", first.published_at.year == 2026 and first.published_at.month == 5)
+
+
+def test_rss_rss2_feed():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("rss2.xml")]})
+    record("rss_rss2_count", len(items) == 2, f"{len(items)} items")
+    if items:
+        record("rss_rss2_title", items[0].title == "RSS Item One: Vector Databases")
+        record("rss_rss2_url", items[0].url == "https://example.com/rss/1")
+        record("rss_rss2_date_parsed", items[0].published_at.year == 2026)
+        record("rss_rss2_no_score", items[0].score == 0)
+
+
+def test_rss_malformed_yields_empty():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("malformed.xml")]})
+    record("rss_malformed_empty", items == [], f"{len(items)} items")
+
+
+def test_rss_max_results_cap():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("atom.xml"), _rss_path("rss2.xml")], "max_results": 3})
+    record("rss_max_results_cap", len(items) == 3, f"{len(items)} items")
+
+
+def test_rss_never_raises_on_bad_input():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    # safe_fetch is the final backstop; empty/garbage feed list must not raise.
+    items = src.safe_fetch("any topic", {"feeds": ["/nonexistent/path/feed.xml"]})
+    record("rss_missing_file_no_raise", isinstance(items, list))
+
+
 # ---------- SCRAPER (offline — saved HTML fixtures) ----------
 
 _SCRAPER_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "scraper"
@@ -658,6 +715,13 @@ def main():
     test_store_save_and_retrieve()
     test_store_idempotency()
     test_store_timeline_ordering()
+
+    print("\n[RSS Source — Offline Fixtures]")
+    test_rss_atom_feed()
+    test_rss_rss2_feed()
+    test_rss_malformed_yields_empty()
+    test_rss_max_results_cap()
+    test_rss_never_raises_on_bad_input()
 
     print("\n[Scraper — Offline Fixtures]")
     test_scraper_standard_article()
