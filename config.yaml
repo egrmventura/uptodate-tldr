@@ -30,6 +30,12 @@ sources:
     enabled: false
     # See sources/linkedin.py for the fragility tradeoffs of this source.
     max_results: 15
+  rss:
+    # Disabled until feeds are configured; a feed is its own curation, so the
+    # topic query does not apply. Add feed URLs and flip enabled to true.
+    enabled: false
+    feeds: []
+    max_results: 20
 
 ranking:
   # Half-life (in hours) used for the recency-weighting decay function.

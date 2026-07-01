@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Atom Feed</title>
+  <link href="https://example.com/"/>
+  <updated>2026-05-20T10:00:00Z</updated>
+  <entry>
+    <title>Atom Entry One: MCP Streaming</title>
+    <link href="https://example.com/atom/1"/>
+    <id>https://example.com/atom/1</id>
+    <published>2026-05-18T08:15:00Z</published>
+    <updated>2026-05-18T08:15:00Z</updated>
+    <author><name>Ada Atomsmith</name></author>
+    <summary>A short summary of the first Atom entry about streaming tool results.</summary>
+  </entry>
+  <entry>
+    <title>Atom Entry Two: Capability Negotiation</title>
+    <link href="https://example.com/atom/2"/>
+    <id>https://example.com/atom/2</id>
+    <published>2026-05-19T09:30:00Z</published>
+    <updated>2026-05-19T09:30:00Z</updated>
+    <author><name>Ada Atomsmith</name></author>
+    <summary>The second entry discusses the capability negotiation handshake.</summary>
+  </entry>
+</feed>
