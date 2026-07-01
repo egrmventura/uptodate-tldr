@@ -37,6 +37,16 @@ sources:
     feeds: []
     max_results: 20
 
+# Optional full-text enrichment: after sources return items, fetch each item's
+# URL and attach the scraped article body (see scraper.py). Best-effort — a
+# blocked/paywalled/failed fetch leaves the item's existing excerpt intact.
+# Off by default; enabling it adds a network fetch per item.
+scraping:
+  enabled: false
+  min_body_chars: 200
+  timeout: 10
+  max_workers: 8
+
 ranking:
   # Half-life (in hours) used for the recency-weighting decay function.
   recency_half_life_hours: 24

@@ -508,6 +508,87 @@ def test_store_timeline_ordering():
         record("store_timeline_asc", starts == sorted(starts))
 
 
+# ---------- ENRICHMENT (scraper wired into ingest — mocked) ----------
+
+def _enrich_items(source: str = "hn"):
+    now = datetime.now(timezone.utc)
+    return [
+        Item(source=source, title="Reachable", url="https://example.com/ok", score=5,
+             published_at=now, summary_raw="original excerpt A"),
+        Item(source=source, title="Blocked", url="https://example.com/paywall", score=3,
+             published_at=now, summary_raw="original excerpt B"),
+    ]
+
+
+def test_enrich_success_and_blocked():
+    from unittest.mock import patch
+    from scraper import ScrapedArticle
+    import main
+    now = datetime.now(timezone.utc)
+    items = _enrich_items()
+
+    def fake_scrape(url, config=None):
+        if url.endswith("/ok"):
+            return ScrapedArticle(url=url, title="Reachable", author="Dana Writer",
+                                  published_at=now, body="FULL BODY TEXT of the article.")
+        return None  # blocked/paywalled
+
+    with patch("main.scrape", side_effect=fake_scrape):
+        result = main.enrich_items(items, {"enabled": True})
+
+    record("enrich_all_items_present", len(result) == 2)
+    ok = next(i for i in result if i.url.endswith("/ok"))
+    blocked = next(i for i in result if i.url.endswith("/paywall"))
+    record("enrich_success_gains_body", ok.extra.get("body") == "FULL BODY TEXT of the article.")
+    record("enrich_success_marked", ok.extra.get("scraped") is True)
+    record("enrich_success_keeps_excerpt", ok.summary_raw == "original excerpt A")
+    record("enrich_blocked_unchanged", "body" not in blocked.extra and blocked.summary_raw == "original excerpt B")
+
+
+def test_enrich_disabled_is_noop():
+    from unittest.mock import patch
+    import main
+    items = _enrich_items()
+    with patch("main.scrape") as mock_scrape:
+        result = main.enrich_items(items, {"enabled": False})
+    record("enrich_disabled_no_scrape_call", mock_scrape.call_count == 0)
+    record("enrich_disabled_items_unchanged", all("body" not in i.extra for i in result))
+
+
+def test_enrich_isolated_on_exception():
+    from unittest.mock import patch
+    import main
+    items = _enrich_items()
+
+    def boom(url, config=None):
+        raise RuntimeError("scraper exploded")
+
+    with patch("main.scrape", side_effect=boom):
+        result = main.enrich_items(items, {"enabled": True})
+    record("enrich_exception_isolated", len(result) == 2 and all("body" not in i.extra for i in result))
+
+
+def test_ingest_applies_enrichment():
+    from unittest.mock import patch
+    from scraper import ScrapedArticle
+    import main
+    now = datetime.now(timezone.utc)
+
+    # One enabled fake source returning a single item; scrape enriches it.
+    class _FakeSource:
+        def safe_fetch(self, topic, cfg):
+            return [Item(source="fake", title="T", url="https://example.com/ok",
+                         score=1, published_at=now, summary_raw="ex")]
+
+    def fake_scrape(url, config=None):
+        return ScrapedArticle(url=url, title="T", author=None, published_at=now, body="BODY")
+
+    with patch.dict("main._SOURCES", {"fake": _FakeSource()}, clear=True), \
+         patch("main.scrape", side_effect=fake_scrape):
+        items = main.ingest("topic", {"fake": {"enabled": True}}, {"enabled": True})
+    record("ingest_enriches_when_enabled", len(items) == 1 and items[0].extra.get("body") == "BODY")
+
+
 # ---------- RSS SOURCE (offline — saved feed fixtures) ----------
 
 _RSS_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "rss"
@@ -715,6 +796,12 @@ def main():
     test_store_save_and_retrieve()
     test_store_idempotency()
     test_store_timeline_ordering()
+
+    print("\n[Enrichment — Scraper Wired Into Ingest]")
+    test_enrich_success_and_blocked()
+    test_enrich_disabled_is_noop()
+    test_enrich_isolated_on_exception()
+    test_ingest_applies_enrichment()
 
     print("\n[RSS Source — Offline Fixtures]")
     test_rss_atom_feed()
