@@ -15,6 +15,8 @@ from typing import Any
 import json
 from pathlib import Path
 
+import pytest
+
 from config import load_config
 from sources.base import Item, parse_timestamp
 from sources.hackernews import HackerNewsSource
@@ -24,6 +26,22 @@ from ranker import rank_items, _normalize_title, _dedup_key
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 RESULTS: list[tuple[str, bool, str]] = []
+
+
+# ---------- FIXTURES ----------
+# These let the parameterized tests (test_config_topic, test_hn_source,
+# test_arxiv_source, test_e2e_ingest_and_rank) resolve under pytest. The same
+# functions are still called directly with explicit args from main() below, so
+# the dual script/pytest design is preserved.
+
+@pytest.fixture
+def config() -> dict[str, Any]:
+    return load_config()
+
+
+@pytest.fixture
+def topic(config: dict[str, Any]) -> str:
+    return config.get("topic") or "Claude Code"
 
 
 def record(name: str, passed: bool, detail: str = "") -> None:
@@ -36,12 +54,10 @@ def record(name: str, passed: bool, detail: str = "") -> None:
 
 def test_config_loads():
     try:
-        config = load_config()
+        load_config()
         record("config_loads", True)
-        return config
     except Exception as e:
         record("config_loads", False, str(e))
-        return None
 
 
 def test_config_topic(config: dict[str, Any]):
@@ -492,6 +508,18 @@ def test_store_timeline_ordering():
         record("store_timeline_asc", starts == sorted(starts))
 
 
+# ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
+
+def test_eval_harness_all_pass():
+    from eval_harness import run_eval
+    results = run_eval()
+    modules = {r.module for r in results}
+    record("eval_covers_grouper_and_analyst", modules == {"grouper", "analyst"})
+    for r in results:
+        record(f"eval_{r.module}_all_pass", r.failed == 0, f"{r.passed}/{r.total}")
+        record(f"eval_{r.module}_has_cases", r.total >= 3, f"{r.total} cases")
+
+
 # ---------- END-TO-END (without LLM call) ----------
 
 def test_e2e_ingest_and_rank(topic: str):
@@ -515,7 +543,11 @@ def main():
     print("\n=== uptodate-tldr Pipeline Validation ===\n")
 
     print("[Config]")
-    config = test_config_loads()
+    test_config_loads()
+    try:
+        config = load_config()
+    except Exception:
+        config = None
     if config:
         test_config_topic(config)
     test_config_env_override_empty_skip()
@@ -564,6 +596,9 @@ def main():
     test_store_save_and_retrieve()
     test_store_idempotency()
     test_store_timeline_ordering()
+
+    print("\n[Eval Harness — Offline]")
+    test_eval_harness_all_pass()
 
     print("\n[End-to-End — Ingest + Rank]")
     test_e2e_ingest_and_rank(topic)
