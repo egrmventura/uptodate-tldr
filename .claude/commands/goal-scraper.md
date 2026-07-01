@@ -1,0 +1,1 @@
+Implement the scraper module. Goal: given a URL, fetch the page and extract the article title, author, publish date, and main body text — stripping ads, nav, and boilerplate. Handle paywalled/blocked sites gracefully (log and skip, don't crash). Write a unit test using 2-3 saved HTML fixtures so we're not hitting the network on every test run.
