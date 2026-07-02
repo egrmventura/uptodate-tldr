@@ -36,10 +36,79 @@ import argparse
 import logging
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from grouper import TopicGroup
+    from sources.base import Item
+    from store import GroupAnalysis, Store
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
+# ---------- stage hand-off contracts ----------
+#
+# Each stage has one explicit contract:
+#   ingest  : (topic, sources_config, scraping_config)  -> list[Item]
+#   group   : (list[Item], config)                      -> list[TopicGroup]
+#   analyze : (list[TopicGroup], config)                -> list[GroupAnalysis]
+#   persist : (list[GroupAnalysis], run_date, backfill) -> run_id
+#   deliver : (list[GroupAnalysis], config, run_date)   -> None
+#
+# A violated hand-off raises TypeError immediately — it is never silently
+# passed downstream. Failure semantics inside a stage are unchanged: source/
+# enrichment failures are isolated by the sources layer, empty group/analysis
+# hand-offs skip the topic, and an empty final hand-off skips persist+deliver.
+
+def _check_handoff(stage: str, value: Any, elem_type: type) -> None:
+    """Raise TypeError if a stage hand-off is not a list of `elem_type`."""
+    if not isinstance(value, list):
+        raise TypeError(
+            f"Stage {stage!r} hand-off violation: expected list[{elem_type.__name__}], "
+            f"got {type(value).__name__}"
+        )
+    for v in value:
+        if not isinstance(v, elem_type):
+            raise TypeError(
+                f"Stage {stage!r} hand-off violation: element is "
+                f"{type(v).__name__}, expected {elem_type.__name__}"
+            )
+
+
+def _stage_ingest(topic: str, sources_config: dict[str, Any], scraping_config: dict[str, Any]) -> list[Item]:
+    from main import ingest
+    from sources.base import Item
+    items = ingest(topic, sources_config, scraping_config)
+    _check_handoff("ingest", items, Item)
+    return items
+
+
+def _stage_group(items: list[Item], config: dict[str, Any]) -> list[TopicGroup]:
+    from grouper import TopicGroup, group_items
+    groups = group_items(items, config)
+    _check_handoff("group", groups, TopicGroup)
+    return groups
+
+
+def _stage_analyze(groups: list[TopicGroup], config: dict[str, Any]) -> list[GroupAnalysis]:
+    from analyst import analyze_all
+    from store import GroupAnalysis
+    analyses = analyze_all(groups, config)
+    _check_handoff("analyze", analyses, GroupAnalysis)
+    return analyses
+
+
+def _stage_persist(analyses: list[GroupAnalysis], store: Store, run_date: date, is_backfill: bool) -> int:
+    return store.save_run(analyses, run_date, is_backfill=is_backfill)
+
+
+def _stage_deliver(analyses: list[GroupAnalysis], config: dict[str, Any], run_date: date) -> None:
+    from delivery import analysis_md
+    analysis_md.deliver(analyses, "AI/ML/Data Engineering", config, run_date)
+
+
+# ---------- orchestrator ----------
 
 def run_analysis(
     is_backfill: bool = False,
@@ -48,11 +117,7 @@ def run_analysis(
     db_path: Path | None = None,
     deliver: bool = True,
 ) -> None:
-    from analyst import analyze_all
     from config import load_config
-    from delivery import analysis_md
-    from grouper import group_items
-    from main import ingest
     from store import Store
 
     config = load_config()
@@ -69,21 +134,21 @@ def run_analysis(
 
     run_date = date.today()
     store = Store(db_path) if db_path else Store()
-    all_analyses = []
+    all_analyses: list[GroupAnalysis] = []
 
     for topic in topics:
         logger.info("Ingesting topic=%r (backfill=%s)", topic, is_backfill)
-        items = ingest(topic, sources_config, scraping_config)
+        items = _stage_ingest(topic, sources_config, scraping_config)
         if not items:
             logger.warning("No items for topic=%r — skipping", topic)
             continue
 
-        groups = group_items(items, config)
+        groups = _stage_group(items, config)
         if not groups:
             logger.info("No multi-source groups for topic=%r — skipping", topic)
             continue
 
-        analyses = analyze_all(groups, config)
+        analyses = _stage_analyze(groups, config)
         if analyses:
             all_analyses.extend(analyses)
         else:
@@ -93,9 +158,9 @@ def run_analysis(
         logger.warning("No analyses produced across all topics — nothing to persist or deliver")
         return
 
-    store.save_run(all_analyses, run_date, is_backfill=is_backfill)
+    _stage_persist(all_analyses, store, run_date, is_backfill)
     if deliver:
-        analysis_md.deliver(all_analyses, "AI/ML/Data Engineering", config, run_date)
+        _stage_deliver(all_analyses, config, run_date)
     logger.info("Analysis run complete — %d group(s) across %d topic(s)", len(all_analyses), len(topics))
 
 

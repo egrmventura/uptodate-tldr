@@ -729,22 +729,23 @@ def _seed_fake_ingest(topic, sources_config, scraping_config=None):
 
 
 def _seed_fake_group(items, config):
-    return {"Seed Topic": items}
+    from grouper import TopicGroup
+    return [TopicGroup(label="Seed Topic", items=items)]
 
 
 def _seed_fake_analyze(groups, config):
     from store import GroupAnalysis
     analyses = []
-    for label, items in groups.items():
-        starts = [i.published_at for i in items]
+    for group in groups:
+        starts = [i.published_at for i in group.items]
         analyses.append(GroupAnalysis(
-            topic=label,
+            topic=group.label,
             run_date=date.today(),
             period_start=min(starts),
             period_end=max(starts),
             agreements=[f"win-{min(starts).date().isoformat()}"],
             contradictions=[], debunks=[], unresolved=[],
-            sources=items,
+            sources=group.items,
         ))
     return analyses
 
@@ -849,6 +850,116 @@ def test_seed_window_failure_isolated():
 
         count = _count_analyses(db_path)
         record("seed_failure_isolated", count == 2, f"{count} rows despite 1 failed window")
+
+
+# ---------- PIPELINE GLUE (stage hand-off contracts — offline) ----------
+
+def test_glue_stage_contracts():
+    """Feed a known item set through the full glue with mocked LLM calls;
+    assert each stage receives and returns its contracted type."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis
+    from grouper import TopicGroup
+    from store import GroupAnalysis
+
+    seen: dict[str, Any] = {}
+
+    def _spy_ingest(topic, sources_config, scraping_config=None):
+        items = _seed_fake_ingest(topic, sources_config, scraping_config)
+        seen["ingest_out"] = items
+        return items
+
+    def _spy_group(items, config):
+        seen["group_in"] = items
+        groups = _seed_fake_group(items, config)
+        seen["group_out"] = groups
+        return groups
+
+    def _spy_analyze(groups, config):
+        seen["analyze_in"] = groups
+        analyses = _seed_fake_analyze(groups, config)
+        seen["analyze_out"] = analyses
+        return analyses
+
+    def _spy_deliver(analyses, topic, config, run_date):
+        seen["deliver_in"] = analyses
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _spy_ingest), \
+             patch("grouper.group_items", _spy_group), \
+             patch("analyst.analyze_all", _spy_analyze), \
+             patch("delivery.analysis_md.deliver", _spy_deliver):
+            run_analysis(db_path=db_path)
+
+        record("glue_ingest_items", all(isinstance(i, Item) for i in seen["ingest_out"]))
+        record("glue_group_receives_items", seen["group_in"] is seen["ingest_out"])
+        record("glue_group_returns_topicgroups",
+               all(isinstance(g, TopicGroup) for g in seen["group_out"]))
+        record("glue_analyze_receives_groups", seen["analyze_in"] is seen["group_out"])
+        record("glue_analyze_returns_analyses",
+               all(isinstance(a, GroupAnalysis) for a in seen["analyze_out"]))
+        record("glue_deliver_receives_analyses",
+               seen["deliver_in"] == seen["analyze_out"])
+        record("glue_persist_wrote_rows", _count_analyses(db_path) == 1)
+
+
+def test_glue_empty_groups_short_circuit():
+    """Zero groups → topic skipped; nothing persisted; delivery never reached."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis
+
+    delivered = {"called": False}
+
+    def _spy_deliver(analyses, topic, config, run_date):
+        delivered["called"] = True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", lambda items, config: []), \
+             patch("delivery.analysis_md.deliver", _spy_deliver):
+            run_analysis(db_path=db_path)
+
+        record("glue_empty_groups_no_delivery", not delivered["called"])
+        record("glue_empty_groups_no_rows", _count_analyses(db_path) == 0)
+
+
+def test_glue_contract_violation_raises():
+    """A stage returning the wrong type raises TypeError — never silently
+    passed downstream."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis, _check_handoff
+    from sources.base import Item as ItemType
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", lambda items, config: {"not": "a list"}):
+            try:
+                run_analysis(db_path=db_path)
+                record("glue_violation_raises", False, "no exception raised")
+            except TypeError:
+                record("glue_violation_raises", True)
+
+    # element-type violation is also caught
+    try:
+        _check_handoff("test", ["not an Item"], ItemType)
+        record("glue_element_violation_raises", False)
+    except TypeError:
+        record("glue_element_violation_raises", True)
 
 
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
@@ -964,6 +1075,11 @@ def main():
     test_seed_windows()
     test_seed_idempotent_and_chronological()
     test_seed_window_failure_isolated()
+
+    print("\n[Pipeline Glue — Stage Contracts]")
+    test_glue_stage_contracts()
+    test_glue_empty_groups_short_circuit()
+    test_glue_contract_violation_raises()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()
