@@ -25,23 +25,17 @@ from typing import Any
 
 from config import load_config
 from ranker import rank_items
-from sources.arxiv import ArxivSource
 from sources.base import Item, Source
-from sources.hackernews import HackerNewsSource
-from sources.linkedin import LinkedInSource
-from sources.rss import RSSSource
+from sources.discovery import discover_sources
 from scraper import scrape
 from summarizer import summarize
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-_SOURCES: dict[str, Source] = {
-    "hackernews": HackerNewsSource(),
-    "arxiv": ArxivSource(),
-    "linkedin": LinkedInSource(),
-    "rss": RSSSource(),
-}
+# Sources are auto-discovered from the sources/ package (see
+# sources/discovery.py). config.yaml's `sources:` section is the single
+# registry: only sources enabled there are instantiated.
 
 _DELIVERY_MODULES = {
     "markdown": "delivery.markdown",
@@ -55,11 +49,7 @@ def ingest(
     sources_config: dict[str, Any],
     scraping_config: dict[str, Any] | None = None,
 ) -> list[Item]:
-    enabled = {
-        name: source
-        for name, source in _SOURCES.items()
-        if sources_config.get(name, {}).get("enabled", False)
-    }
+    enabled = discover_sources(sources_config)
 
     items: list[Item] = []
 
