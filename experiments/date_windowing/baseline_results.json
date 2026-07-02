@@ -1,0 +1,20 @@
+[
+  {
+    "scheme": "H1 sliding-7d",
+    "windows": 23,
+    "max_window_docs": 6,
+    "boundary_split_rate": 0.88
+  },
+  {
+    "scheme": "H2 calendar-7d",
+    "windows": 26,
+    "max_window_docs": 3,
+    "boundary_split_rate": 0.92
+  },
+  {
+    "scheme": "H3 gap-5d",
+    "windows": 7,
+    "max_window_docs": 24,
+    "boundary_split_rate": 0.84
+  }
+]
