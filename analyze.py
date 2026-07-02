@@ -4,6 +4,7 @@ Usage:
     python analyze.py --run-now
     python analyze.py --backfill --from 2024-01-01 --to 2025-01-01
     python analyze.py --seed --from 2024-01-01 --to 2025-01-01 [--window-days 30]
+    python analyze.py --batch spec.yaml
     python analyze.py --timeline "Anthropic MCP"
 
 Pipeline (--run-now):
@@ -25,6 +26,12 @@ persistence relies on the store's UNIQUE(topic, period_start, period_end) +
 INSERT OR IGNORE, so re-running the same range adds no duplicate rows. A window
 failure is logged and the remaining windows still run. Seeding only persists
 history — the per-run digest delivery is skipped.
+
+Pipeline (--batch):
+Coordinated batch run across many (topic × date-window) units, driven by a
+declarative YAML spec (see load_batch_spec for the format). Units are isolated
+(one failure logs and continues), parallelism is bounded by the spec's
+max_workers (default 1), and re-running the same spec is idempotent.
 
 Pipeline (--timeline):
 Queries the store and renders a chronological markdown file for the given topic.
@@ -116,13 +123,15 @@ def run_analysis(
     date_to: date | None = None,
     db_path: Path | None = None,
     deliver: bool = True,
+    topics_override: list[str] | None = None,
 ) -> None:
     from config import load_config
     from store import Store
 
     config = load_config()
     # Use `topics` list if present; fall back to single `topic` for compatibility.
-    topics = config.get("topics") or [config["topic"]]
+    # `topics_override` (used by --batch units) takes precedence over both.
+    topics = topics_override or config.get("topics") or [config["topic"]]
     sources_config = config.get("sources", {})
     scraping_config = config.get("scraping", {})
 
@@ -215,6 +224,107 @@ def run_seed(
     logger.info("Seeding complete: %d/%d window(s) succeeded", len(windows) - failures, len(windows))
 
 
+# ---------- batch orchestration ----------
+
+def load_batch_spec(spec_path: Path) -> tuple[list[tuple[str, date, date]], int]:
+    """Parse a declarative batch spec into (topic, date_from, date_to) units.
+
+    Spec format (YAML):
+        topics:
+          - "AI Tools"
+          - "Data Engineering"
+        windows:
+          - {from: 2025-01-01, to: 2025-01-31}
+          - {from: 2025-02-01, to: 2025-02-28}
+        max_workers: 1   # optional; bounded unit parallelism (default 1)
+
+    Units are the topics × windows cross product. Raises ValueError on a
+    malformed spec — a bad spec aborts before any unit runs.
+    """
+    import yaml
+
+    spec = yaml.safe_load(Path(spec_path).read_text())
+    if not isinstance(spec, dict):
+        raise ValueError(f"Batch spec must be a YAML mapping, got {type(spec).__name__}")
+
+    topics = spec.get("topics")
+    windows = spec.get("windows")
+    if not topics or not isinstance(topics, list) or not all(isinstance(t, str) and t.strip() for t in topics):
+        raise ValueError("Batch spec 'topics' must be a non-empty list of strings")
+    if not windows or not isinstance(windows, list):
+        raise ValueError("Batch spec 'windows' must be a non-empty list of {from, to} mappings")
+
+    parsed_windows: list[tuple[date, date]] = []
+    for i, w in enumerate(windows):
+        if not isinstance(w, dict) or "from" not in w or "to" not in w:
+            raise ValueError(f"Batch spec window #{i} must be a mapping with 'from' and 'to'")
+        w_from, w_to = w["from"], w["to"]
+        # yaml parses bare dates natively; accept ISO strings too
+        w_from = w_from if isinstance(w_from, date) else date.fromisoformat(str(w_from))
+        w_to = w_to if isinstance(w_to, date) else date.fromisoformat(str(w_to))
+        if w_to < w_from:
+            raise ValueError(f"Batch spec window #{i}: 'to' ({w_to}) precedes 'from' ({w_from})")
+        parsed_windows.append((w_from, w_to))
+
+    max_workers = spec.get("max_workers", 1)
+    if not isinstance(max_workers, int) or max_workers < 1:
+        raise ValueError(f"Batch spec 'max_workers' must be a positive int, got {max_workers!r}")
+
+    units = [(t, w_from, w_to) for t in topics for w_from, w_to in parsed_windows]
+    return units, max_workers
+
+
+def run_batch(spec_path: Path, db_path: Path | None = None) -> tuple[int, int]:
+    """Run the analysis pipeline for every (topic, window) unit in the spec.
+
+    Resilient and resumable:
+    - each unit is isolated — a failure logs and the batch continues
+    - unit parallelism is bounded by the spec's max_workers (default 1,
+      sequential, to stay inside arXiv rate limits; source-level fetches
+      within a unit keep their existing ThreadPoolExecutor parallelism)
+    - re-running the same spec is idempotent via the store's
+      UNIQUE(topic, period_start, period_end) + INSERT OR IGNORE
+
+    Returns (succeeded, failed). Raises RuntimeError only if *every* unit
+    failed — mirroring the total-source-failure abort semantics.
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    units, max_workers = load_batch_spec(spec_path)
+    logger.info("Batch: %d unit(s), max_workers=%d, spec=%s", len(units), max_workers, spec_path)
+
+    def _run_unit(topic: str, w_from: date, w_to: date) -> None:
+        # deliver=False: like seeding, batch runs persist history; per-unit
+        # digests would overwrite each other at output/analysis-<today>.md.
+        run_analysis(
+            is_backfill=True, date_from=w_from, date_to=w_to,
+            db_path=db_path, deliver=False, topics_override=[topic],
+        )
+
+    failed = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as pool:
+        futures = {
+            pool.submit(_run_unit, topic, w_from, w_to): (topic, w_from, w_to)
+            for topic, w_from, w_to in units
+        }
+        for future in as_completed(futures):
+            topic, w_from, w_to = futures[future]
+            try:
+                future.result()
+                logger.info("Batch unit ok: %r %s → %s", topic, w_from, w_to)
+            except Exception:
+                failed += 1
+                logger.warning(
+                    "Batch unit failed: %r %s → %s — continuing", topic, w_from, w_to, exc_info=True,
+                )
+
+    succeeded = len(units) - failed
+    logger.info("Batch complete: %d/%d unit(s) succeeded", succeeded, len(units))
+    if units and succeeded == 0:
+        raise RuntimeError(f"All {len(units)} batch units failed")
+    return succeeded, failed
+
+
 def run_timeline(topic: str) -> None:
     from config import load_config
     from delivery import timeline_md
@@ -235,6 +345,7 @@ def main() -> None:
     mode.add_argument("--run-now", action="store_true", help="Run the analysis pipeline immediately")
     mode.add_argument("--backfill", action="store_true", help="Run over a historical date range")
     mode.add_argument("--seed", action="store_true", help="Seed the timeline: backfill across consecutive windows")
+    mode.add_argument("--batch", metavar="SPEC_YAML", help="Run a declarative (topic × window) batch spec")
     mode.add_argument("--timeline", metavar="TOPIC", help="Render the stored timeline for a topic")
 
     parser.add_argument("--from", dest="date_from", metavar="YYYY-MM-DD", help="Backfill/seed start date")
@@ -246,6 +357,8 @@ def main() -> None:
 
     if args.timeline:
         run_timeline(args.timeline)
+    elif args.batch:
+        run_batch(Path(args.batch))
     elif args.backfill or args.seed:
         flag = "--seed" if args.seed else "--backfill"
         if not args.date_from or not args.date_to:

@@ -1,0 +1,18 @@
+# Example batch spec for `python analyze.py --batch batch.example.yaml`
+#
+# Units are the topics × windows cross product; each unit runs the backfill
+# analysis pipeline in isolation (a failed unit logs and the batch continues).
+# Re-running the same spec is idempotent — the store's
+# UNIQUE(topic, period_start, period_end) + INSERT OR IGNORE skips duplicates.
+
+topics:
+  - "AI Tools"
+  - "Data Engineering"
+
+windows:
+  - {from: 2025-01-01, to: 2025-01-31}
+  - {from: 2025-02-01, to: 2025-02-28}
+
+# Bounded unit parallelism. Keep at 1 (sequential) unless your sources can
+# absorb concurrent fetch load — arXiv rate-limits rapid repeated runs.
+max_workers: 1
