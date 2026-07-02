@@ -66,10 +66,13 @@ A parallel entrypoint that runs **ingest → group → analyze → persist → d
 python analyze.py --run-now
 python analyze.py --backfill --from 2024-01-01 --to 2025-01-01
 python analyze.py --seed --from 2024-01-01 --to 2025-01-01 --window-days 30
+python analyze.py --batch spec.yaml
 python analyze.py --timeline "Anthropic MCP"
 ```
 
 `--seed` splits the range into consecutive `--window-days` windows and runs the backfill pipeline per window. Idempotent (store's `UNIQUE + INSERT OR IGNORE`); a failed window logs and continues; digest delivery is skipped (seeding persists history only).
+
+`--batch` runs the topics × windows cross product from a declarative YAML spec (see `batch.example.yaml`). Units are isolated (one failure logs and continues; all-units failure raises), parallelism is bounded by the spec's `max_workers` (default 1 — keep sequential for arXiv rate limits), and re-running a spec is idempotent. Like `--seed`, digest delivery is skipped.
 
 ### LLM token budget rules
 - Grouper: fixed 1024 (grouping JSON is compact).

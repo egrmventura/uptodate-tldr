@@ -962,6 +962,127 @@ def test_glue_contract_violation_raises():
         record("glue_element_violation_raises", True)
 
 
+# ---------- BATCH ORCHESTRATION (mocked ingest/LLM — offline) ----------
+
+_BATCH_SPEC = """\
+topics:
+  - "Topic A"
+  - "Topic B"
+  - "Topic C"
+windows:
+  - {from: 2025-01-01, to: 2025-01-31}
+max_workers: 1
+"""
+
+
+def _batch_fake_ingest(topic, sources_config, scraping_config=None):
+    """One item per unit; title carries the topic so groups stay distinct."""
+    date_from = date.fromisoformat(sources_config["stub"]["date_from"])
+    published = datetime(date_from.year, date_from.month, date_from.day, tzinfo=timezone.utc)
+    return [
+        Item(source="hn", title=topic, url=f"https://example.com/{topic}/{date_from}",
+             score=10, published_at=published, summary_raw="excerpt"),
+    ]
+
+
+def _batch_fake_group(items, config):
+    from grouper import TopicGroup
+    return [TopicGroup(label=items[0].title, items=items)]
+
+
+def test_batch_spec_parsing():
+    import tempfile
+    from analyze import load_batch_spec
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+        units, max_workers = load_batch_spec(spec_path)
+        record("batch_spec_units", len(units) == 3, f"{len(units)} units")
+        record("batch_spec_cross_product",
+               units[0] == ("Topic A", date(2025, 1, 1), date(2025, 1, 31)))
+        record("batch_spec_max_workers", max_workers == 1)
+
+        # malformed specs abort before any unit runs
+        for bad, name in [
+            ("topics: []\nwindows: [{from: 2025-01-01, to: 2025-01-31}]", "empty_topics"),
+            ("topics: [A]\nwindows: []", "empty_windows"),
+            ("topics: [A]\nwindows: [{from: 2025-02-01, to: 2025-01-01}]", "reversed_window"),
+            ("topics: [A]\nwindows: [{from: 2025-01-01, to: 2025-01-31}]\nmax_workers: 0", "bad_workers"),
+        ]:
+            spec_path.write_text(bad)
+            try:
+                load_batch_spec(spec_path)
+                record(f"batch_spec_{name}_raises", False)
+            except ValueError:
+                record(f"batch_spec_{name}_raises", True)
+
+
+def test_batch_persists_isolates_and_idempotent():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_batch
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+
+        # --- all three units persist; re-run adds zero rows ---
+        db_ok = Path(tmp) / "ok.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _batch_fake_ingest), \
+             patch("grouper.group_items", _batch_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            succeeded, failed = run_batch(spec_path, db_path=db_ok)
+            record("batch_all_units_succeed", (succeeded, failed) == (3, 0),
+                   f"{succeeded} ok / {failed} failed")
+            count_first = _count_analyses(db_ok)
+            record("batch_all_units_persist", count_first == 3, f"{count_first} rows")
+
+            succeeded, failed = run_batch(spec_path, db_path=db_ok)
+            count_second = _count_analyses(db_ok)
+            record("batch_rerun_idempotent", count_second == count_first,
+                   f"{count_first} → {count_second}")
+
+        # --- a failing unit is skipped without stopping the others ---
+        def _flaky_ingest(topic, sources_config, scraping_config=None):
+            if topic == "Topic B":
+                raise RuntimeError("unit boom")
+            return _batch_fake_ingest(topic, sources_config, scraping_config)
+
+        db_flaky = Path(tmp) / "flaky.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _flaky_ingest), \
+             patch("grouper.group_items", _batch_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            succeeded, failed = run_batch(spec_path, db_path=db_flaky)
+            record("batch_failure_isolated", (succeeded, failed) == (2, 1),
+                   f"{succeeded} ok / {failed} failed")
+            count = _count_analyses(db_flaky)
+            record("batch_failure_others_persist", count == 2, f"{count} rows")
+
+
+def test_batch_total_failure_raises():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_batch
+
+    def _always_boom(topic, sources_config, scraping_config=None):
+        raise RuntimeError("boom")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+        db_path = Path(tmp) / "fail.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _always_boom):
+            try:
+                run_batch(spec_path, db_path=db_path)
+                record("batch_total_failure_raises", False, "no exception raised")
+            except RuntimeError:
+                record("batch_total_failure_raises", True)
+
+
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
 
 def test_eval_harness_all_pass():
@@ -1080,6 +1201,11 @@ def main():
     test_glue_stage_contracts()
     test_glue_empty_groups_short_circuit()
     test_glue_contract_violation_raises()
+
+    print("\n[Batch Orchestration — Offline]")
+    test_batch_spec_parsing()
+    test_batch_persists_isolates_and_idempotent()
+    test_batch_total_failure_raises()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()
