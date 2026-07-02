@@ -56,6 +56,9 @@ branch is cut from that fix.
 - [x] Base branch cut from `fix/hn-backfill-window` (F1)
 - [x] Harness skeleton (`harness.py`) — loads corpus, implements the three
       window assigners, computes `boundary_split_rate` end-to-end
-- [ ] Full metric suite (cohesion/separation, jitter stability)
-- [ ] Findings report with per-storyline intuition table
-- [ ] Decision: adopt winner into `--seed`/`--batch` windowing
+- [x] Full metric suite (`study.py`: cohesion/separation, anchor ±1–3d churn,
+      first-doc churn, W/gap magnitude grid)
+- [x] Findings report with per-storyline intuition table (`FINDINGS.md`)
+- [x] Decision: **H1 sliding-14d** wins for `--seed`/`--batch` (H2 kept for
+      strict pre-known idempotency keys; H3 re-scoped to per-storyline use) —
+      see FINDINGS.md; pipeline wiring is a follow-up PR

@@ -1,0 +1,179 @@
+{
+  "grid": [
+    {
+      "config": "H1-sliding-7d",
+      "windows": 23,
+      "max_window_docs": 6,
+      "boundary_split_rate": 0.88,
+      "cohesion": 0.0255,
+      "separation": 0.0137,
+      "cohesion_ratio": 1.86,
+      "first_doc_churn": 0.0014,
+      "anchor_churn_mean": 0.0
+    },
+    {
+      "config": "H1-sliding-14d",
+      "windows": 12,
+      "max_window_docs": 8,
+      "boundary_split_rate": 0.84,
+      "cohesion": 0.0194,
+      "separation": 0.0137,
+      "cohesion_ratio": 1.42,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0
+    },
+    {
+      "config": "H1-sliding-21d",
+      "windows": 9,
+      "max_window_docs": 11,
+      "boundary_split_rate": 0.8,
+      "cohesion": 0.0202,
+      "separation": 0.0134,
+      "cohesion_ratio": 1.51,
+      "first_doc_churn": 0.0899,
+      "anchor_churn_mean": 0.0
+    },
+    {
+      "config": "H2-calendar-7d",
+      "windows": 26,
+      "max_window_docs": 3,
+      "boundary_split_rate": 0.92,
+      "cohesion": 0.0319,
+      "separation": 0.0137,
+      "cohesion_ratio": 2.33,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0241
+    },
+    {
+      "config": "H2-calendar-14d",
+      "windows": 13,
+      "max_window_docs": 6,
+      "boundary_split_rate": 0.84,
+      "cohesion": 0.0214,
+      "separation": 0.0137,
+      "cohesion_ratio": 1.56,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0321
+    },
+    {
+      "config": "H2-calendar-21d",
+      "windows": 9,
+      "max_window_docs": 9,
+      "boundary_split_rate": 0.84,
+      "cohesion": 0.0206,
+      "separation": 0.0134,
+      "cohesion_ratio": 1.54,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0379
+    },
+    {
+      "config": "H3-gap-3d",
+      "windows": 16,
+      "max_window_docs": 11,
+      "boundary_split_rate": 0.88,
+      "cohesion": 0.0207,
+      "separation": 0.0137,
+      "cohesion_ratio": 1.51,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0
+    },
+    {
+      "config": "H3-gap-5d",
+      "windows": 7,
+      "max_window_docs": 24,
+      "boundary_split_rate": 0.84,
+      "cohesion": 0.015,
+      "separation": 0.014,
+      "cohesion_ratio": 1.07,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0
+    },
+    {
+      "config": "H3-gap-7d",
+      "windows": 3,
+      "max_window_docs": 42,
+      "boundary_split_rate": 0.6,
+      "cohesion": 0.015,
+      "separation": 0.0136,
+      "cohesion_ratio": 1.1,
+      "first_doc_churn": 0.0,
+      "anchor_churn_mean": 0.0
+    }
+  ],
+  "storylines": [
+    {
+      "storyline": "teams / sessions / subagent",
+      "docs": 5,
+      "weeks_span": 4,
+      "H1-sliding-7d": 5,
+      "H1-sliding-14d": 4,
+      "H1-sliding-21d": 4,
+      "H2-calendar-7d": 4,
+      "H2-calendar-14d": 4,
+      "H2-calendar-21d": 4,
+      "H3-gap-3d": 4,
+      "H3-gap-5d": 4,
+      "H3-gap-7d": 3
+    },
+    {
+      "storyline": "skills / forgets / memory",
+      "docs": 5,
+      "weeks_span": 5,
+      "H1-sliding-7d": 4,
+      "H1-sliding-14d": 3,
+      "H1-sliding-21d": 3,
+      "H2-calendar-7d": 5,
+      "H2-calendar-14d": 4,
+      "H2-calendar-21d": 4,
+      "H3-gap-3d": 4,
+      "H3-gap-5d": 3,
+      "H3-gap-7d": 2
+    },
+    {
+      "storyline": "on-the-go / phone. / pocket",
+      "docs": 4,
+      "weeks_span": 4,
+      "H1-sliding-7d": 4,
+      "H1-sliding-14d": 4,
+      "H1-sliding-21d": 4,
+      "H2-calendar-7d": 4,
+      "H2-calendar-14d": 4,
+      "H2-calendar-21d": 4,
+      "H3-gap-3d": 4,
+      "H3-gap-5d": 4,
+      "H3-gap-7d": 3
+    },
+    {
+      "storyline": "microsoft / copilot / months",
+      "docs": 4,
+      "weeks_span": 4,
+      "H1-sliding-7d": 3,
+      "H1-sliding-14d": 3,
+      "H1-sliding-21d": 3,
+      "H2-calendar-7d": 3,
+      "H2-calendar-14d": 3,
+      "H2-calendar-21d": 3,
+      "H3-gap-3d": 3,
+      "H3-gap-5d": 3,
+      "H3-gap-7d": 2
+    },
+    {
+      "storyline": "remote / ran / web",
+      "docs": 4,
+      "weeks_span": 4,
+      "H1-sliding-7d": 4,
+      "H1-sliding-14d": 4,
+      "H1-sliding-21d": 4,
+      "H2-calendar-7d": 4,
+      "H2-calendar-14d": 3,
+      "H2-calendar-21d": 3,
+      "H3-gap-3d": 4,
+      "H3-gap-5d": 4,
+      "H3-gap-7d": 3
+    }
+  ],
+  "corpus": {
+    "docs": 78,
+    "edges": 25
+  }
+}
