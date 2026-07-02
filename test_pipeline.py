@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import os
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 import json
 from pathlib import Path
+
+import pytest
 
 from config import load_config
 from sources.base import Item, parse_timestamp
@@ -26,6 +28,22 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 RESULTS: list[tuple[str, bool, str]] = []
 
 
+# ---------- FIXTURES ----------
+# These let the parameterized tests (test_config_topic, test_hn_source,
+# test_arxiv_source, test_e2e_ingest_and_rank) resolve under pytest. The same
+# functions are still called directly with explicit args from main() below, so
+# the dual script/pytest design is preserved.
+
+@pytest.fixture
+def config() -> dict[str, Any]:
+    return load_config()
+
+
+@pytest.fixture
+def topic(config: dict[str, Any]) -> str:
+    return config.get("topic") or "Claude Code"
+
+
 def record(name: str, passed: bool, detail: str = "") -> None:
     status = "PASS" if passed else "FAIL"
     RESULTS.append((name, passed, detail))
@@ -36,12 +54,10 @@ def record(name: str, passed: bool, detail: str = "") -> None:
 
 def test_config_loads():
     try:
-        config = load_config()
+        load_config()
         record("config_loads", True)
-        return config
     except Exception as e:
         record("config_loads", False, str(e))
-        return None
 
 
 def test_config_topic(config: dict[str, Any]):
@@ -492,6 +508,865 @@ def test_store_timeline_ordering():
         record("store_timeline_asc", starts == sorted(starts))
 
 
+# ---------- ENRICHMENT (scraper wired into ingest — mocked) ----------
+
+def _enrich_items(source: str = "hn"):
+    now = datetime.now(timezone.utc)
+    return [
+        Item(source=source, title="Reachable", url="https://example.com/ok", score=5,
+             published_at=now, summary_raw="original excerpt A"),
+        Item(source=source, title="Blocked", url="https://example.com/paywall", score=3,
+             published_at=now, summary_raw="original excerpt B"),
+    ]
+
+
+def test_enrich_success_and_blocked():
+    from unittest.mock import patch
+    from scraper import ScrapedArticle
+    import main
+    now = datetime.now(timezone.utc)
+    items = _enrich_items()
+
+    def fake_scrape(url, config=None):
+        if url.endswith("/ok"):
+            return ScrapedArticle(url=url, title="Reachable", author="Dana Writer",
+                                  published_at=now, body="FULL BODY TEXT of the article.")
+        return None  # blocked/paywalled
+
+    with patch("main.scrape", side_effect=fake_scrape):
+        result = main.enrich_items(items, {"enabled": True})
+
+    record("enrich_all_items_present", len(result) == 2)
+    ok = next(i for i in result if i.url.endswith("/ok"))
+    blocked = next(i for i in result if i.url.endswith("/paywall"))
+    record("enrich_success_gains_body", ok.extra.get("body") == "FULL BODY TEXT of the article.")
+    record("enrich_success_marked", ok.extra.get("scraped") is True)
+    record("enrich_success_keeps_excerpt", ok.summary_raw == "original excerpt A")
+    record("enrich_blocked_unchanged", "body" not in blocked.extra and blocked.summary_raw == "original excerpt B")
+
+
+def test_enrich_disabled_is_noop():
+    from unittest.mock import patch
+    import main
+    items = _enrich_items()
+    with patch("main.scrape") as mock_scrape:
+        result = main.enrich_items(items, {"enabled": False})
+    record("enrich_disabled_no_scrape_call", mock_scrape.call_count == 0)
+    record("enrich_disabled_items_unchanged", all("body" not in i.extra for i in result))
+
+
+def test_enrich_isolated_on_exception():
+    from unittest.mock import patch
+    import main
+    items = _enrich_items()
+
+    def boom(url, config=None):
+        raise RuntimeError("scraper exploded")
+
+    with patch("main.scrape", side_effect=boom):
+        result = main.enrich_items(items, {"enabled": True})
+    record("enrich_exception_isolated", len(result) == 2 and all("body" not in i.extra for i in result))
+
+
+def test_ingest_applies_enrichment():
+    from unittest.mock import patch
+    from scraper import ScrapedArticle
+    import main
+    now = datetime.now(timezone.utc)
+
+    # One enabled fake source returning a single item; scrape enriches it.
+    class _FakeSource:
+        def safe_fetch(self, topic, cfg):
+            return [Item(source="fake", title="T", url="https://example.com/ok",
+                         score=1, published_at=now, summary_raw="ex")]
+
+    def fake_scrape(url, config=None):
+        return ScrapedArticle(url=url, title="T", author=None, published_at=now, body="BODY")
+
+    with patch("main.discover_sources", return_value={"fake": _FakeSource()}), \
+         patch("main.scrape", side_effect=fake_scrape):
+        items = main.ingest("topic", {"fake": {"enabled": True}}, {"enabled": True})
+    record("ingest_enriches_when_enabled", len(items) == 1 and items[0].extra.get("body") == "BODY")
+
+
+# ---------- RSS SOURCE (offline — saved feed fixtures) ----------
+
+_RSS_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "rss"
+
+
+def _rss_path(name: str) -> str:
+    return str(_RSS_FIXTURES / name)
+
+
+def test_rss_atom_feed():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("atom.xml")]})
+    record("rss_atom_count", len(items) == 2, f"{len(items)} items")
+    if items:
+        first = items[0]
+        record("rss_atom_source", first.source == "rss")
+        record("rss_atom_title", first.title == "Atom Entry One: MCP Streaming")
+        record("rss_atom_url", first.url == "https://example.com/atom/1")
+        record("rss_atom_author_in_extra", first.extra.get("author") == "Ada Atomsmith")
+        record("rss_atom_date", first.published_at.year == 2026 and first.published_at.month == 5)
+
+
+def test_rss_rss2_feed():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("rss2.xml")]})
+    record("rss_rss2_count", len(items) == 2, f"{len(items)} items")
+    if items:
+        record("rss_rss2_title", items[0].title == "RSS Item One: Vector Databases")
+        record("rss_rss2_url", items[0].url == "https://example.com/rss/1")
+        record("rss_rss2_date_parsed", items[0].published_at.year == 2026)
+        record("rss_rss2_no_score", items[0].score == 0)
+
+
+def test_rss_malformed_yields_empty():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("malformed.xml")]})
+    record("rss_malformed_empty", items == [], f"{len(items)} items")
+
+
+def test_rss_max_results_cap():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    items = src.fetch("any topic", {"feeds": [_rss_path("atom.xml"), _rss_path("rss2.xml")], "max_results": 3})
+    record("rss_max_results_cap", len(items) == 3, f"{len(items)} items")
+
+
+def test_rss_never_raises_on_bad_input():
+    from sources.rss import RSSSource
+    src = RSSSource()
+    # safe_fetch is the final backstop; empty/garbage feed list must not raise.
+    items = src.safe_fetch("any topic", {"feeds": ["/nonexistent/path/feed.xml"]})
+    record("rss_missing_file_no_raise", isinstance(items, list))
+
+
+# ---------- SCRAPER (offline — saved HTML fixtures) ----------
+
+_SCRAPER_FIXTURES = Path(__file__).parent / "tests" / "fixtures" / "scraper"
+
+
+def _load_fixture(name: str) -> str:
+    return (_SCRAPER_FIXTURES / name).read_text(encoding="utf-8")
+
+
+def test_scraper_standard_article():
+    from scraper import _extract
+    art = _extract("https://example.com/mcp", _load_fixture("standard_article.html"), min_body_chars=200)
+    record("scraper_standard_parsed", art is not None)
+    if art:
+        record("scraper_title_prefers_og", art.title == "Anthropic Ships MCP 2.0")
+        record("scraper_author_from_meta", art.author == "Jane Developer")
+        record("scraper_date_parsed", art.published_at is not None and art.published_at.year == 2026)
+        record("scraper_body_has_content", "streaming tool results" in art.body)
+        # Boilerplate must be stripped.
+        record("scraper_strips_nav", "Home" not in art.body)
+        record("scraper_strips_footer", "All rights reserved" not in art.body)
+        record("scraper_strips_aside", "Related" not in art.body)
+        record("scraper_strips_ad", "newsletter" not in art.body)
+
+
+def test_scraper_minimal_article():
+    from scraper import _extract
+    art = _extract("https://example.com/plain", _load_fixture("minimal_article.html"), min_body_chars=200)
+    record("scraper_minimal_parsed", art is not None)
+    if art:
+        record("scraper_title_from_title_tag", art.title == "A Plain Post Without Meta Tags")
+        record("scraper_author_none_when_absent", art.author is None)
+        record("scraper_date_none_when_absent", art.published_at is None)
+        record("scraper_body_fallback_container", "densest container" in art.body)
+
+
+def test_scraper_paywalled_returns_none():
+    from scraper import _extract
+    art = _extract("https://example.com/paywall", _load_fixture("paywalled.html"), min_body_chars=200)
+    record("scraper_paywalled_skipped", art is None)
+
+
+def test_scraper_network_failure_returns_none():
+    from unittest.mock import patch
+    import requests
+    from scraper import scrape
+    with patch("scraper.requests.get", side_effect=requests.RequestException("boom")):
+        result = scrape("https://example.com/down")
+    record("scraper_network_failure_none", result is None)
+
+
+def test_scraper_scrape_success_mocked():
+    from unittest.mock import patch, MagicMock
+    from scraper import scrape
+    fake = MagicMock()
+    fake.text = _load_fixture("standard_article.html")
+    fake.raise_for_status = MagicMock()
+    with patch("scraper.requests.get", return_value=fake):
+        result = scrape("https://example.com/mcp")
+    record("scraper_scrape_success", result is not None and result.title == "Anthropic Ships MCP 2.0")
+
+
+# ---------- TIMELINE SEEDING (mocked ingest/LLM — offline) ----------
+
+def _seed_config() -> dict[str, Any]:
+    return {
+        "topics": ["Seed Topic"],
+        "sources": {"stub": {"enabled": True}},
+        "scraping": {"enabled": False},
+    }
+
+
+def _seed_fake_ingest(topic, sources_config, scraping_config=None):
+    """One deterministic item published at the window's start date."""
+    date_from = date.fromisoformat(sources_config["stub"]["date_from"])
+    published = datetime(date_from.year, date_from.month, date_from.day, tzinfo=timezone.utc)
+    return [
+        Item(source="hn", title=f"story {date_from}", url=f"https://example.com/{date_from}",
+             score=10, published_at=published, summary_raw="excerpt"),
+    ]
+
+
+def _seed_fake_group(items, config):
+    from grouper import TopicGroup
+    return [TopicGroup(label="Seed Topic", items=items)]
+
+
+def _seed_fake_analyze(groups, config):
+    from store import GroupAnalysis
+    analyses = []
+    for group in groups:
+        starts = [i.published_at for i in group.items]
+        analyses.append(GroupAnalysis(
+            topic=group.label,
+            run_date=date.today(),
+            period_start=min(starts),
+            period_end=max(starts),
+            agreements=[f"win-{min(starts).date().isoformat()}"],
+            contradictions=[], debunks=[], unresolved=[],
+            sources=group.items,
+        ))
+    return analyses
+
+
+def _count_analyses(db_path: Path) -> int:
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    try:
+        return conn.execute("SELECT COUNT(*) FROM analyses").fetchone()[0]
+    finally:
+        conn.close()
+
+
+def test_seed_windows():
+    from analyze import seed_windows
+    # 90 days (Jan 1 – Mar 31 2025) at 30-day windows → exactly 3 contiguous windows
+    wins = seed_windows(date(2025, 1, 1), date(2025, 3, 31), 30)
+    record("seed_windows_count", len(wins) == 3, f"{len(wins)} windows")
+    record("seed_windows_start", wins[0][0] == date(2025, 1, 1))
+    record("seed_windows_end", wins[-1][1] == date(2025, 3, 31))
+    contiguous = all(wins[i + 1][0] == wins[i][1] + timedelta(days=1)
+                     for i in range(len(wins) - 1))
+    record("seed_windows_contiguous", contiguous)
+
+    # final window truncates at --to
+    wins = seed_windows(date(2025, 1, 1), date(2025, 1, 10), 7)
+    record("seed_windows_truncated", wins == [(date(2025, 1, 1), date(2025, 1, 7)),
+                                              (date(2025, 1, 8), date(2025, 1, 10))])
+
+    # single-day range
+    wins = seed_windows(date(2025, 1, 1), date(2025, 1, 1), 30)
+    record("seed_windows_single_day", wins == [(date(2025, 1, 1), date(2025, 1, 1))])
+
+    # invalid inputs raise
+    try:
+        seed_windows(date(2025, 2, 1), date(2025, 1, 1), 30)
+        record("seed_windows_reversed_raises", False)
+    except ValueError:
+        record("seed_windows_reversed_raises", True)
+    try:
+        seed_windows(date(2025, 1, 1), date(2025, 2, 1), 0)
+        record("seed_windows_zero_raises", False)
+    except ValueError:
+        record("seed_windows_zero_raises", True)
+
+
+def test_seed_idempotent_and_chronological():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_seed
+    from store import Store
+    from timeline import render_timeline
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "seed.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", _seed_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+            count_first = _count_analyses(db_path)
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+            count_second = _count_analyses(db_path)
+
+        record("seed_persists_rows", count_first == 3, f"{count_first} rows after first run")
+        record("seed_rerun_idempotent", count_second == count_first,
+               f"{count_first} → {count_second}")
+
+        store = Store(db_path)
+        timeline = store.get_timeline("Seed Topic")
+        starts = [a.period_start for a in timeline]
+        record("seed_timeline_chronological", starts == sorted(starts))
+
+        # --timeline rendering: seeded periods appear in period_start order
+        md = render_timeline("Seed Topic", store)
+        markers = [f"win-{s.date().isoformat()}" for s in sorted(starts)]
+        positions = [md.find(m) for m in markers]
+        record("seed_render_has_all_periods", all(p >= 0 for p in positions))
+        record("seed_render_chronological", positions == sorted(positions))
+
+
+def test_seed_window_failure_isolated():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_seed
+
+    calls = {"n": 0}
+
+    def _flaky_ingest(topic, sources_config, scraping_config=None):
+        calls["n"] += 1
+        if calls["n"] == 2:  # second window blows up
+            raise RuntimeError("window boom")
+        return _seed_fake_ingest(topic, sources_config, scraping_config)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "seed.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _flaky_ingest), \
+             patch("grouper.group_items", _seed_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+
+        count = _count_analyses(db_path)
+        record("seed_failure_isolated", count == 2, f"{count} rows despite 1 failed window")
+
+
+# ---------- PIPELINE GLUE (stage hand-off contracts — offline) ----------
+
+def test_glue_stage_contracts():
+    """Feed a known item set through the full glue with mocked LLM calls;
+    assert each stage receives and returns its contracted type."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis
+    from grouper import TopicGroup
+    from store import GroupAnalysis
+
+    seen: dict[str, Any] = {}
+
+    def _spy_ingest(topic, sources_config, scraping_config=None):
+        items = _seed_fake_ingest(topic, sources_config, scraping_config)
+        seen["ingest_out"] = items
+        return items
+
+    def _spy_group(items, config):
+        seen["group_in"] = items
+        groups = _seed_fake_group(items, config)
+        seen["group_out"] = groups
+        return groups
+
+    def _spy_analyze(groups, config):
+        seen["analyze_in"] = groups
+        analyses = _seed_fake_analyze(groups, config)
+        seen["analyze_out"] = analyses
+        return analyses
+
+    def _spy_deliver(analyses, topic, config, run_date):
+        seen["deliver_in"] = analyses
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _spy_ingest), \
+             patch("grouper.group_items", _spy_group), \
+             patch("analyst.analyze_all", _spy_analyze), \
+             patch("delivery.analysis_md.deliver", _spy_deliver):
+            run_analysis(db_path=db_path)
+
+        record("glue_ingest_items", all(isinstance(i, Item) for i in seen["ingest_out"]))
+        record("glue_group_receives_items", seen["group_in"] is seen["ingest_out"])
+        record("glue_group_returns_topicgroups",
+               all(isinstance(g, TopicGroup) for g in seen["group_out"]))
+        record("glue_analyze_receives_groups", seen["analyze_in"] is seen["group_out"])
+        record("glue_analyze_returns_analyses",
+               all(isinstance(a, GroupAnalysis) for a in seen["analyze_out"]))
+        record("glue_deliver_receives_analyses",
+               seen["deliver_in"] == seen["analyze_out"])
+        record("glue_persist_wrote_rows", _count_analyses(db_path) == 1)
+
+
+def test_glue_empty_groups_short_circuit():
+    """Zero groups → topic skipped; nothing persisted; delivery never reached."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis
+
+    delivered = {"called": False}
+
+    def _spy_deliver(analyses, topic, config, run_date):
+        delivered["called"] = True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", lambda items, config: []), \
+             patch("delivery.analysis_md.deliver", _spy_deliver):
+            run_analysis(db_path=db_path)
+
+        record("glue_empty_groups_no_delivery", not delivered["called"])
+        record("glue_empty_groups_no_rows", _count_analyses(db_path) == 0)
+
+
+def test_glue_contract_violation_raises():
+    """A stage returning the wrong type raises TypeError — never silently
+    passed downstream."""
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_analysis, _check_handoff
+    from sources.base import Item as ItemType
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "glue.db"
+        cfg = _seed_config()
+        cfg["sources"]["stub"]["date_from"] = "2025-01-01"
+        with patch("config.load_config", lambda: cfg), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", lambda items, config: {"not": "a list"}):
+            try:
+                run_analysis(db_path=db_path)
+                record("glue_violation_raises", False, "no exception raised")
+            except TypeError:
+                record("glue_violation_raises", True)
+
+    # element-type violation is also caught
+    try:
+        _check_handoff("test", ["not an Item"], ItemType)
+        record("glue_element_violation_raises", False)
+    except TypeError:
+        record("glue_element_violation_raises", True)
+
+
+# ---------- BATCH ORCHESTRATION (mocked ingest/LLM — offline) ----------
+
+_BATCH_SPEC = """\
+topics:
+  - "Topic A"
+  - "Topic B"
+  - "Topic C"
+windows:
+  - {from: 2025-01-01, to: 2025-01-31}
+max_workers: 1
+"""
+
+
+def _batch_fake_ingest(topic, sources_config, scraping_config=None):
+    """One item per unit; title carries the topic so groups stay distinct."""
+    date_from = date.fromisoformat(sources_config["stub"]["date_from"])
+    published = datetime(date_from.year, date_from.month, date_from.day, tzinfo=timezone.utc)
+    return [
+        Item(source="hn", title=topic, url=f"https://example.com/{topic}/{date_from}",
+             score=10, published_at=published, summary_raw="excerpt"),
+    ]
+
+
+def _batch_fake_group(items, config):
+    from grouper import TopicGroup
+    return [TopicGroup(label=items[0].title, items=items)]
+
+
+def test_batch_spec_parsing():
+    import tempfile
+    from analyze import load_batch_spec
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+        units, max_workers = load_batch_spec(spec_path)
+        record("batch_spec_units", len(units) == 3, f"{len(units)} units")
+        record("batch_spec_cross_product",
+               units[0] == ("Topic A", date(2025, 1, 1), date(2025, 1, 31)))
+        record("batch_spec_max_workers", max_workers == 1)
+
+        # malformed specs abort before any unit runs
+        for bad, name in [
+            ("topics: []\nwindows: [{from: 2025-01-01, to: 2025-01-31}]", "empty_topics"),
+            ("topics: [A]\nwindows: []", "empty_windows"),
+            ("topics: [A]\nwindows: [{from: 2025-02-01, to: 2025-01-01}]", "reversed_window"),
+            ("topics: [A]\nwindows: [{from: 2025-01-01, to: 2025-01-31}]\nmax_workers: 0", "bad_workers"),
+        ]:
+            spec_path.write_text(bad)
+            try:
+                load_batch_spec(spec_path)
+                record(f"batch_spec_{name}_raises", False)
+            except ValueError:
+                record(f"batch_spec_{name}_raises", True)
+
+
+def test_batch_persists_isolates_and_idempotent():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_batch
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+
+        # --- all three units persist; re-run adds zero rows ---
+        db_ok = Path(tmp) / "ok.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _batch_fake_ingest), \
+             patch("grouper.group_items", _batch_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            succeeded, failed = run_batch(spec_path, db_path=db_ok)
+            record("batch_all_units_succeed", (succeeded, failed) == (3, 0),
+                   f"{succeeded} ok / {failed} failed")
+            count_first = _count_analyses(db_ok)
+            record("batch_all_units_persist", count_first == 3, f"{count_first} rows")
+
+            succeeded, failed = run_batch(spec_path, db_path=db_ok)
+            count_second = _count_analyses(db_ok)
+            record("batch_rerun_idempotent", count_second == count_first,
+                   f"{count_first} → {count_second}")
+
+        # --- a failing unit is skipped without stopping the others ---
+        def _flaky_ingest(topic, sources_config, scraping_config=None):
+            if topic == "Topic B":
+                raise RuntimeError("unit boom")
+            return _batch_fake_ingest(topic, sources_config, scraping_config)
+
+        db_flaky = Path(tmp) / "flaky.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _flaky_ingest), \
+             patch("grouper.group_items", _batch_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            succeeded, failed = run_batch(spec_path, db_path=db_flaky)
+            record("batch_failure_isolated", (succeeded, failed) == (2, 1),
+                   f"{succeeded} ok / {failed} failed")
+            count = _count_analyses(db_flaky)
+            record("batch_failure_others_persist", count == 2, f"{count} rows")
+
+
+def test_batch_total_failure_raises():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_batch
+
+    def _always_boom(topic, sources_config, scraping_config=None):
+        raise RuntimeError("boom")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        spec_path = Path(tmp) / "spec.yaml"
+        spec_path.write_text(_BATCH_SPEC)
+        db_path = Path(tmp) / "fail.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _always_boom):
+            try:
+                run_batch(spec_path, db_path=db_path)
+                record("batch_total_failure_raises", False, "no exception raised")
+            except RuntimeError:
+                record("batch_total_failure_raises", True)
+
+
+# ---------- RESILIENCE (fault injection — offline) ----------
+
+def test_retry_with_backoff_unit():
+    from unittest.mock import patch
+    from resilience import retry_with_backoff
+
+    # transient failure twice, then success — returns the value, slept twice
+    calls = {"n": 0}
+
+    def _flaky():
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise ValueError("transient")
+        return "ok"
+
+    with patch("resilience.time.sleep") as sleep:
+        result = retry_with_backoff(_flaky, label="t", is_transient=lambda e: True)
+    record("retry_returns_after_transient", result == "ok" and calls["n"] == 3)
+    record("retry_backoff_sleeps", sleep.call_count == 2)
+    delays = [c.args[0] for c in sleep.call_args_list]
+    record("retry_backoff_exponential", delays == [1.0, 2.0], f"delays={delays}")
+
+    # non-transient raises immediately, no sleep
+    calls["n"] = 0
+    with patch("resilience.time.sleep") as sleep:
+        try:
+            retry_with_backoff(_flaky, label="t", is_transient=lambda e: False)
+            record("retry_permanent_raises", False)
+        except ValueError:
+            record("retry_permanent_raises", calls["n"] == 1 and sleep.call_count == 0)
+
+    # attempts exhausted — last exception propagates
+    def _always():
+        raise ValueError("still transient")
+
+    with patch("resilience.time.sleep"):
+        try:
+            retry_with_backoff(_always, label="t", is_transient=lambda e: True, attempts=3)
+            record("retry_exhausted_raises", False)
+        except ValueError:
+            record("retry_exhausted_raises", True)
+
+
+def test_source_timeout_retried_then_isolated():
+    """A timing-out source is retried with backoff, then isolated (returns [])."""
+    import requests
+    from unittest.mock import patch
+    from sources.hackernews import HackerNewsSource
+
+    with patch("sources.hackernews.requests.get", side_effect=requests.Timeout("slow")) as get, \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_timeout_isolated", items == [])
+    record("hn_timeout_retried", get.call_count == 3, f"{get.call_count} attempts")
+    record("hn_timeout_backed_off", sleep.call_count == 2)
+
+
+def test_source_429_retried_then_recovers():
+    """A 429 is retried with backoff and the source recovers on a later attempt."""
+    import requests
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from sources.hackernews import HackerNewsSource
+
+    rate_limited = MagicMock()
+    rate_limited.raise_for_status.side_effect = requests.HTTPError(
+        response=SimpleNamespace(status_code=429)
+    )
+    ok = MagicMock()
+    ok.raise_for_status.return_value = None
+    ok.json.return_value = {"hits": [{
+        "title": "Recovered", "objectID": "1", "url": "https://example.com/1",
+        "points": 5, "created_at_i": 1700000000, "story_text": "s",
+    }]}
+
+    with patch("sources.hackernews.requests.get", side_effect=[rate_limited, rate_limited, ok]), \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_429_recovers", len(items) == 1 and items[0].title == "Recovered")
+    record("hn_429_backed_off", sleep.call_count == 2)
+
+
+def test_permanent_http_error_not_retried():
+    """A 404 is permanent — no retries, source still isolated."""
+    import requests
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from sources.hackernews import HackerNewsSource
+
+    not_found = MagicMock()
+    not_found.raise_for_status.side_effect = requests.HTTPError(
+        response=SimpleNamespace(status_code=404)
+    )
+    with patch("sources.hackernews.requests.get", return_value=not_found) as get, \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_404_isolated", items == [])
+    record("hn_404_not_retried", get.call_count == 1 and sleep.call_count == 0)
+
+
+def test_llm_rate_limit_retried():
+    """Grouper retries a transient LLM failure with backoff and recovers."""
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from grouper import group_items
+
+    now = datetime.now(timezone.utc)
+    items = [
+        Item(source="hn", title="A", url="https://x/1", score=1, published_at=now, summary_raw=""),
+        Item(source="arxiv", title="B", url="https://x/2", score=0, published_at=now, summary_raw=""),
+    ]
+    good = SimpleNamespace(content=[SimpleNamespace(
+        type="text",
+        text=json.dumps({"assignments": [{"index": 0, "topic": "T"}, {"index": 1, "topic": "T"}]}),
+    )])
+    client = MagicMock()
+    client.messages.create.side_effect = [RuntimeError("429"), RuntimeError("429"), good]
+
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client), \
+         patch("grouper.is_transient_anthropic", lambda exc: True), \
+         patch("resilience.time.sleep") as sleep:
+        groups = group_items(items, {"llm": {}})
+    record("llm_429_recovers", len(groups) == 1 and groups[0].label == "T")
+    record("llm_429_retried", client.messages.create.call_count == 3)
+    record("llm_429_backed_off", sleep.call_count == 2)
+
+
+def test_llm_malformed_json_skips_group():
+    """A malformed LLM JSON response skips the group (None) without crashing."""
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from analyst import analyze_all
+    from grouper import TopicGroup
+
+    now = datetime.now(timezone.utc)
+    group = TopicGroup(label="T", items=[
+        Item(source="hn", title="A", url="https://x/1", score=1, published_at=now, summary_raw=""),
+        Item(source="arxiv", title="B", url="https://x/2", score=0, published_at=now, summary_raw=""),
+    ])
+    garbage = SimpleNamespace(content=[SimpleNamespace(type="text", text="this is {not json")])
+    client = MagicMock()
+    client.messages.create.return_value = garbage
+
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        analyses = analyze_all([group], {"llm": {}, "persona": {"prompt": "p"}})
+    record("llm_malformed_json_skipped", analyses == [])
+
+
+def test_store_locked_db_raises_without_corruption():
+    """A locked SQLite db raises OperationalError; state stays clean and a
+    later write succeeds."""
+    import sqlite3
+    import tempfile
+    from store import Store, GroupAnalysis
+
+    now = datetime.now(timezone.utc)
+    analysis = GroupAnalysis(
+        topic="Lock Test", run_date=date.today(),
+        period_start=now, period_end=now,
+        agreements=["a"], contradictions=[], debunks=[], unresolved=[], sources=[],
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "locked.db"
+        store = Store(db_path, busy_timeout_ms=100)
+
+        blocker = sqlite3.connect(db_path)
+        blocker.execute("BEGIN EXCLUSIVE")
+        try:
+            store.save_run([analysis], date.today())
+            record("store_locked_raises", False, "no exception raised")
+        except sqlite3.OperationalError:
+            record("store_locked_raises", True)
+        finally:
+            blocker.rollback()
+            blocker.close()
+
+        # state is uncorrupted: the failed run left nothing behind, and a
+        # retry after the lock clears succeeds
+        record("store_locked_no_partial_rows", _count_analyses(db_path) == 0)
+        store.save_run([analysis], date.today())
+        record("store_recovers_after_lock", _count_analyses(db_path) == 1)
+
+
+# ---------- SOURCE AUTO-DISCOVERY (fixture package — offline) ----------
+
+_DISCOVERY_FIXTURE_GOOD = '''\
+from sources.base import Item, Source
+
+class GoodSource(Source):
+    name = "good"
+    def fetch(self, topic, config):
+        return []
+
+class NotASource:
+    """Same module, not a Source — must be ignored."""
+    name = "imposter"
+'''
+
+_DISCOVERY_FIXTURE_DISABLED = '''\
+from sources.base import Source
+
+class DisabledSource(Source):
+    name = "disabledsrc"
+    def __init__(self):
+        raise AssertionError("disabled source must never be instantiated")
+    def fetch(self, topic, config):
+        return []
+'''
+
+
+def test_discovery_fixture_package():
+    import sys
+    import tempfile
+    from unittest.mock import patch  # noqa: F401 (parallel with sibling tests)
+    from sources.base import Source
+    from sources.discovery import discover_sources
+
+    with tempfile.TemporaryDirectory() as tmp:
+        pkg = Path(tmp) / "fake_sources"
+        pkg.mkdir()
+        (pkg / "__init__.py").write_text("")
+        (pkg / "good.py").write_text(_DISCOVERY_FIXTURE_GOOD)
+        (pkg / "disabled.py").write_text(_DISCOVERY_FIXTURE_DISABLED)
+        (pkg / "broken.py").write_text("raise ImportError('deliberately broken module')\n")
+
+        sys.path.insert(0, tmp)
+        try:
+            cfg = {"good": {"enabled": True}, "disabledsrc": {"enabled": False}}
+            registry = discover_sources(cfg, package_name="fake_sources")
+
+            record("discovery_registers_enabled_source", set(registry) == {"good"},
+                   f"registered: {sorted(registry)}")
+            record("discovery_instance_is_source",
+                   all(isinstance(s, Source) for s in registry.values()))
+            # DisabledSource.__init__ raises — reaching here proves a
+            # config-disabled source was never instantiated
+            record("discovery_disabled_not_instantiated", "disabledsrc" not in registry)
+            record("discovery_non_source_ignored", "imposter" not in registry)
+
+            # unconfigured source (absent from config entirely) is excluded too
+            registry = discover_sources({}, package_name="fake_sources")
+            record("discovery_unconfigured_excluded", registry == {})
+        finally:
+            sys.path.remove(tmp)
+            for mod in [m for m in sys.modules if m.startswith("fake_sources")]:
+                del sys.modules[mod]
+
+
+def test_discovery_real_package_matches_config():
+    """Discovery over the real sources/ package honors config.yaml enablement
+    and preserves current behavior: HN + arXiv on, LinkedIn/RSS off."""
+    from sources.discovery import discover_sources
+    from sources.hackernews import HackerNewsSource
+    from sources.arxiv import ArxivSource
+
+    config = load_config()
+    registry = discover_sources(config.get("sources", {}))
+    record("discovery_real_enabled", set(registry) == {"hackernews", "arxiv"},
+           f"registered: {sorted(registry)}")
+    record("discovery_real_types",
+           isinstance(registry.get("hackernews"), HackerNewsSource)
+           and isinstance(registry.get("arxiv"), ArxivSource))
+    record("discovery_linkedin_stays_cold", "linkedin" not in registry)
+
+    # flipping a source on in config is all it takes — no registry edit
+    cfg = {"rss": {"enabled": True, "feeds": []}}
+    registry = discover_sources(cfg)
+    record("discovery_optin_via_config_only", set(registry) == {"rss"})
+
+
+# ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
+
+def test_eval_harness_all_pass():
+    from eval_harness import run_eval
+    results = run_eval()
+    modules = {r.module for r in results}
+    record("eval_covers_grouper_and_analyst", modules == {"grouper", "analyst"})
+    for r in results:
+        record(f"eval_{r.module}_all_pass", r.failed == 0, f"{r.passed}/{r.total}")
+        record(f"eval_{r.module}_has_cases", r.total >= 3, f"{r.total} cases")
+
+
 # ---------- END-TO-END (without LLM call) ----------
 
 def test_e2e_ingest_and_rank(topic: str):
@@ -515,7 +1390,11 @@ def main():
     print("\n=== uptodate-tldr Pipeline Validation ===\n")
 
     print("[Config]")
-    config = test_config_loads()
+    test_config_loads()
+    try:
+        config = load_config()
+    except Exception:
+        config = None
     if config:
         test_config_topic(config)
     test_config_env_override_empty_skip()
@@ -564,6 +1443,57 @@ def main():
     test_store_save_and_retrieve()
     test_store_idempotency()
     test_store_timeline_ordering()
+
+    print("\n[Enrichment — Scraper Wired Into Ingest]")
+    test_enrich_success_and_blocked()
+    test_enrich_disabled_is_noop()
+    test_enrich_isolated_on_exception()
+    test_ingest_applies_enrichment()
+
+    print("\n[RSS Source — Offline Fixtures]")
+    test_rss_atom_feed()
+    test_rss_rss2_feed()
+    test_rss_malformed_yields_empty()
+    test_rss_max_results_cap()
+    test_rss_never_raises_on_bad_input()
+
+    print("\n[Scraper — Offline Fixtures]")
+    test_scraper_standard_article()
+    test_scraper_minimal_article()
+    test_scraper_paywalled_returns_none()
+    test_scraper_network_failure_returns_none()
+    test_scraper_scrape_success_mocked()
+
+    print("\n[Timeline Seeding — Offline]")
+    test_seed_windows()
+    test_seed_idempotent_and_chronological()
+    test_seed_window_failure_isolated()
+
+    print("\n[Pipeline Glue — Stage Contracts]")
+    test_glue_stage_contracts()
+    test_glue_empty_groups_short_circuit()
+    test_glue_contract_violation_raises()
+
+    print("\n[Batch Orchestration — Offline]")
+    test_batch_spec_parsing()
+    test_batch_persists_isolates_and_idempotent()
+    test_batch_total_failure_raises()
+
+    print("\n[Resilience — Fault Injection]")
+    test_retry_with_backoff_unit()
+    test_source_timeout_retried_then_isolated()
+    test_source_429_retried_then_recovers()
+    test_permanent_http_error_not_retried()
+    test_llm_rate_limit_retried()
+    test_llm_malformed_json_skips_group()
+    test_store_locked_db_raises_without_corruption()
+
+    print("\n[Source Auto-Discovery — Offline]")
+    test_discovery_fixture_package()
+    test_discovery_real_package_matches_config()
+
+    print("\n[Eval Harness — Offline]")
+    test_eval_harness_all_pass()
 
     print("\n[End-to-End — Ingest + Rank]")
     test_e2e_ingest_and_rank(topic)

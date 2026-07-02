@@ -14,6 +14,7 @@ from typing import Any
 
 import requests
 
+from resilience import is_transient_http, retry_with_backoff
 from sources.base import Item, Source, parse_timestamp
 
 logger = logging.getLogger(__name__)
@@ -28,7 +29,7 @@ class HackerNewsSource(Source):
     def fetch(self, topic: str, config: dict[str, Any]) -> list[Item]:
         max_results = config.get("max_results", 30)
 
-        try:
+        def _request() -> requests.Response:
             response = requests.get(
                 ALGOLIA_SEARCH_URL,
                 params={
@@ -40,6 +41,12 @@ class HackerNewsSource(Source):
                 timeout=REQUEST_TIMEOUT_SECONDS,
             )
             response.raise_for_status()
+            return response
+
+        try:
+            # Transient failures (timeout, connection drop, 429/5xx) are
+            # retried with backoff; a still-failing source stays isolated.
+            response = retry_with_backoff(_request, label="HackerNews", is_transient=is_transient_http)
         except requests.RequestException:
             logger.warning("HackerNews request failed", exc_info=True)
             return []

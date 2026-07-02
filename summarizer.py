@@ -14,6 +14,7 @@ from typing import Any
 
 import anthropic
 
+from resilience import is_transient_anthropic, retry_with_backoff
 from sources.base import Item
 
 _USER_PROMPT_TEMPLATE = """\
@@ -62,18 +63,24 @@ def summarize(items: list[Item], config: dict[str, Any]) -> str:
     model = llm_config.get("model", "claude-sonnet-4-6")
     max_tokens = llm_config.get("max_tokens", 2000)
 
-    client = anthropic.Anthropic(api_key=api_key)
-    response = client.messages.create(
-        model=model,
-        max_tokens=max_tokens,
-        system=persona_prompt,
-        messages=[
-            {
-                "role": "user",
-                "content": build_user_prompt(items, config["topic"]),
-            }
-        ],
-    )
+    def _call() -> anthropic.types.Message:
+        client = anthropic.Anthropic(api_key=api_key)
+        return client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            system=persona_prompt,
+            messages=[
+                {
+                    "role": "user",
+                    "content": build_user_prompt(items, config["topic"]),
+                }
+            ],
+        )
+
+    # Rate limits/overload/5xx are retried with backoff. A call that still
+    # fails raises, keeping the documented contract: summarization failure
+    # aborts the run — there is nothing to deliver without a digest.
+    response = retry_with_backoff(_call, label="Summarizer", is_transient=is_transient_anthropic)
 
     digest = "".join(block.text for block in response.content if block.type == "text")
     if not digest.strip():

@@ -33,7 +33,7 @@ No build or lint step is configured. Install deps with `pip install -r requireme
 
 The pipeline runs in four sequential stages: **ingest → rank → summarize → deliver**.
 
-**`main.py`** owns the orchestration. `_SOURCES` is a hardcoded dict of source name → `Source` instance; adding a new source requires registering it here *and* in `config.yaml`. Sources are fetched in parallel via `ThreadPoolExecutor`. A source failure is isolated (returns `[]`); total source failure aborts the run.
+**`main.py`** owns the orchestration. Sources are auto-discovered from the `sources/` package (`sources/discovery.py`): any concrete `Source` subclass defined there is found at startup, but only instantiated if its `name` is enabled in `config.yaml`'s `sources:` section — the config is the single registry. Adding a new source = drop a module in `sources/` + add a config entry. Sources are fetched in parallel via `ThreadPoolExecutor`. A source failure is isolated (returns `[]`); total source failure aborts the run.
 
 **`sources/base.py`** defines the shared `Item` dataclass and the `Source` ABC. Every source must implement `fetch(topic, config) -> list[Item]` and must never raise — all I/O belongs in a try/except that logs and returns `[]`. `safe_fetch` wraps `fetch` as a final backstop. `parse_timestamp()` is a shared utility here.
 
@@ -65,8 +65,14 @@ A parallel entrypoint that runs **ingest → group → analyze → persist → d
 ```bash
 python analyze.py --run-now
 python analyze.py --backfill --from 2024-01-01 --to 2025-01-01
+python analyze.py --seed --from 2024-01-01 --to 2025-01-01 --window-days 30
+python analyze.py --batch spec.yaml
 python analyze.py --timeline "Anthropic MCP"
 ```
+
+`--seed` splits the range into consecutive `--window-days` windows and runs the backfill pipeline per window. Idempotent (store's `UNIQUE + INSERT OR IGNORE`); a failed window logs and continues; digest delivery is skipped (seeding persists history only).
+
+`--batch` runs the topics × windows cross product from a declarative YAML spec (see `batch.example.yaml`). Units are isolated (one failure logs and continues; all-units failure raises), parallelism is bounded by the spec's `max_workers` (default 1 — keep sequential for arXiv rate limits), and re-running a spec is idempotent. Like `--seed`, digest delivery is skipped.
 
 ### LLM token budget rules
 - Grouper: fixed 1024 (grouping JSON is compact).
@@ -74,8 +80,14 @@ python analyze.py --timeline "Anthropic MCP"
 - If JSON is still truncated at the cap, shorten per-item excerpts in `_format_items` before raising the cap further.
 - Both modules strip markdown code fences (`_strip_fences`) before parsing — the model ignores "no fences" instructions intermittently.
 
+### Resilience rules (`resilience.py`)
+- Transient failures (429/5xx, timeouts, connection drops, Anthropic rate limits/overload) are retried with exponential backoff via `retry_with_backoff` (3 attempts, 1s base). Permanent failures (4xx, auth, parse) are never retried.
+- Wired at: HN + arXiv fetches, and all three Anthropic call sites (grouper/analyst/summarizer). After retries are exhausted, each caller keeps its documented contract: sources log-and-return-`[]`, grouper returns `[]`, analyst returns `None` (group skipped), summarizer raises.
+- Deliberately not retried: RSS (feedparser captures errors in `bozo`), scraper enrichment (per-item best-effort; failures are mostly paywalls), SQLite (handled by `PRAGMA busy_timeout` in `store.py`, default 5s; a still-locked write raises and `_conn` rolls back).
+- No bare `except: pass` anywhere; every swallowed exception logs with context.
+
 ### Known limitations
-- arXiv returns HTTP 429 under rapid repeated runs; `safe_fetch` returns `[]` and the pipeline continues. Clears after a few hours.
+- arXiv returns HTTP 429 under rapid repeated runs; it is retried with backoff, then `safe_fetch` returns `[]` and the pipeline continues. A sustained block clears after a few hours.
 - The LLM model used is set via `config.yaml → llm.model`; defaults to `claude-sonnet-4-6`.
 
 ## Project Constraints
@@ -85,4 +97,4 @@ python analyze.py --timeline "Anthropic MCP"
 - LinkedIn source is disabled by default and documented as fragile — do not enable it without a working RapidAPI key.
 - Reddit source was permanently removed (June 2026); do not re-add without confirmed API access.
 - Branching: cut from `staging`, PR back to `staging`. Never open PRs directly to `main`.
-- The `_SOURCES` dict in `main.py` and the `sources:` section in `config.yaml` are the dual registry (no auto-discovery yet). Both must be updated when adding a source.
+- Sources are auto-discovered (`sources/discovery.py`); `config.yaml`'s `sources:` section is the single registry. A source absent from config (or `enabled: false`) is never instantiated. Adding a source = new module in `sources/` + a config entry.

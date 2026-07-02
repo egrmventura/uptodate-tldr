@@ -25,20 +25,17 @@ from typing import Any
 
 from config import load_config
 from ranker import rank_items
-from sources.arxiv import ArxivSource
 from sources.base import Item, Source
-from sources.hackernews import HackerNewsSource
-from sources.linkedin import LinkedInSource
+from sources.discovery import discover_sources
+from scraper import scrape
 from summarizer import summarize
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-_SOURCES: dict[str, Source] = {
-    "hackernews": HackerNewsSource(),
-    "arxiv": ArxivSource(),
-    "linkedin": LinkedInSource(),
-}
+# Sources are auto-discovered from the sources/ package (see
+# sources/discovery.py). config.yaml's `sources:` section is the single
+# registry: only sources enabled there are instantiated.
 
 _DELIVERY_MODULES = {
     "markdown": "delivery.markdown",
@@ -47,12 +44,12 @@ _DELIVERY_MODULES = {
 }
 
 
-def ingest(topic: str, sources_config: dict[str, Any]) -> list[Item]:
-    enabled = {
-        name: source
-        for name, source in _SOURCES.items()
-        if sources_config.get(name, {}).get("enabled", False)
-    }
+def ingest(
+    topic: str,
+    sources_config: dict[str, Any],
+    scraping_config: dict[str, Any] | None = None,
+) -> list[Item]:
+    enabled = discover_sources(sources_config)
 
     items: list[Item] = []
 
@@ -66,6 +63,45 @@ def ingest(topic: str, sources_config: dict[str, Any]) -> list[Item]:
             logger.info("Source %r returned %d items", name, len(fetched))
             items.extend(fetched)
 
+    # Optional full-text enrichment. No-op unless scraping is enabled in config,
+    # so existing runs (and callers that pass no scraping_config) are unchanged.
+    items = enrich_items(items, scraping_config or {})
+
+    return items
+
+
+def enrich_items(items: list[Item], scraping_config: dict[str, Any]) -> list[Item]:
+    """Best-effort full-text enrichment: fetch each item's URL and attach the
+    scraped body to `item.extra["body"]`.
+
+    Isolated and non-fatal — a failed, blocked, or paywalled fetch (scrape
+    returns None, or an unexpected error) leaves the item's existing excerpt
+    untouched. Every item is returned regardless of scrape outcome. Runs through
+    a ThreadPoolExecutor, mirroring the source-fetch parallelism above.
+    """
+    if not scraping_config.get("enabled", False) or not items:
+        return items
+
+    max_workers = min(len(items), scraping_config.get("max_workers", 8))
+
+    def _enrich(item: Item) -> None:
+        try:
+            article = scrape(item.url, scraping_config)
+        except Exception:
+            logger.warning("Enrichment failed for %s", item.url, exc_info=True)
+            return
+        if article is None or not article.body:
+            return
+        item.extra["body"] = article.body
+        item.extra["scraped"] = True
+        if article.author and "author" not in item.extra:
+            item.extra["author"] = article.author
+
+    with ThreadPoolExecutor(max_workers=max_workers or 1) as pool:
+        list(pool.map(_enrich, items))
+
+    scraped = sum(1 for i in items if i.extra.get("scraped"))
+    logger.info("Enrichment: %d/%d items gained full body text", scraped, len(items))
     return items
 
 
@@ -97,7 +133,7 @@ def run_pipeline() -> None:
 
     logger.info("Starting run for topic=%r", topic)
 
-    raw_items = ingest(topic, config.get("sources", {}))
+    raw_items = ingest(topic, config.get("sources", {}), config.get("scraping", {}))
     if not raw_items:
         raise RuntimeError("All sources failed or returned no results; aborting run")
 
