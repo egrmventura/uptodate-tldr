@@ -1083,6 +1083,191 @@ def test_batch_total_failure_raises():
                 record("batch_total_failure_raises", True)
 
 
+# ---------- RESILIENCE (fault injection — offline) ----------
+
+def test_retry_with_backoff_unit():
+    from unittest.mock import patch
+    from resilience import retry_with_backoff
+
+    # transient failure twice, then success — returns the value, slept twice
+    calls = {"n": 0}
+
+    def _flaky():
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise ValueError("transient")
+        return "ok"
+
+    with patch("resilience.time.sleep") as sleep:
+        result = retry_with_backoff(_flaky, label="t", is_transient=lambda e: True)
+    record("retry_returns_after_transient", result == "ok" and calls["n"] == 3)
+    record("retry_backoff_sleeps", sleep.call_count == 2)
+    delays = [c.args[0] for c in sleep.call_args_list]
+    record("retry_backoff_exponential", delays == [1.0, 2.0], f"delays={delays}")
+
+    # non-transient raises immediately, no sleep
+    calls["n"] = 0
+    with patch("resilience.time.sleep") as sleep:
+        try:
+            retry_with_backoff(_flaky, label="t", is_transient=lambda e: False)
+            record("retry_permanent_raises", False)
+        except ValueError:
+            record("retry_permanent_raises", calls["n"] == 1 and sleep.call_count == 0)
+
+    # attempts exhausted — last exception propagates
+    def _always():
+        raise ValueError("still transient")
+
+    with patch("resilience.time.sleep"):
+        try:
+            retry_with_backoff(_always, label="t", is_transient=lambda e: True, attempts=3)
+            record("retry_exhausted_raises", False)
+        except ValueError:
+            record("retry_exhausted_raises", True)
+
+
+def test_source_timeout_retried_then_isolated():
+    """A timing-out source is retried with backoff, then isolated (returns [])."""
+    import requests
+    from unittest.mock import patch
+    from sources.hackernews import HackerNewsSource
+
+    with patch("sources.hackernews.requests.get", side_effect=requests.Timeout("slow")) as get, \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_timeout_isolated", items == [])
+    record("hn_timeout_retried", get.call_count == 3, f"{get.call_count} attempts")
+    record("hn_timeout_backed_off", sleep.call_count == 2)
+
+
+def test_source_429_retried_then_recovers():
+    """A 429 is retried with backoff and the source recovers on a later attempt."""
+    import requests
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from sources.hackernews import HackerNewsSource
+
+    rate_limited = MagicMock()
+    rate_limited.raise_for_status.side_effect = requests.HTTPError(
+        response=SimpleNamespace(status_code=429)
+    )
+    ok = MagicMock()
+    ok.raise_for_status.return_value = None
+    ok.json.return_value = {"hits": [{
+        "title": "Recovered", "objectID": "1", "url": "https://example.com/1",
+        "points": 5, "created_at_i": 1700000000, "story_text": "s",
+    }]}
+
+    with patch("sources.hackernews.requests.get", side_effect=[rate_limited, rate_limited, ok]), \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_429_recovers", len(items) == 1 and items[0].title == "Recovered")
+    record("hn_429_backed_off", sleep.call_count == 2)
+
+
+def test_permanent_http_error_not_retried():
+    """A 404 is permanent — no retries, source still isolated."""
+    import requests
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from sources.hackernews import HackerNewsSource
+
+    not_found = MagicMock()
+    not_found.raise_for_status.side_effect = requests.HTTPError(
+        response=SimpleNamespace(status_code=404)
+    )
+    with patch("sources.hackernews.requests.get", return_value=not_found) as get, \
+         patch("resilience.time.sleep") as sleep:
+        items = HackerNewsSource().safe_fetch("topic", {})
+    record("hn_404_isolated", items == [])
+    record("hn_404_not_retried", get.call_count == 1 and sleep.call_count == 0)
+
+
+def test_llm_rate_limit_retried():
+    """Grouper retries a transient LLM failure with backoff and recovers."""
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from grouper import group_items
+
+    now = datetime.now(timezone.utc)
+    items = [
+        Item(source="hn", title="A", url="https://x/1", score=1, published_at=now, summary_raw=""),
+        Item(source="arxiv", title="B", url="https://x/2", score=0, published_at=now, summary_raw=""),
+    ]
+    good = SimpleNamespace(content=[SimpleNamespace(
+        type="text",
+        text=json.dumps({"assignments": [{"index": 0, "topic": "T"}, {"index": 1, "topic": "T"}]}),
+    )])
+    client = MagicMock()
+    client.messages.create.side_effect = [RuntimeError("429"), RuntimeError("429"), good]
+
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client), \
+         patch("grouper.is_transient_anthropic", lambda exc: True), \
+         patch("resilience.time.sleep") as sleep:
+        groups = group_items(items, {"llm": {}})
+    record("llm_429_recovers", len(groups) == 1 and groups[0].label == "T")
+    record("llm_429_retried", client.messages.create.call_count == 3)
+    record("llm_429_backed_off", sleep.call_count == 2)
+
+
+def test_llm_malformed_json_skips_group():
+    """A malformed LLM JSON response skips the group (None) without crashing."""
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    from analyst import analyze_all
+    from grouper import TopicGroup
+
+    now = datetime.now(timezone.utc)
+    group = TopicGroup(label="T", items=[
+        Item(source="hn", title="A", url="https://x/1", score=1, published_at=now, summary_raw=""),
+        Item(source="arxiv", title="B", url="https://x/2", score=0, published_at=now, summary_raw=""),
+    ])
+    garbage = SimpleNamespace(content=[SimpleNamespace(type="text", text="this is {not json")])
+    client = MagicMock()
+    client.messages.create.return_value = garbage
+
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        analyses = analyze_all([group], {"llm": {}, "persona": {"prompt": "p"}})
+    record("llm_malformed_json_skipped", analyses == [])
+
+
+def test_store_locked_db_raises_without_corruption():
+    """A locked SQLite db raises OperationalError; state stays clean and a
+    later write succeeds."""
+    import sqlite3
+    import tempfile
+    from store import Store, GroupAnalysis
+
+    now = datetime.now(timezone.utc)
+    analysis = GroupAnalysis(
+        topic="Lock Test", run_date=date.today(),
+        period_start=now, period_end=now,
+        agreements=["a"], contradictions=[], debunks=[], unresolved=[], sources=[],
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "locked.db"
+        store = Store(db_path, busy_timeout_ms=100)
+
+        blocker = sqlite3.connect(db_path)
+        blocker.execute("BEGIN EXCLUSIVE")
+        try:
+            store.save_run([analysis], date.today())
+            record("store_locked_raises", False, "no exception raised")
+        except sqlite3.OperationalError:
+            record("store_locked_raises", True)
+        finally:
+            blocker.rollback()
+            blocker.close()
+
+        # state is uncorrupted: the failed run left nothing behind, and a
+        # retry after the lock clears succeeds
+        record("store_locked_no_partial_rows", _count_analyses(db_path) == 0)
+        store.save_run([analysis], date.today())
+        record("store_recovers_after_lock", _count_analyses(db_path) == 1)
+
+
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
 
 def test_eval_harness_all_pass():
@@ -1206,6 +1391,15 @@ def main():
     test_batch_spec_parsing()
     test_batch_persists_isolates_and_idempotent()
     test_batch_total_failure_raises()
+
+    print("\n[Resilience — Fault Injection]")
+    test_retry_with_backoff_unit()
+    test_source_timeout_retried_then_isolated()
+    test_source_429_retried_then_recovers()
+    test_permanent_http_error_not_retried()
+    test_llm_rate_limit_retried()
+    test_llm_malformed_json_skips_group()
+    test_store_locked_db_raises_without_corruption()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()

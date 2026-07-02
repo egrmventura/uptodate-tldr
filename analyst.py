@@ -18,6 +18,7 @@ from typing import Any
 
 import anthropic
 
+from resilience import is_transient_anthropic, retry_with_backoff
 from grouper import TopicGroup
 from store import GroupAnalysis
 
@@ -120,17 +121,23 @@ def analyze(group: TopicGroup, config: dict[str, Any]) -> GroupAnalysis | None:
         items_block=_format_items(group),
     )
 
-    try:
+    n_items = len(group.items)
+    # Scale token budget with group size; large groups need room for verbose JSON.
+    dynamic_max_tokens = min(1500 + (n_items * 300), 3000)
+
+    def _call() -> anthropic.types.Message:
         client = anthropic.Anthropic(api_key=api_key)
-        n_items = len(group.items)
-        # Scale token budget with group size; large groups need room for verbose JSON.
-        dynamic_max_tokens = min(1500 + (n_items * 300), 3000)
-        response = client.messages.create(
+        return client.messages.create(
             model=model,
             max_tokens=dynamic_max_tokens,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )
+
+    try:
+        # Rate limits/overload/5xx are retried with backoff; a still-failing
+        # call keeps the documented contract: log and skip this group (None).
+        response = retry_with_backoff(_call, label="Analyst", is_transient=is_transient_anthropic)
     except Exception:
         logger.warning("Analyst: Anthropic API call failed for topic %r", group.label, exc_info=True)
         return None

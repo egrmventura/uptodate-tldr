@@ -80,8 +80,14 @@ python analyze.py --timeline "Anthropic MCP"
 - If JSON is still truncated at the cap, shorten per-item excerpts in `_format_items` before raising the cap further.
 - Both modules strip markdown code fences (`_strip_fences`) before parsing — the model ignores "no fences" instructions intermittently.
 
+### Resilience rules (`resilience.py`)
+- Transient failures (429/5xx, timeouts, connection drops, Anthropic rate limits/overload) are retried with exponential backoff via `retry_with_backoff` (3 attempts, 1s base). Permanent failures (4xx, auth, parse) are never retried.
+- Wired at: HN + arXiv fetches, and all three Anthropic call sites (grouper/analyst/summarizer). After retries are exhausted, each caller keeps its documented contract: sources log-and-return-`[]`, grouper returns `[]`, analyst returns `None` (group skipped), summarizer raises.
+- Deliberately not retried: RSS (feedparser captures errors in `bozo`), scraper enrichment (per-item best-effort; failures are mostly paywalls), SQLite (handled by `PRAGMA busy_timeout` in `store.py`, default 5s; a still-locked write raises and `_conn` rolls back).
+- No bare `except: pass` anywhere; every swallowed exception logs with context.
+
 ### Known limitations
-- arXiv returns HTTP 429 under rapid repeated runs; `safe_fetch` returns `[]` and the pipeline continues. Clears after a few hours.
+- arXiv returns HTTP 429 under rapid repeated runs; it is retried with backoff, then `safe_fetch` returns `[]` and the pipeline continues. A sustained block clears after a few hours.
 - The LLM model used is set via `config.yaml → llm.model`; defaults to `claude-sonnet-4-6`.
 
 ## Project Constraints
