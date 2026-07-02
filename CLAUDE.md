@@ -33,7 +33,7 @@ No build or lint step is configured. Install deps with `pip install -r requireme
 
 The pipeline runs in four sequential stages: **ingest → rank → summarize → deliver**.
 
-**`main.py`** owns the orchestration. `_SOURCES` is a hardcoded dict of source name → `Source` instance; adding a new source requires registering it here *and* in `config.yaml`. Sources are fetched in parallel via `ThreadPoolExecutor`. A source failure is isolated (returns `[]`); total source failure aborts the run.
+**`main.py`** owns the orchestration. Sources are auto-discovered from the `sources/` package (`sources/discovery.py`): any concrete `Source` subclass defined there is found at startup, but only instantiated if its `name` is enabled in `config.yaml`'s `sources:` section — the config is the single registry. Adding a new source = drop a module in `sources/` + add a config entry. Sources are fetched in parallel via `ThreadPoolExecutor`. A source failure is isolated (returns `[]`); total source failure aborts the run.
 
 **`sources/base.py`** defines the shared `Item` dataclass and the `Source` ABC. Every source must implement `fetch(topic, config) -> list[Item]` and must never raise — all I/O belongs in a try/except that logs and returns `[]`. `safe_fetch` wraps `fetch` as a final backstop. `parse_timestamp()` is a shared utility here.
 
@@ -97,4 +97,4 @@ python analyze.py --timeline "Anthropic MCP"
 - LinkedIn source is disabled by default and documented as fragile — do not enable it without a working RapidAPI key.
 - Reddit source was permanently removed (June 2026); do not re-add without confirmed API access.
 - Branching: cut from `staging`, PR back to `staging`. Never open PRs directly to `main`.
-- The `_SOURCES` dict in `main.py` and the `sources:` section in `config.yaml` are the dual registry (no auto-discovery yet). Both must be updated when adding a source.
+- Sources are auto-discovered (`sources/discovery.py`); `config.yaml`'s `sources:` section is the single registry. A source absent from config (or `enabled: false`) is never instantiated. Adding a source = new module in `sources/` + a config entry.

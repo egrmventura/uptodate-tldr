@@ -583,7 +583,7 @@ def test_ingest_applies_enrichment():
     def fake_scrape(url, config=None):
         return ScrapedArticle(url=url, title="T", author=None, published_at=now, body="BODY")
 
-    with patch.dict("main._SOURCES", {"fake": _FakeSource()}, clear=True), \
+    with patch("main.discover_sources", return_value={"fake": _FakeSource()}), \
          patch("main.scrape", side_effect=fake_scrape):
         items = main.ingest("topic", {"fake": {"enabled": True}}, {"enabled": True})
     record("ingest_enriches_when_enabled", len(items) == 1 and items[0].extra.get("body") == "BODY")
@@ -1268,6 +1268,93 @@ def test_store_locked_db_raises_without_corruption():
         record("store_recovers_after_lock", _count_analyses(db_path) == 1)
 
 
+# ---------- SOURCE AUTO-DISCOVERY (fixture package — offline) ----------
+
+_DISCOVERY_FIXTURE_GOOD = '''\
+from sources.base import Item, Source
+
+class GoodSource(Source):
+    name = "good"
+    def fetch(self, topic, config):
+        return []
+
+class NotASource:
+    """Same module, not a Source — must be ignored."""
+    name = "imposter"
+'''
+
+_DISCOVERY_FIXTURE_DISABLED = '''\
+from sources.base import Source
+
+class DisabledSource(Source):
+    name = "disabledsrc"
+    def __init__(self):
+        raise AssertionError("disabled source must never be instantiated")
+    def fetch(self, topic, config):
+        return []
+'''
+
+
+def test_discovery_fixture_package():
+    import sys
+    import tempfile
+    from unittest.mock import patch  # noqa: F401 (parallel with sibling tests)
+    from sources.base import Source
+    from sources.discovery import discover_sources
+
+    with tempfile.TemporaryDirectory() as tmp:
+        pkg = Path(tmp) / "fake_sources"
+        pkg.mkdir()
+        (pkg / "__init__.py").write_text("")
+        (pkg / "good.py").write_text(_DISCOVERY_FIXTURE_GOOD)
+        (pkg / "disabled.py").write_text(_DISCOVERY_FIXTURE_DISABLED)
+        (pkg / "broken.py").write_text("raise ImportError('deliberately broken module')\n")
+
+        sys.path.insert(0, tmp)
+        try:
+            cfg = {"good": {"enabled": True}, "disabledsrc": {"enabled": False}}
+            registry = discover_sources(cfg, package_name="fake_sources")
+
+            record("discovery_registers_enabled_source", set(registry) == {"good"},
+                   f"registered: {sorted(registry)}")
+            record("discovery_instance_is_source",
+                   all(isinstance(s, Source) for s in registry.values()))
+            # DisabledSource.__init__ raises — reaching here proves a
+            # config-disabled source was never instantiated
+            record("discovery_disabled_not_instantiated", "disabledsrc" not in registry)
+            record("discovery_non_source_ignored", "imposter" not in registry)
+
+            # unconfigured source (absent from config entirely) is excluded too
+            registry = discover_sources({}, package_name="fake_sources")
+            record("discovery_unconfigured_excluded", registry == {})
+        finally:
+            sys.path.remove(tmp)
+            for mod in [m for m in sys.modules if m.startswith("fake_sources")]:
+                del sys.modules[mod]
+
+
+def test_discovery_real_package_matches_config():
+    """Discovery over the real sources/ package honors config.yaml enablement
+    and preserves current behavior: HN + arXiv on, LinkedIn/RSS off."""
+    from sources.discovery import discover_sources
+    from sources.hackernews import HackerNewsSource
+    from sources.arxiv import ArxivSource
+
+    config = load_config()
+    registry = discover_sources(config.get("sources", {}))
+    record("discovery_real_enabled", set(registry) == {"hackernews", "arxiv"},
+           f"registered: {sorted(registry)}")
+    record("discovery_real_types",
+           isinstance(registry.get("hackernews"), HackerNewsSource)
+           and isinstance(registry.get("arxiv"), ArxivSource))
+    record("discovery_linkedin_stays_cold", "linkedin" not in registry)
+
+    # flipping a source on in config is all it takes — no registry edit
+    cfg = {"rss": {"enabled": True, "feeds": []}}
+    registry = discover_sources(cfg)
+    record("discovery_optin_via_config_only", set(registry) == {"rss"})
+
+
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
 
 def test_eval_harness_all_pass():
@@ -1400,6 +1487,10 @@ def main():
     test_llm_rate_limit_retried()
     test_llm_malformed_json_skips_group()
     test_store_locked_db_raises_without_corruption()
+
+    print("\n[Source Auto-Discovery — Offline]")
+    test_discovery_fixture_package()
+    test_discovery_real_package_matches_config()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()

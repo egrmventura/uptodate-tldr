@@ -1,33 +1,32 @@
 # STATUS
 
-_Last updated: 2026-07-01_
+_Last updated: 2026-07-01 (evening session)_
 
 ## Where things stand
 
-- **Branch:** `feature/scraper-wire` (PR pending to `staging`)
-- **`staging` HEAD:** `db59dbc` — Merge PR #13 (RSS/Atom source)
+- **Branch:** `feature/auto-discovery` (top of a 5-PR stack; `staging` is the merge target)
+- **Tests:** 60 passed (offline; `python3 -m pytest test_pipeline.py`)
+- **Awaiting human review/merge, in order:** PR #15 → #16 → #17 → #18 → #19 (each stacked on the previous; diffs collapse as predecessors land)
 
-## Done
+## Done this session (all 5 pending items)
 
-- **Comparative analysis pipeline** (`analyze.py`) merged to `staging` (PR #6): `ingest → group → analyze → persist → deliver`, parallel to the untouched TLDR pipeline in `main.py`. Modules: `grouper.py`, `analyst.py`, `store.py` (SQLite at `output/analyses.db`), `timeline.py`, `delivery/analysis_md.py`, `delivery/timeline_md.py`.
-- **Analyst token fix:** `max_tokens` scales dynamically `min(1500 + n_items * 300, 3000)`. Documented in `CLAUDE.md`.
-- **Goal-prompt command files** (PR #9) and **orchestration/workflow commands + STATUS.md method** (PR #10) merged under `.claude/commands/`.
-- **`goal-test-eval`** (PR #11): fixed the 4 pytest fixture errors via `topic`/`config` fixtures; added `eval_harness.py` (offline LLM-output eval). Suite fully green.
-- **`goal-scraper`** (PR #12): `scraper.py` — URL → title/author/date/body, strips boilerplate, never raises, paywalled/blocked → `None`. 3 offline HTML fixtures + mocked-network tests.
-- **`goal-rss`** (PR #13): `sources/rss.py` — feedparser-backed Atom/RSS source, mapped to `Item`, dual-registered (`_SOURCES` + `config.yaml`, disabled by default). 3 offline feed fixtures.
-- **`goal-scraper-wire` (this session):** wired the scraper into `ingest()` as optional best-effort enrichment (`enrich_items`), gated by `scraping.enabled`, running through `ThreadPoolExecutor`. Attaches full body to `item.extra["body"]`; blocked/failed fetches leave the excerpt intact; both `main.py` and `analyze.py` pass scraping config. **Suite: 42 passed.**
+1. **`goal-timeline-seed`** (PR #15): `python analyze.py --seed --from A --to B [--window-days N]` — splits the range into consecutive windows, runs the backfill pipeline per window. Idempotent via store `UNIQUE + INSERT OR IGNORE`; failed window logs and continues; digest delivery skipped. `run_analysis` gained `db_path`/`deliver` params.
+2. **`goal-pipeline-glue`** (PR #16): `run_analysis` refactored into a linear typed stage sequence (`_stage_ingest/_group/_analyze/_persist/_deliver`); `_check_handoff` raises `TypeError` on contract violations. Behavior preserved exactly; seed-test fakes corrected to real contracts (`list[TopicGroup]`).
+3. **`goal-batch-orchestration`** (PR #17): `python analyze.py --batch spec.yaml` — topics × windows cross product from a declarative spec (`batch.example.yaml`); unit isolation, bounded parallelism (`max_workers`, default 1), idempotent re-runs, all-units-failure raises. `run_analysis` gained `topics_override`.
+4. **`goal-resilience-pass`** (PR #18): `resilience.py` — `retry_with_backoff` + transient classifiers (requests/arxiv/anthropic), wired at HN/arXiv fetches and all three Anthropic call sites; `PRAGMA busy_timeout` in store. Post-retry contracts unchanged. Fault-injection tests (timeout, 429, malformed LLM JSON, locked db).
+5. **`goal-auto-discovery`** (PR #19): `sources/discovery.py` — `Source` subclasses auto-discovered from `sources/`; `config.yaml` is the single registry; disabled/unconfigured sources never instantiated; `_SOURCES` dict removed from `main.py`.
 
 ## Pending / next
 
-- **Timeline never seeded** with real historical data. → run `/goal-timeline-seed` (or `--backfill`).
-- **Source auto-discovery** still a dual registry (`_SOURCES` in `main.py` + `config.yaml`). → run `/goal-auto-discovery` last.
-- **Downstream body adoption:** enrichment populates `item.extra["body"]`, but grouper/analyst/summarizer still read `summary_raw`. A future `/goal-pipeline-glue` pass could route `extra["body"]` into those formatters for richer analysis.
+- **Merge the PR stack** (#15 → #19, in order) into `staging`. All are review-gated (agent cannot merge).
+- **Run a real seed** once merged: `python analyze.py --seed --from 2026-01-01 --to 2026-07-01 --window-days 30` (or drive `--batch` with a spec) to populate `output/analyses.db` with live history.
+- **Downstream body adoption** still open: enrichment populates `item.extra["body"]`, but grouper/analyst/summarizer formatters still read `summary_raw`.
 
 ## Known issues
 
-- arXiv returns HTTP 429 under rapid repeated runs; `safe_fetch` returns `[]` and the pipeline continues. Clears after a few hours.
-- Local git identity is auto-derived (`MATTHEW VENTURA <...@MATTHEWs-MBP...>`); set `user.name`/`user.email` if you want clean authorship.
+- arXiv 429 under rapid repeated runs — now retried with backoff, then isolated (`[]`); sustained blocks clear after a few hours.
+- Local git identity is auto-derived (`MATTHEW VENTURA <...@MATTHEWs-MBP...>`); set `user.name`/`user.email` for clean authorship.
 
 ## Recommended next command
 
-`/goal-timeline-seed` — seed the analysis timeline with historical backfill now that sources (HN, arXiv, RSS) and full-text enrichment are in place.
+Review & merge PRs #15–#19 (in order), then `python analyze.py --seed` against a real date range.
