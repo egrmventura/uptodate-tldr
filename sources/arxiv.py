@@ -19,6 +19,7 @@ from typing import Any
 
 import arxiv
 
+from resilience import is_transient_arxiv, retry_with_backoff
 from sources.base import Item, Source
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ class ArxivSource(Source):
         if category:
             query = f"({query}) AND cat:{category}"
 
-        try:
+        def _request() -> list[arxiv.Result]:
             search = arxiv.Search(
                 query=query,
                 max_results=max_results,
@@ -43,7 +44,12 @@ class ArxivSource(Source):
                 sort_order=arxiv.SortOrder.Descending,
             )
             client = arxiv.Client()
-            results = list(client.results(search))
+            return list(client.results(search))
+
+        try:
+            # arXiv 429s under rapid repeated runs — retry with backoff, then
+            # fall back to [] (isolated) if the rate limit hasn't cleared.
+            results = retry_with_backoff(_request, label="ArXiv", is_transient=is_transient_arxiv)
         except Exception:
             logger.warning("ArXiv request failed", exc_info=True)
             return []

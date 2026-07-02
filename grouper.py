@@ -19,6 +19,7 @@ from typing import Any
 
 import anthropic
 
+from resilience import is_transient_anthropic, retry_with_backoff
 from sources.base import Item
 
 logger = logging.getLogger(__name__)
@@ -125,14 +126,19 @@ def group_items(
 
     user_prompt = _USER_PROMPT_TEMPLATE.format(items_block=_format_items(items))
 
-    try:
+    def _call() -> anthropic.types.Message:
         client = anthropic.Anthropic(api_key=api_key)
-        response = client.messages.create(
+        return client.messages.create(
             model=model,
             max_tokens=1024,
             system=_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": user_prompt}],
         )
+
+    try:
+        # Rate limits/overload/5xx are retried with backoff; a still-failing
+        # call keeps the documented contract: log and return no groups.
+        response = retry_with_backoff(_call, label="Grouper", is_transient=is_transient_anthropic)
     except Exception:
         logger.warning("Grouper: Anthropic API call failed", exc_info=True)
         return []

@@ -118,9 +118,13 @@ def _row_to_analysis(row: sqlite3.Row, run_date: date) -> GroupAnalysis:
 # ---------- store ----------
 
 class Store:
-    def __init__(self, db_path: Path = DEFAULT_DB_PATH) -> None:
+    def __init__(self, db_path: Path = DEFAULT_DB_PATH, busy_timeout_ms: int = 5000) -> None:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self.db_path = db_path
+        # Transient lock contention (e.g. concurrent batch units) waits up to
+        # this long before sqlite raises "database is locked". A write that
+        # still fails raises to the caller; _conn's rollback keeps state clean.
+        self.busy_timeout_ms = busy_timeout_ms
         self._init()
 
     @contextmanager
@@ -128,6 +132,7 @@ class Store:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON")
+        conn.execute(f"PRAGMA busy_timeout = {int(self.busy_timeout_ms)}")
         try:
             yield conn
             conn.commit()
