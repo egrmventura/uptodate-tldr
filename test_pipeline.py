@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import os
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -708,6 +708,149 @@ def test_scraper_scrape_success_mocked():
     record("scraper_scrape_success", result is not None and result.title == "Anthropic Ships MCP 2.0")
 
 
+# ---------- TIMELINE SEEDING (mocked ingest/LLM — offline) ----------
+
+def _seed_config() -> dict[str, Any]:
+    return {
+        "topics": ["Seed Topic"],
+        "sources": {"stub": {"enabled": True}},
+        "scraping": {"enabled": False},
+    }
+
+
+def _seed_fake_ingest(topic, sources_config, scraping_config=None):
+    """One deterministic item published at the window's start date."""
+    date_from = date.fromisoformat(sources_config["stub"]["date_from"])
+    published = datetime(date_from.year, date_from.month, date_from.day, tzinfo=timezone.utc)
+    return [
+        Item(source="hn", title=f"story {date_from}", url=f"https://example.com/{date_from}",
+             score=10, published_at=published, summary_raw="excerpt"),
+    ]
+
+
+def _seed_fake_group(items, config):
+    return {"Seed Topic": items}
+
+
+def _seed_fake_analyze(groups, config):
+    from store import GroupAnalysis
+    analyses = []
+    for label, items in groups.items():
+        starts = [i.published_at for i in items]
+        analyses.append(GroupAnalysis(
+            topic=label,
+            run_date=date.today(),
+            period_start=min(starts),
+            period_end=max(starts),
+            agreements=[f"win-{min(starts).date().isoformat()}"],
+            contradictions=[], debunks=[], unresolved=[],
+            sources=items,
+        ))
+    return analyses
+
+
+def _count_analyses(db_path: Path) -> int:
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    try:
+        return conn.execute("SELECT COUNT(*) FROM analyses").fetchone()[0]
+    finally:
+        conn.close()
+
+
+def test_seed_windows():
+    from analyze import seed_windows
+    # 90 days (Jan 1 – Mar 31 2025) at 30-day windows → exactly 3 contiguous windows
+    wins = seed_windows(date(2025, 1, 1), date(2025, 3, 31), 30)
+    record("seed_windows_count", len(wins) == 3, f"{len(wins)} windows")
+    record("seed_windows_start", wins[0][0] == date(2025, 1, 1))
+    record("seed_windows_end", wins[-1][1] == date(2025, 3, 31))
+    contiguous = all(wins[i + 1][0] == wins[i][1] + timedelta(days=1)
+                     for i in range(len(wins) - 1))
+    record("seed_windows_contiguous", contiguous)
+
+    # final window truncates at --to
+    wins = seed_windows(date(2025, 1, 1), date(2025, 1, 10), 7)
+    record("seed_windows_truncated", wins == [(date(2025, 1, 1), date(2025, 1, 7)),
+                                              (date(2025, 1, 8), date(2025, 1, 10))])
+
+    # single-day range
+    wins = seed_windows(date(2025, 1, 1), date(2025, 1, 1), 30)
+    record("seed_windows_single_day", wins == [(date(2025, 1, 1), date(2025, 1, 1))])
+
+    # invalid inputs raise
+    try:
+        seed_windows(date(2025, 2, 1), date(2025, 1, 1), 30)
+        record("seed_windows_reversed_raises", False)
+    except ValueError:
+        record("seed_windows_reversed_raises", True)
+    try:
+        seed_windows(date(2025, 1, 1), date(2025, 2, 1), 0)
+        record("seed_windows_zero_raises", False)
+    except ValueError:
+        record("seed_windows_zero_raises", True)
+
+
+def test_seed_idempotent_and_chronological():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_seed
+    from store import Store
+    from timeline import render_timeline
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "seed.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _seed_fake_ingest), \
+             patch("grouper.group_items", _seed_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+            count_first = _count_analyses(db_path)
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+            count_second = _count_analyses(db_path)
+
+        record("seed_persists_rows", count_first == 3, f"{count_first} rows after first run")
+        record("seed_rerun_idempotent", count_second == count_first,
+               f"{count_first} → {count_second}")
+
+        store = Store(db_path)
+        timeline = store.get_timeline("Seed Topic")
+        starts = [a.period_start for a in timeline]
+        record("seed_timeline_chronological", starts == sorted(starts))
+
+        # --timeline rendering: seeded periods appear in period_start order
+        md = render_timeline("Seed Topic", store)
+        markers = [f"win-{s.date().isoformat()}" for s in sorted(starts)]
+        positions = [md.find(m) for m in markers]
+        record("seed_render_has_all_periods", all(p >= 0 for p in positions))
+        record("seed_render_chronological", positions == sorted(positions))
+
+
+def test_seed_window_failure_isolated():
+    import tempfile
+    from unittest.mock import patch
+    from analyze import run_seed
+
+    calls = {"n": 0}
+
+    def _flaky_ingest(topic, sources_config, scraping_config=None):
+        calls["n"] += 1
+        if calls["n"] == 2:  # second window blows up
+            raise RuntimeError("window boom")
+        return _seed_fake_ingest(topic, sources_config, scraping_config)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "seed.db"
+        with patch("config.load_config", _seed_config), \
+             patch("main.ingest", _flaky_ingest), \
+             patch("grouper.group_items", _seed_fake_group), \
+             patch("analyst.analyze_all", _seed_fake_analyze):
+            run_seed(date(2025, 1, 1), date(2025, 3, 31), window_days=30, db_path=db_path)
+
+        count = _count_analyses(db_path)
+        record("seed_failure_isolated", count == 2, f"{count} rows despite 1 failed window")
+
+
 # ---------- EVAL HARNESS (offline — recorded LLM responses) ----------
 
 def test_eval_harness_all_pass():
@@ -816,6 +959,11 @@ def main():
     test_scraper_paywalled_returns_none()
     test_scraper_network_failure_returns_none()
     test_scraper_scrape_success_mocked()
+
+    print("\n[Timeline Seeding — Offline]")
+    test_seed_windows()
+    test_seed_idempotent_and_chronological()
+    test_seed_window_failure_isolated()
 
     print("\n[Eval Harness — Offline]")
     test_eval_harness_all_pass()

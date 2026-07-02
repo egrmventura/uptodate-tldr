@@ -3,6 +3,7 @@
 Usage:
     python analyze.py --run-now
     python analyze.py --backfill --from 2024-01-01 --to 2025-01-01
+    python analyze.py --seed --from 2024-01-01 --to 2025-01-01 [--window-days 30]
     python analyze.py --timeline "Anthropic MCP"
 
 Pipeline (--run-now):
@@ -17,6 +18,14 @@ Same as above but injects date_from/date_to into source config so HN/arXiv
 fetch within a historical window. Analyses are stamped with article publication
 dates, not today's date.
 
+Pipeline (--seed):
+Repeatable timeline seeding: splits [--from, --to] into consecutive windows of
+--window-days each and runs the backfill pipeline once per window. Idempotent —
+persistence relies on the store's UNIQUE(topic, period_start, period_end) +
+INSERT OR IGNORE, so re-running the same range adds no duplicate rows. A window
+failure is logged and the remaining windows still run. Seeding only persists
+history — the per-run digest delivery is skipped.
+
 Pipeline (--timeline):
 Queries the store and renders a chronological markdown file for the given topic.
 """
@@ -25,14 +34,20 @@ from __future__ import annotations
 
 import argparse
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-def run_analysis(is_backfill: bool = False, date_from: date | None = None, date_to: date | None = None) -> None:
+def run_analysis(
+    is_backfill: bool = False,
+    date_from: date | None = None,
+    date_to: date | None = None,
+    db_path: Path | None = None,
+    deliver: bool = True,
+) -> None:
     from analyst import analyze_all
     from config import load_config
     from delivery import analysis_md
@@ -53,7 +68,7 @@ def run_analysis(is_backfill: bool = False, date_from: date | None = None, date_
             sources_config[name]["date_to"] = date_to.isoformat()
 
     run_date = date.today()
-    store = Store()
+    store = Store(db_path) if db_path else Store()
     all_analyses = []
 
     for topic in topics:
@@ -79,8 +94,60 @@ def run_analysis(is_backfill: bool = False, date_from: date | None = None, date_
         return
 
     store.save_run(all_analyses, run_date, is_backfill=is_backfill)
-    analysis_md.deliver(all_analyses, "AI/ML/Data Engineering", config, run_date)
+    if deliver:
+        analysis_md.deliver(all_analyses, "AI/ML/Data Engineering", config, run_date)
     logger.info("Analysis run complete — %d group(s) across %d topic(s)", len(all_analyses), len(topics))
+
+
+def seed_windows(date_from: date, date_to: date, window_days: int) -> list[tuple[date, date]]:
+    """Split [date_from, date_to] (inclusive) into consecutive windows of at
+    most `window_days` days. The final window is truncated at `date_to`.
+    """
+    if date_to < date_from:
+        raise ValueError(f"--to ({date_to}) must not precede --from ({date_from})")
+    if window_days < 1:
+        raise ValueError(f"--window-days must be >= 1, got {window_days}")
+
+    windows: list[tuple[date, date]] = []
+    start = date_from
+    while start <= date_to:
+        end = min(start + timedelta(days=window_days - 1), date_to)
+        windows.append((start, end))
+        start = end + timedelta(days=1)
+    return windows
+
+
+def run_seed(
+    date_from: date,
+    date_to: date,
+    window_days: int = 30,
+    db_path: Path | None = None,
+) -> None:
+    """Seed the analysis timeline: run the backfill pipeline once per window.
+
+    Idempotent — re-running the same range relies on the store's
+    UNIQUE(topic, period_start, period_end) + INSERT OR IGNORE, so no
+    duplicate analysis rows are created. A failed window is logged and the
+    remaining windows still run.
+    """
+    windows = seed_windows(date_from, date_to, window_days)
+    logger.info(
+        "Seeding %d window(s) of %d day(s) from %s to %s",
+        len(windows), window_days, date_from, date_to,
+    )
+
+    failures = 0
+    for start, end in windows:
+        try:
+            # deliver=False: seeding persists history; per-window daily digests
+            # would just overwrite each other at output/analysis-<today>.md.
+            run_analysis(is_backfill=True, date_from=start, date_to=end,
+                         db_path=db_path, deliver=False)
+        except Exception:
+            failures += 1
+            logger.warning("Seed window %s → %s failed; continuing", start, end, exc_info=True)
+
+    logger.info("Seeding complete: %d/%d window(s) succeeded", len(windows) - failures, len(windows))
 
 
 def run_timeline(topic: str) -> None:
@@ -102,21 +169,28 @@ def main() -> None:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--run-now", action="store_true", help="Run the analysis pipeline immediately")
     mode.add_argument("--backfill", action="store_true", help="Run over a historical date range")
+    mode.add_argument("--seed", action="store_true", help="Seed the timeline: backfill across consecutive windows")
     mode.add_argument("--timeline", metavar="TOPIC", help="Render the stored timeline for a topic")
 
-    parser.add_argument("--from", dest="date_from", metavar="YYYY-MM-DD", help="Backfill start date")
-    parser.add_argument("--to", dest="date_to", metavar="YYYY-MM-DD", help="Backfill end date")
+    parser.add_argument("--from", dest="date_from", metavar="YYYY-MM-DD", help="Backfill/seed start date")
+    parser.add_argument("--to", dest="date_to", metavar="YYYY-MM-DD", help="Backfill/seed end date")
+    parser.add_argument("--window-days", type=int, default=30, metavar="N",
+                        help="Seed window size in days (default: 30)")
 
     args = parser.parse_args()
 
     if args.timeline:
         run_timeline(args.timeline)
-    elif args.backfill:
+    elif args.backfill or args.seed:
+        flag = "--seed" if args.seed else "--backfill"
         if not args.date_from or not args.date_to:
-            parser.error("--backfill requires --from and --to")
+            parser.error(f"{flag} requires --from and --to")
         date_from = date.fromisoformat(args.date_from)
         date_to = date.fromisoformat(args.date_to)
-        run_analysis(is_backfill=True, date_from=date_from, date_to=date_to)
+        if args.seed:
+            run_seed(date_from, date_to, window_days=args.window_days)
+        else:
+            run_analysis(is_backfill=True, date_from=date_from, date_to=date_to)
     else:
         run_analysis()
 
