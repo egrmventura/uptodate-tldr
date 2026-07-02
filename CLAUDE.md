@@ -65,8 +65,11 @@ A parallel entrypoint that runs **ingest → group → analyze → persist → d
 ```bash
 python analyze.py --run-now
 python analyze.py --backfill --from 2024-01-01 --to 2025-01-01
+python analyze.py --seed --from 2024-01-01 --to 2025-01-01 --window-days 30
 python analyze.py --timeline "Anthropic MCP"
 ```
+
+`--seed` splits the range into consecutive `--window-days` windows and runs the backfill pipeline per window. Idempotent (store's `UNIQUE + INSERT OR IGNORE`); a failed window logs and continues; digest delivery is skipped (seeding persists history only).
 
 ### LLM token budget rules
 - Grouper: fixed 1024 (grouping JSON is compact).
