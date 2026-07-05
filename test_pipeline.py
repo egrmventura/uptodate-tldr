@@ -131,6 +131,64 @@ def test_arxiv_source(topic: str):
         record("arxiv_item_has_citations_key", True, "skipped — source temporarily unavailable")
 
 
+# ---------- HN BACKFILL WINDOW (F1 fix — offline) ----------
+
+def test_hn_window_filter_unit():
+    from sources.hackernews import _window_filter
+
+    # explicit window: [from 00:00 UTC, to+1d 00:00 UTC)
+    f = _window_filter("2026-01-01", "2026-01-07")
+    start = int(datetime(2026, 1, 1, tzinfo=timezone.utc).timestamp())
+    end = int(datetime(2026, 1, 8, tzinfo=timezone.utc).timestamp())
+    record("hn_window_explicit", f == f"created_at_i>={start},created_at_i<{end}", f)
+
+    # single-day window is valid (to is inclusive)
+    f = _window_filter("2026-03-05", "2026-03-05")
+    s = int(datetime(2026, 3, 5, tzinfo=timezone.utc).timestamp())
+    e = int(datetime(2026, 3, 6, tzinfo=timezone.utc).timestamp())
+    record("hn_window_single_day", f == f"created_at_i>={s},created_at_i<{e}", f)
+
+    # missing/partial/reversed/malformed all fall back to trailing 7 days
+    for name, args in [
+        ("absent", (None, None)),
+        ("partial", ("2026-01-01", None)),
+        ("reversed", ("2026-02-01", "2026-01-01")),
+        ("malformed", ("not-a-date", "2026-01-07")),
+    ]:
+        f = _window_filter(*args)
+        record(f"hn_window_fallback_{name}", f.startswith("created_at_i>") and ">=" not in f, f)
+
+
+def test_hn_fetch_honors_backfill_window():
+    """F1 regression: the injected date_from/date_to must reach the Algolia query."""
+    from unittest.mock import MagicMock, patch
+    from sources.hackernews import HackerNewsSource as _HN
+
+    captured: dict[str, Any] = {}
+    ok = MagicMock()
+    ok.raise_for_status.return_value = None
+    ok.json.return_value = {"hits": []}
+
+    def fake_get(url, params=None, timeout=None):
+        captured.update(params or {})
+        return ok
+
+    with patch("sources.hackernews.requests.get", side_effect=fake_get):
+        _HN().fetch("Claude", {"date_from": "2026-01-01", "date_to": "2026-01-07"})
+    start = int(datetime(2026, 1, 1, tzinfo=timezone.utc).timestamp())
+    end = int(datetime(2026, 1, 8, tzinfo=timezone.utc).timestamp())
+    record("hn_fetch_window_in_query",
+           captured.get("numericFilters") == f"created_at_i>={start},created_at_i<{end}",
+           str(captured.get("numericFilters")))
+
+    # without dates, the original trailing-7-days behavior is unchanged
+    captured.clear()
+    with patch("sources.hackernews.requests.get", side_effect=fake_get):
+        _HN().fetch("Claude", {})
+    nf = captured.get("numericFilters", "")
+    record("hn_fetch_default_unchanged", nf.startswith("created_at_i>") and ">=" not in nf, nf)
+
+
 # ---------- RANKER ----------
 
 def test_normalize_title():
@@ -1407,6 +1465,10 @@ def main():
     print("\n[Sources — Live API]")
     test_hn_source(topic)
     test_arxiv_source(topic)
+
+    print("\n[HN Backfill Window — Offline]")
+    test_hn_window_filter_unit()
+    test_hn_fetch_honors_backfill_window()
 
     print("\n[Ranker — Unit]")
     test_normalize_title()
