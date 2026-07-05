@@ -132,6 +132,45 @@ def test_consolidate_change_events():
         assert set(e) == {"at", "url", "old_group", "new_group"}
 
 
+# ---------- M4: retrieval ----------
+
+def _retriever(tmp_path: Path):
+    import json
+    from secondbrain.consolidate import consolidate
+    from secondbrain.retrieval import Retriever
+
+    corpus = _synthetic_corpus()
+    groups, vecs = consolidate(corpus)
+
+    (tmp_path / "corpus.json").write_text(json.dumps(corpus))
+    (tmp_path / "vectors.json").write_text(json.dumps(
+        [{"url": a["url"], "vector": v} for a, v in zip(corpus, vecs)]))
+    (tmp_path / "groups.json").write_text(json.dumps({"groups": groups}))
+    return Retriever(tmp_path / "vectors.json", tmp_path / "corpus.json",
+                     tmp_path / "groups.json")
+
+
+def test_retrieval_relevant_and_cited(tmp_path):
+    r = _retriever(tmp_path)
+    hits = r.search("memory skills persistence")
+    assert hits, "no hits for an on-corpus query"
+    # top hit is from the memory cluster, and every hit is fully cited
+    assert "memory" in hits[0].title.lower()
+    for h in hits:
+        assert h.url.startswith("https://")
+        assert h.published and h.score > 0 and h.group
+
+
+def test_retrieval_ranking_and_noise_floor(tmp_path):
+    r = _retriever(tmp_path)
+    hits = r.search("mcp plugin server protocol")
+    assert hits and "mcp" in hits[0].title.lower()
+    scores = [h.score for h in hits]
+    assert scores == sorted(scores, reverse=True)
+    # nonsense query yields nothing above the noise floor
+    assert r.search("zzqx qqzz vvxx") == []
+
+
 def test_consolidated_artifacts_on_disk():
     """Integration check against the real consolidated corpus (skips if the
     consolidation pass hasn't been run in this checkout)."""
