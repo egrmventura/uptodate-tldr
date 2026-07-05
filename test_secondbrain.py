@@ -171,6 +171,46 @@ def test_retrieval_ranking_and_noise_floor(tmp_path):
     assert r.search("zzqx qqzz vvxx") == []
 
 
+# ---------- M5: serving + site ----------
+
+def test_api_routes():
+    """Route handling: param validation and 404s never require live data;
+    data-backed routes are exercised when artifacts exist."""
+    import pytest
+    from secondbrain.serve import Api, handle_path
+    api = Api()
+
+    status, body = handle_path(api, "/timeline")
+    assert (status, body["error"]) == (400, "missing ?topic=")
+    status, _ = handle_path(api, "/search")
+    assert status == 400
+    status, _ = handle_path(api, "/definitely-not-a-route")
+    assert status == 404
+
+    if not Path("output/second-brain-tests/consolidated/doc_vectors.json").exists():
+        pytest.skip("live artifacts not present for data-backed routes")
+    status, body = handle_path(api, "/health")
+    assert status == 200 and body["status"] == "ok" and body["docs"] > 0
+    status, hits = handle_path(api, "/search?q=claude+memory&k=3")
+    assert status == 200 and len(hits) <= 3
+    for h in hits:
+        assert h["url"].startswith("http")
+
+
+def test_site_builds_with_search_and_citations(tmp_path):
+    import pytest
+    if not Path("output/second-brain-tests/consolidated/doc_vectors.json").exists():
+        pytest.skip("live artifacts not present")
+    from secondbrain.site_build import build
+    out = build(tmp_path / "index.html")
+    page = out.read_text()
+    assert "<title>Claude Tools — Second Brain</title>" in page
+    assert 'id="q"' in page                      # search box
+    assert "const IDX=" in page                  # embedded index
+    assert page.count("https://") > 50           # citations everywhere
+    assert "storylines" in page
+
+
 def test_consolidated_artifacts_on_disk():
     """Integration check against the real consolidated corpus (skips if the
     consolidation pass hasn't been run in this checkout)."""

@@ -199,10 +199,11 @@ def main() -> None:
         for e in events:
             f.write(json.dumps(e) + "\n")
 
-    multi = sum(1 for g in groups if not g["singleton"])
-    singles = len(groups) - multi
-    print(f"consolidated: {len(articles)} articles → {len(groups)} groups "
-          f"({multi} multi-doc, {singles} singletons) | {len(events)} change events | "
+    multi = sum(1 for g in groups if not g["singleton"] and not g["off_topic"])
+    singles = sum(1 for g in groups if g["singleton"])
+    off = sum(g["size"] for g in groups if g["off_topic"])
+    print(f"consolidated: {len(articles)} articles → {multi} storylines, "
+          f"{singles} singletons, {off} filed off-topic | {len(events)} change events | "
           f"out={args.out}")
 
 
