@@ -1,0 +1,1485 @@
+{
+  "max_steps": 7,
+  "seeds": {
+    "data": "config:Data Engineering",
+    "engineering": "config:Data Engineering",
+    "codex": "config:New Codex Features",
+    "memory": "storyline:skills / forgets / memory",
+    "teams": "storyline:teams / sessions / subagent",
+    "sessions": "storyline:teams / sessions / subagent",
+    "subagent": "storyline:teams / sessions / subagent",
+    "skills": "storyline:skills / forgets / memory",
+    "forgets": "storyline:skills / forgets / memory",
+    "on-the-go": "storyline:on-the-go / phone. / pocket",
+    "phone": "storyline:on-the-go / phone. / pocket",
+    "pocket": "storyline:on-the-go / phone. / pocket",
+    "microsoft": "storyline:microsoft / copilot / months",
+    "copilot": "storyline:microsoft / copilot / months",
+    "remote": "storyline:remote / ran / web",
+    "ran": "storyline:remote / ran / web",
+    "web": "storyline:remote / ran / web",
+    "plugin": "storyline:plugin / mcp / server",
+    "mcp": "storyline:plugin / mcp / server",
+    "server": "storyline:plugin / mcp / server",
+    "sometimes": "storyline:sometimes / coherent / edit",
+    "coherent": "storyline:sometimes / coherent / edit",
+    "edit": "storyline:sometimes / coherent / edit",
+    "leaked": "storyline:leaked / registry / map",
+    "registry": "storyline:leaked / registry / map",
+    "map": "storyline:leaked / registry / map",
+    "thinking": "storyline:thinking / complex / analysis",
+    "complex": "storyline:thinking / complex / analysis",
+    "analysis": "storyline:thinking / complex / analysis",
+    "windows": "storyline:windows / linux / deepclaude",
+    "linux": "storyline:windows / linux / deepclaude",
+    "deepclaude": "storyline:windows / linux / deepclaude"
+  },
+  "reachable_terms": 212,
+  "step_histogram": {
+    "0": 32,
+    "1": 128,
+    "2": 31,
+    "3": 14,
+    "4": 7,
+    "5": 0,
+    "6": 0,
+    "7": 0
+  },
+  "search_keywords": [
+    {
+      "query": "claude copilot",
+      "term": "copilot",
+      "step": 0,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 3
+    },
+    {
+      "query": "claude linux",
+      "term": "linux",
+      "step": 0,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 3
+    },
+    {
+      "query": "claude microsoft",
+      "term": "microsoft",
+      "step": 0,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 3
+    },
+    {
+      "query": "claude skills",
+      "term": "skills",
+      "step": 0,
+      "via": "storyline:skills / forgets / memory",
+      "df": 3
+    },
+    {
+      "query": "claude engineering",
+      "term": "engineering",
+      "step": 0,
+      "via": "config:Data Engineering",
+      "df": 2
+    },
+    {
+      "query": "claude plugin",
+      "term": "plugin",
+      "step": 0,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "query": "claude remote",
+      "term": "remote",
+      "step": 0,
+      "via": "storyline:remote / ran / web",
+      "df": 2
+    },
+    {
+      "query": "claude sessions",
+      "term": "sessions",
+      "step": 0,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 2
+    },
+    {
+      "query": "claude teams",
+      "term": "teams",
+      "step": 0,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 2
+    },
+    {
+      "query": "claude thinking",
+      "term": "thinking",
+      "step": 0,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 2
+    },
+    {
+      "query": "claude windows",
+      "term": "windows",
+      "step": 0,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "query": "claude developers",
+      "term": "developers",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "query": "claude development",
+      "term": "development",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "query": "claude file",
+      "term": "file",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 2
+    },
+    {
+      "query": "claude github",
+      "term": "github",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "query": "claude macos",
+      "term": "macos",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "query": "claude popular",
+      "term": "popular",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "query": "claude skill",
+      "term": "skill",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "query": "claude terminal",
+      "term": "terminal",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "query": "claude thousands",
+      "term": "thousands",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "query": "claude change",
+      "term": "change",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 2
+    },
+    {
+      "query": "claude quota",
+      "term": "quota",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "query": "claude studio",
+      "term": "studio",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    }
+  ],
+  "all_terms": [
+    {
+      "term": "copilot",
+      "step": 0,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 3
+    },
+    {
+      "term": "linux",
+      "step": 0,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 3
+    },
+    {
+      "term": "microsoft",
+      "step": 0,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 3
+    },
+    {
+      "term": "skills",
+      "step": 0,
+      "via": "storyline:skills / forgets / memory",
+      "df": 3
+    },
+    {
+      "term": "engineering",
+      "step": 0,
+      "via": "config:Data Engineering",
+      "df": 2
+    },
+    {
+      "term": "plugin",
+      "step": 0,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "term": "remote",
+      "step": 0,
+      "via": "storyline:remote / ran / web",
+      "df": 2
+    },
+    {
+      "term": "sessions",
+      "step": 0,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 2
+    },
+    {
+      "term": "teams",
+      "step": 0,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 2
+    },
+    {
+      "term": "thinking",
+      "step": 0,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 2
+    },
+    {
+      "term": "windows",
+      "step": 0,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "term": "analysis",
+      "step": 0,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "codex",
+      "step": 0,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "coherent",
+      "step": 0,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "complex",
+      "step": 0,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "data",
+      "step": 0,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "deepclaude",
+      "step": 0,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "edit",
+      "step": 0,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "forgets",
+      "step": 0,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "leaked",
+      "step": 0,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "map",
+      "step": 0,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "mcp",
+      "step": 0,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "memory",
+      "step": 0,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "on-the-go",
+      "step": 0,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "phone",
+      "step": 0,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "pocket",
+      "step": 0,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "ran",
+      "step": 0,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "registry",
+      "step": 0,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "server",
+      "step": 0,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "sometimes",
+      "step": 0,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "subagent",
+      "step": 0,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "web",
+      "step": 0,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "developers",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "term": "development",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "term": "file",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 2
+    },
+    {
+      "term": "github",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "term": "macos",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "term": "popular",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "term": "skill",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 2
+    },
+    {
+      "term": "terminal",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "term": "thousands",
+      "step": 1,
+      "via": "storyline:microsoft / copilot / months",
+      "df": 2
+    },
+    {
+      "term": "admin",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "allow",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "analytics",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "anthropic-compatible",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "anywhere",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "articles",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "auto-mode",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "autonomous",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "bevy",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "bookmarked",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "capabilities",
+      "step": 1,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "carries",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "changes",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "codebases",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "commands",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "comprehensive",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "config",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "configurations",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "consumption",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "context",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "ctrl+v",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "customers",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "dashboard",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "deepseek",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "deliberate",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "devices",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "docs",
+      "step": 1,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "driver",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "drop-in",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "dumps",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "duration",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "engine",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "everything",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "everywhere",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "exploitable",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "feb",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "fix",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "forty",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "found",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "framework",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "fried",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "functional",
+      "step": 1,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "game",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "games",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "gap",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "gemini",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "godot",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "grep",
+      "step": 1,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "guidance",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "guides",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "happening",
+      "step": 1,
+      "via": "storyline:sometimes / coherent / edit",
+      "df": 1
+    },
+    {
+      "term": "hooks",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "image",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "images",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "include",
+      "step": 1,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "insights",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "install",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "kernel",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "large",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "launch",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "logs",
+      "step": 1,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "marketplace",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "matters",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "members",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "mobile",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "name",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "nicholas",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "notepad",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "npm",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "omnara",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "openai",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "opencode",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "orchestrate",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "org",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "personal",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "pro",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "raw",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "reasoning",
+      "step": 1,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "recognizable",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "records",
+      "step": 1,
+      "via": "storyline:thinking / complex / analysis",
+      "df": 1
+    },
+    {
+      "term": "refactor",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "refactoring",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "register",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "remembers",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "remotely",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "repo",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "repository",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "rice",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "router",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "rudel",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "rudel.ai",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "runs",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "s25",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "security",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "sells",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "set",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "settings.json",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "sign",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "simultaneously",
+      "step": 1,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "since",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "skill.md",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "smart",
+      "step": 1,
+      "via": "config:New Codex Features",
+      "df": 1
+    },
+    {
+      "term": "source",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "suddenly",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "tmux",
+      "step": 1,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "tooling",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "trusted",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "turn",
+      "step": 1,
+      "via": "storyline:remote / ran / web",
+      "df": 1
+    },
+    {
+      "term": "unusable",
+      "step": 1,
+      "via": "config:Data Engineering",
+      "df": 1
+    },
+    {
+      "term": "uploaded",
+      "step": 1,
+      "via": "storyline:teams / sessions / subagent",
+      "df": 1
+    },
+    {
+      "term": "vercel",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "via",
+      "step": 1,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "vulnerabilities",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "wasn",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "went",
+      "step": 1,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "worktree",
+      "step": 1,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "worktrees",
+      "step": 1,
+      "via": "storyline:on-the-go / phone. / pocket",
+      "df": 1
+    },
+    {
+      "term": "write-gated",
+      "step": 1,
+      "via": "storyline:skills / forgets / memory",
+      "df": 1
+    },
+    {
+      "term": "wsl",
+      "step": 1,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "change",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 2
+    },
+    {
+      "term": "quota",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "term": "bar",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "chill",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "cloudrouter",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "dark",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "dumbed",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "endpoint",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "experimenting",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "flickering",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "gauges",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "gpus",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "hardware",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "massive",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "menu",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "oscilloscope",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "paying",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "pty",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "replaced",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "shown",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "simulation",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "spice",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "spin",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "start",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "tames",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "useless",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "usually",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "verification",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "vms",
+      "step": 2,
+      "via": "storyline:plugin / mcp / server",
+      "df": 1
+    },
+    {
+      "term": "vt-based",
+      "step": 2,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "yoshi",
+      "step": 2,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "studio",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 2
+    },
+    {
+      "term": "common",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "connect",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "credit",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "email",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "fabian",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "going",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "local",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "pauses",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "pretty",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "quoting",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "scenario",
+      "step": 3,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "sdk",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "sent",
+      "step": 3,
+      "via": "storyline:leaked / registry / map",
+      "df": 1
+    },
+    {
+      "term": "accept",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "diff",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "ide",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "integration",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "native",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "reject",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    },
+    {
+      "term": "visual",
+      "step": 4,
+      "via": "storyline:windows / linux / deepclaude",
+      "df": 1
+    }
+  ]
+}

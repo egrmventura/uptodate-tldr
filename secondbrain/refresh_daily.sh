@@ -23,7 +23,10 @@ python3 -m secondbrain.consolidate
 #    but cap spend anyway
 python3 -m secondbrain.analyze_corpus --max-calls 20
 
-# 4. rebuild the site artifact
+# 4. rebuild the site artifact (site/index.html — the Vercel root)
 python3 -m secondbrain.site_build
+
+# 5. (optional) redeploy to Vercel — uncomment once the project is linked:
+# npx vercel deploy --prod --cwd site --yes
 
 echo "=== refresh complete ==="

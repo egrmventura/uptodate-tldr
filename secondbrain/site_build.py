@@ -21,7 +21,7 @@ from pathlib import Path
 GROUPS_PATH = Path("output/second-brain-tests/consolidated/consolidated_groups.json")
 VECTORS_PATH = Path("output/second-brain-tests/consolidated/doc_vectors.json")
 CORPUS_PATH = Path("output/second-brain-tests/live/corpus.json")
-DEFAULT_OUT = Path("output/second-brain-tests/site/index.html")
+DEFAULT_OUT = Path("site/index.html")  # Vercel root: site/
 
 INDEX_TERMS_PER_DOC = 20
 E = html.escape
