@@ -171,6 +171,64 @@ def test_retrieval_ranking_and_noise_floor(tmp_path):
     assert r.search("zzqx qqzz vvxx") == []
 
 
+# ---------- P2: category-driven collection ----------
+
+def test_collect_category_tagging_dedupe_rotation():
+    from unittest.mock import patch
+    from secondbrain.collect import collect_category
+
+    now = datetime.now(timezone.utc)
+
+    def fake_ingest(query, sources_config):
+        return [
+            Item(source="hn", title=f"{query} story", url=f"https://x/{query}",
+                 score=5, published_at=now, summary_raw="raw excerpt"),
+            Item(source="rss", title="duplicate", url="https://x/known",
+                 score=0, published_at=now, summary_raw="dup"),
+        ]
+
+    known = {"https://x/known"}
+    with patch("main.ingest", side_effect=fake_ingest), \
+         patch("scraper.scrape", return_value=None):
+        records, cursor = collect_category(
+            category="Data Engineering",
+            queries=["dbt", "spark", "airflow"],
+            cursor=1,
+            known_urls=known,
+            sources_config={},
+            max_new=8,
+            fetched_at=now.isoformat(),
+        )
+
+    # rotation: cursor 1 picks queries[1], queries[2]; advances to 0 (mod 3)
+    assert [r["query"] for r in records] == ["spark", "airflow"]
+    assert cursor == 0
+    # tagging + citation fields on every record
+    for r in records:
+        assert r["category"] == "Data Engineering"
+        assert r["url"].startswith("https://")
+        assert r["summary"]  # scrape=None → falls back to excerpt
+        assert r["scraped"] is False
+    # dedupe: the known URL was skipped both times
+    assert all(r["url"] != "https://x/known" for r in records)
+
+
+def test_collect_respects_max_new_cap():
+    from unittest.mock import patch
+    from secondbrain.collect import collect_category
+
+    now = datetime.now(timezone.utc)
+
+    def flood(query, sources_config):
+        return [Item(source="hn", title=f"s{i}", url=f"https://x/{query}/{i}",
+                     score=1, published_at=now, summary_raw="e") for i in range(20)]
+
+    with patch("main.ingest", side_effect=flood), \
+         patch("scraper.scrape", return_value=None):
+        records, _ = collect_category("C", ["q1", "q2"], 0, set(), {}, 5, now.isoformat())
+    assert len(records) == 5
+
+
 # ---------- M5: serving + site ----------
 
 def test_api_routes():

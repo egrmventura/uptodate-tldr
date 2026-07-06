@@ -13,6 +13,43 @@ topics:
   - "New Codex Features"
   - "AI Memory"
 
+# Product categories for the timeline site (secondbrain/collect.py).
+# Each category rotates through its queries per collection run; every
+# collected record is tagged with its category, which flows through
+# consolidation → snapshots → the site's category tabs.
+categories:
+  "Data Engineering":
+    queries:
+      - "data engineering"
+      - "dbt"
+      - "data pipeline"
+      - "data warehouse"
+      - "spark"
+      - "airflow"
+      - "iceberg"
+  "AI & ML Tools":
+    queries:
+      - "claude code"
+      - "ai coding agent"
+      - "mcp server"
+      - "copilot"
+      - "cursor ai"
+      - "llm tooling"
+  "LLM Platforms":
+    queries:
+      - "anthropic"
+      - "openai release"
+      - "gemini"
+      - "llama model"
+      - "claude api"
+  "AI Memory & Agents":
+    queries:
+      - "ai memory"
+      - "agent memory"
+      - "rag retrieval"
+      - "vector database"
+      - "embeddings"
+
 # Number of items to summarize in the final digest (2-6)
 top_n: 4
 
@@ -31,10 +68,15 @@ sources:
     # See sources/linkedin.py for the fragility tradeoffs of this source.
     max_results: 15
   rss:
-    # Disabled until feeds are configured; a feed is its own curation, so the
-    # topic query does not apply. Add feed URLs and flip enabled to true.
-    enabled: false
-    feeds: []
+    # Curated "reputable resources" feeds for the timeline product. A feed is
+    # its own curation, so the topic query does not apply. Bad/moved feeds are
+    # isolated by the source (log + skip).
+    enabled: true
+    feeds:
+      - "https://aws.amazon.com/blogs/big-data/feed/"
+      - "https://huggingface.co/blog/feed.xml"
+      - "https://simonwillison.net/atom/everything/"
+      - "https://www.databricks.com/feed"
     max_results: 20
 
 # Optional full-text enrichment: after sources return items, fetch each item's

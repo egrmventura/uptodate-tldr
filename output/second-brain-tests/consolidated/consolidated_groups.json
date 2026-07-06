@@ -1,16 +1,17 @@
 {
-  "consolidated_at": "2026-07-05T17:08:07.908006+00:00",
-  "corpus_size": 249,
+  "consolidated_at": "2026-07-06T04:29:08.483350+00:00",
+  "corpus_size": 281,
   "groups": [
     {
-      "label": "sdk / tray / windows",
-      "size": 5,
+      "label": "sdk / subscription / tray",
+      "size": 6,
       "singleton": false,
       "off_topic": false,
       "urls": [
         "https://github.com/apexlocal-jz/claude-usage-tray",
         "https://www.xda-developers.com/anthropics-claude-subscriptions-no-longer-include-agent-sdk-and-claude-p-usage/",
         "https://news.ycombinator.com/item?id=48546618",
+        "https://codewithmukesh.com/blog/anatomy-claude-code-session/",
         "https://github.com/wavever/CCLimitPing",
         "https://origami.sa/en/blog/anthropic-pauses-agent-sdk-subscription-billing-change/"
       ],
@@ -18,12 +19,59 @@
         127,
         178,
         196,
+        211,
         218,
         237
       ],
       "period": [
         "2026-05-14",
         "2026-06-16"
+      ]
+    },
+    {
+      "label": "data / improve / guessing",
+      "size": 5,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://www.andrewjesson.com/blog/the-engineering-practices-claude-code-and-codex-use-to-improve-ai-agents/",
+        "https://www.altimate.ai/blog/where-ai-agents-belong-in-data-engineering-the-correctness-layer/",
+        "https://www.revos.ai/blog/agentic-data-engineering",
+        "https://xorq.dev/blog/grammar-for-data-engineering/",
+        "http://www.andrewjesson.com/blog/when-does-data-help-automated-agent-engineering/"
+      ],
+      "member_indices": [
+        116,
+        249,
+        250,
+        252,
+        255
+      ],
+      "period": [
+        "2026-06-17",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "expensive / got / ago",
+      "size": 4,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://old.reddit.com/r/ClaudeAI/comments/1t3aiqa/my_coworker_and_i_planning_a_feature_with_our_two/",
+        "https://news.ycombinator.com/item?id=48230097",
+        "https://old.reddit.com/r/dataengineering/comments/1uiybbn/save_storage_by_deduplicating_parquet_data_at/",
+        "https://www.vincentschmalbach.com/claude-code-quietly-looks-5x-more-expensive/"
+      ],
+      "member_indices": [
+        96,
+        171,
+        253,
+        262
+      ],
+      "period": [
+        "2026-05-04",
+        "2026-06-30"
       ]
     },
     {
@@ -47,6 +95,26 @@
       ]
     },
     {
+      "label": "alibaba / illicitly / extracted",
+      "size": 3,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/",
+        "https://www.reuters.com/world/china/anthropic-says-alibaba-illicitly-extracted-claude-ai-model-capabilities-2026-06-24/",
+        "https://arstechnica.com/tech-policy/2026/06/anthropic-claims-alibaba-defied-trump-to-attack-claude-and-steal-capabilities/"
+      ],
+      "member_indices": [
+        259,
+        265,
+        272
+      ],
+      "period": [
+        "2026-06-24",
+        "2026-07-03"
+      ]
+    },
+    {
       "label": "zerogpu / architectures / slash",
       "size": 2,
       "singleton": false,
@@ -65,7 +133,25 @@
       ]
     },
     {
-      "label": "erase / days / default",
+      "label": "lsp / grep / typescript",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/mjn298/ts7-lsp-plugin/tree/main",
+        "https://blog.codonomics.com/2026/04/pro-grade-java-development-in-claude.html"
+      ],
+      "member_indices": [
+        45,
+        86
+      ],
+      "period": [
+        "2026-05-05",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "erase / default / days",
       "size": 2,
       "singleton": false,
       "off_topic": false,
@@ -83,7 +169,7 @@
       ]
     },
     {
-      "label": "bar / gauges / menu",
+      "label": "bar / menu / gauges",
       "size": 2,
       "singleton": false,
       "off_topic": false,
@@ -119,7 +205,7 @@
       ]
     },
     {
-      "label": "microsoft / thousands / canceling",
+      "label": "microsoft / thousands / developers",
       "size": 2,
       "singleton": false,
       "off_topic": false,
@@ -137,25 +223,43 @@
       ]
     },
     {
-      "label": "intelligence / emotions / compete",
+      "label": "plugins. / plugins / community",
       "size": 2,
       "singleton": false,
       "off_topic": false,
       "urls": [
-        "https://github.com/lbj96347/compete",
-        "https://github.com/ibm777p2/Intelligence-Emotions"
+        "https://johnstawinski.com/2026/06/18/repo-jacking-anthropics-claude-community-plugins-and-the-shas-that-saved-them/",
+        "https://news.ycombinator.com/item?id=48761798"
       ],
       "member_indices": [
-        165,
-        170
+        166,
+        279
       ],
       "period": [
-        "2026-06-12",
-        "2026-06-28"
+        "2026-06-19",
+        "2026-07-02"
       ]
     },
     {
-      "label": "notes / cto / bill",
+      "label": "started / cleanup / engineers",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://evgeniipendragon.com/posts/managing-claude-code-made-me-a-better-tech-lead/",
+        "https://puremint.co.uk/blog/stop-your-ai-memory-file-rotting/"
+      ],
+      "member_indices": [
+        179,
+        278
+      ],
+      "period": [
+        "2026-06-25",
+        "2026-06-25"
+      ]
+    },
+    {
+      "label": "notes / bill / friday.",
       "size": 2,
       "singleton": false,
       "off_topic": false,
@@ -170,6 +274,24 @@
       "period": [
         "2026-05-16",
         "2026-06-17"
+      ]
+    },
+    {
+      "label": "mythos / restoring / tomorrow",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://www.semafor.com/article/06/27/2026/us-releases-powerful-anthropic-model-mythos-to-some-us-companies",
+        "https://twitter.com/AnthropicAI/status/2072106151890809341"
+      ],
+      "member_indices": [
+        266,
+        271
+      ],
+      "period": [
+        "2026-06-26",
+        "2026-06-30"
       ]
     },
     {
@@ -253,7 +375,7 @@
       ]
     },
     {
-      "label": "patterns / memory / files",
+      "label": "patterns / files / memory",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -333,7 +455,7 @@
       ]
     },
     {
-      "label": "dmg / autocommit.sh / persistent",
+      "label": "dmg / autocommit.sh / slash",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -413,7 +535,7 @@
       ]
     },
     {
-      "label": "managing / dashboard / monitoring",
+      "label": "managing / dashboard / instances",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -445,7 +567,7 @@
       ]
     },
     {
-      "label": "tmux / mux / overlay",
+      "label": "tmux / mux / fzf",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -493,7 +615,7 @@
       ]
     },
     {
-      "label": "jsonl / memory / browsing",
+      "label": "jsonl / browsing / viewer",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -509,7 +631,7 @@
       ]
     },
     {
-      "label": "router / opencode / routing",
+      "label": "router / opencode / picks",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -541,7 +663,7 @@
       ]
     },
     {
-      "label": "grok / antigravity / dive",
+      "label": "grok / antigravity / dive-cli",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -589,7 +711,7 @@
       ]
     },
     {
-      "label": "happening / step / separate",
+      "label": "happening / step / below",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -605,7 +727,7 @@
       ]
     },
     {
-      "label": "aips / re-doing / v7.0",
+      "label": "aips / claude.md / re-doing",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -717,22 +839,6 @@
       ]
     },
     {
-      "label": "lsp / typescript / tsc",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://github.com/mjn298/ts7-lsp-plugin/tree/main"
-      ],
-      "member_indices": [
-        45
-      ],
-      "period": [
-        "2026-06-29",
-        "2026-06-29"
-      ]
-    },
-    {
       "label": "agile / product / specmanager",
       "size": 1,
       "singleton": true,
@@ -813,7 +919,7 @@
       ]
     },
     {
-      "label": "vps / workbench / dedicated",
+      "label": "vps / workbench / cloud",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -845,7 +951,7 @@
       ]
     },
     {
-      "label": "eval / agent-evals / evaluating",
+      "label": "eval / agent-evals / end-to-end",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -973,38 +1079,6 @@
       ]
     },
     {
-      "label": "grep / lsp / issue",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://blog.codonomics.com/2026/04/pro-grade-java-development-in-claude.html"
-      ],
-      "member_indices": [
-        86
-      ],
-      "period": [
-        "2026-05-05",
-        "2026-05-05"
-      ]
-    },
-    {
-      "label": "coworker / codes / room.",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://old.reddit.com/r/ClaudeAI/comments/1t3aiqa/my_coworker_and_i_planning_a_feature_with_our_two/"
-      ],
-      "member_indices": [
-        96
-      ],
-      "period": [
-        "2026-05-04",
-        "2026-05-04"
-      ]
-    },
-    {
       "label": "single-agent / conductor / performance",
       "size": 1,
       "singleton": true,
@@ -1082,22 +1156,6 @@
       "period": [
         "2026-06-20",
         "2026-06-20"
-      ]
-    },
-    {
-      "label": "improve / baseline / practices",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://www.andrewjesson.com/blog/the-engineering-practices-claude-code-and-codex-use-to-improve-ai-agents/"
-      ],
-      "member_indices": [
-        116
-      ],
-      "period": [
-        "2026-06-17",
-        "2026-06-17"
       ]
     },
     {
@@ -1325,51 +1383,35 @@
       ]
     },
     {
-      "label": "community / plugins. / plugins",
+      "label": "compete / competitive / intelligence",
       "size": 1,
       "singleton": true,
       "off_topic": false,
       "urls": [
-        "https://johnstawinski.com/2026/06/18/repo-jacking-anthropics-claude-community-plugins-and-the-shas-that-saved-them/"
+        "https://github.com/lbj96347/compete"
       ],
       "member_indices": [
-        166
+        165
       ],
       "period": [
-        "2026-06-19",
-        "2026-06-19"
+        "2026-06-28",
+        "2026-06-28"
       ]
     },
     {
-      "label": "robelkidin / ago / next",
+      "label": "emotions / intelligence / git",
       "size": 1,
       "singleton": true,
       "off_topic": false,
       "urls": [
-        "https://news.ycombinator.com/item?id=48230097"
+        "https://github.com/ibm777p2/Intelligence-Emotions"
       ],
       "member_indices": [
-        171
+        170
       ],
       "period": [
-        "2026-05-21",
-        "2026-05-21"
-      ]
-    },
-    {
-      "label": "started / engineers / field",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://evgeniipendragon.com/posts/managing-claude-code-made-me-a-better-tech-lead/"
-      ],
-      "member_indices": [
-        179
-      ],
-      "period": [
-        "2026-06-25",
-        "2026-06-25"
+        "2026-06-12",
+        "2026-06-12"
       ]
     },
     {
@@ -1469,7 +1511,7 @@
       ]
     },
     {
-      "label": "codacy / token / command-line",
+      "label": "codacy / token / node.js",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -1501,7 +1543,7 @@
       ]
     },
     {
-      "label": "offload / nix / software",
+      "label": "offload / nix / remote",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -1533,22 +1575,6 @@
       ]
     },
     {
-      "label": "anatomy / trace / call.",
-      "size": 1,
-      "singleton": true,
-      "off_topic": false,
-      "urls": [
-        "https://codewithmukesh.com/blog/anatomy-claude-code-session/"
-      ],
-      "member_indices": [
-        211
-      ],
-      "period": [
-        "2026-06-05",
-        "2026-06-05"
-      ]
-    },
-    {
       "label": "cache / quietly / hour",
       "size": 1,
       "singleton": true,
@@ -1565,7 +1591,7 @@
       ]
     },
     {
-      "label": "sandbox / wrong / copy",
+      "label": "sandbox / wrong / skip-permissions",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -1581,7 +1607,7 @@
       ]
     },
     {
-      "label": "rapunzel / tab / because",
+      "label": "rapunzel / tab / agents.",
       "size": 1,
       "singleton": true,
       "off_topic": false,
@@ -1610,6 +1636,310 @@
       "period": [
         "2026-05-20",
         "2026-05-20"
+      ]
+    },
+    {
+      "label": "runlet / jvm / connectors",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/tjb/Runlet"
+      ],
+      "member_indices": [
+        251
+      ],
+      "period": [
+        "2026-06-22",
+        "2026-06-22"
+      ]
+    },
+    {
+      "label": "datadog / scale / completeness",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.datadoghq.com/blog/engineering/data-pipeline-completeness/"
+      ],
+      "member_indices": [
+        254
+      ],
+      "period": [
+        "2026-07-02",
+        "2026-07-02"
+      ]
+    },
+    {
+      "label": "orbital / space / hypersonics",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://buttondown.com/MaxQFrontier/archive/from-orbital-data-farms-to-hypersonic-prints-this/"
+      ],
+      "member_indices": [
+        256
+      ],
+      "period": [
+        "2026-07-05",
+        "2026-07-05"
+      ]
+    },
+    {
+      "label": "steganographically / marking / reasons.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://thereallo.dev/blog/claude-code-prompt-steganography"
+      ],
+      "member_indices": [
+        257
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "mri / agreed / grade",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://antoine.fi/mri-analysis-using-claude-code-opus"
+      ],
+      "member_indices": [
+        258
+      ],
+      "period": [
+        "2026-06-28",
+        "2026-06-28"
+      ]
+    },
+    {
+      "label": "zcode / makers / glm",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://zcode.z.ai/cn"
+      ],
+      "member_indices": [
+        260
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "banned / messages / know",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48641160"
+      ],
+      "member_indices": [
+        261
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "spyware-like / embedded / hidden",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://twitter.com/IntCyberDigest/status/2071971609183678544"
+      ],
+      "member_indices": [
+        263
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "shouldn / copy-paste / reflex",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://home.robusta.dev/blog/you-really-shouldnt-copy-paste-errors-into-claude-code"
+      ],
+      "member_indices": [
+        264
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "unlocked / www.nytimes.com / politics",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.nytimes.com/2026/06/23/us/politics/nsa-lost-access-anthropic-tool.html"
+      ],
+      "member_indices": [
+        267
+      ],
+      "period": [
+        "2026-06-24",
+        "2026-06-24"
+      ]
+    },
+    {
+      "label": "services / consumer / products",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.anthropic.com/legal/privacy"
+      ],
+      "member_indices": [
+        268
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "austria / lobbies / curbs",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.bloomberg.com/news/articles/2026-06-28/austria-lobbies-eu-to-host-anthropic-after-us-access-curbs"
+      ],
+      "member_indices": [
+        269
+      ],
+      "period": [
+        "2026-06-28",
+        "2026-06-28"
+      ]
+    },
+    {
+      "label": "ceo / dangerous / getting",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://xcancel.com/coinbureau/status/2071330294452666695"
+      ],
+      "member_indices": [
+        270
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "merkle / fact / committed.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://parametric-memory.dev"
+      ],
+      "member_indices": [
+        273
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "benchmark / memory / asterisk",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://tenureai.dev/writing/every-ai-memory-benchmark-has-an-asterisk/"
+      ],
+      "member_indices": [
+        274
+      ],
+      "period": [
+        "2026-06-24",
+        "2026-06-24"
+      ]
+    },
+    {
+      "label": "memoryops / governed / state.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/patibandlavenkatamanideep/memoryops-ai"
+      ],
+      "member_indices": [
+        275
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "retrieval / problem / incentivized",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.indiehackers.com/post/the-ai-memory-problem-nobody-is-incentivized-to-solve-9c294bdcaa"
+      ],
+      "member_indices": [
+        276
+      ],
+      "period": [
+        "2026-06-25",
+        "2026-06-25"
+      ]
+    },
+    {
+      "label": "case / memory / basics",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://kingofkimchi.substack.com/p/the-memory-files-case-01-ai-memory"
+      ],
+      "member_indices": [
+        277
+      ],
+      "period": [
+        "2026-07-04",
+        "2026-07-04"
+      ]
+    },
+    {
+      "label": "empirical / personal / across",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://empirical.gauzza.com/"
+      ],
+      "member_indices": [
+        280
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
       ]
     },
     {
