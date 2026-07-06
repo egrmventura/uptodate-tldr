@@ -1,0 +1,105 @@
+# Daily second-brain refresh — runs the full collect → consolidate → analyze →
+# export → publish cycle off-laptop.
+#
+# Enable by adding repo secrets (Settings → Secrets → Actions):
+#   ANTHROPIC_API_KEY       analyst + freshness-check spend
+#   BLOB_READ_WRITE_TOKEN   Vercel Blob uploads (snapshots + db backup)
+#   VERCEL_TOKEN            production deploy (optional until Vercel is linked)
+#
+# State model: snapshots are the source the site reads; analyses.db is
+# restored from Blob at start and re-uploaded at end, so runs accumulate
+# history without committing data to git. First run starts fresh (idempotent
+# store semantics make that safe).
+
+name: daily-refresh
+
+on:
+  schedule:
+    - cron: "0 7 * * *"   # 07:00 UTC daily
+  workflow_dispatch: {}    # manual run for validation before trusting cron
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore analyses.db + corpus from Blob (best-effort)
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          mkdir -p output/second-brain-tests/live
+          python3 - <<'EOF'
+          import os, urllib.request
+          base = os.environ.get("SNAPSHOT_BASE_URL", "")
+          # state objects live alongside snapshots under a stable prefix
+          for path, dest in [("state/analyses.db", "output/analyses.db"),
+                             ("state/corpus.json", "output/second-brain-tests/live/corpus.json"),
+                             ("state/collect_state.json", "output/second-brain-tests/live/collect_state.json")]:
+              url = f"{base}/{path}" if base else ""
+              try:
+                  if url:
+                      urllib.request.urlretrieve(url, dest)
+                      print("restored", dest)
+              except Exception as exc:
+                  print(f"no prior {path} ({exc}) — starting fresh")
+          EOF
+        env:
+          SNAPSHOT_BASE_URL: ${{ vars.SNAPSHOT_BASE_URL }}
+
+      - name: Collect (HN + arXiv + RSS, category-driven)
+        run: python3 -m secondbrain.collect
+
+      - name: Consolidate
+        run: python3 -m secondbrain.consolidate
+
+      - name: Analyze (LLM, spend-capped)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 -m secondbrain.analyze_corpus --max-calls 20
+
+      - name: Export snapshots
+        run: python3 -m secondbrain.export_snapshots
+
+      - name: QA gate — offline test suites
+        run: python3 -m pytest test_secondbrain.py -q
+
+      - name: Upload snapshots + state to Blob
+        if: ${{ env.BLOB_READ_WRITE_TOKEN != '' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          npx --yes vercel blob put snapshots/topics.json       --pathname snapshots/topics.json --force
+          npx --yes vercel blob put snapshots/timelines.json    --pathname snapshots/timelines.json --force
+          npx --yes vercel blob put snapshots/search_index.json --pathname snapshots/search_index.json --force
+          npx --yes vercel blob put snapshots/meta.json         --pathname snapshots/meta.json --force
+          npx --yes vercel blob put output/analyses.db          --pathname state/analyses.db --force
+          npx --yes vercel blob put output/second-brain-tests/live/corpus.json --pathname state/corpus.json --force
+          npx --yes vercel blob put output/second-brain-tests/live/collect_state.json --pathname state/collect_state.json --force
+
+      - name: Rebuild site page
+        run: |
+          if [ -n "${{ vars.SNAPSHOT_BASE_URL }}" ]; then
+            python3 -m secondbrain.site_build --data-url "${{ vars.SNAPSHOT_BASE_URL }}"
+          else
+            python3 -m secondbrain.site_build
+          fi
+
+      - name: Deploy to Vercel (production)
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel deploy --prod --yes --token "$VERCEL_TOKEN"

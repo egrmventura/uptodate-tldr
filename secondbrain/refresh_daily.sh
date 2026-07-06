@@ -12,8 +12,8 @@ cd "$(dirname "$0")/.."
 
 echo "=== second-brain refresh $(date -u +%FT%TZ) ==="
 
-# 1. collect: one loop pass over the factual keywords (URL-deduped)
-python3 output/second-brain-tests/live/loop_iteration.py
+# 1. collect: category-driven pass over HN + arXiv + RSS (URL-deduped)
+python3 -m secondbrain.collect
 
 # 2. consolidate: batch re-cluster; appends change events
 python3 -m secondbrain.consolidate

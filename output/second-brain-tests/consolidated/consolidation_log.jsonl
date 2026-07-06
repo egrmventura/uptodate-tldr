@@ -809,3 +809,316 @@
 {"at": "2026-07-06T04:29:08.482994+00:00", "url": "https://codifycli.com/", "old_group": "codify / show / terraform", "new_group": "(off-topic holding)"}
 {"at": "2026-07-06T04:29:08.482994+00:00", "url": "https://github.com/xyzcoordinate/TopoGlyph/tree/main", "old_group": "topoglyph / language / system", "new_group": "(off-topic holding)"}
 {"at": "2026-07-06T04:29:08.482994+00:00", "url": "https://github.com/Akylas/SimulatorCamera", "old_group": "camera / show / ios", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48124057", "old_group": "x2f / agent / view", "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tejpalv/cc-wiki", "old_group": "x2f / agent / view", "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.npmjs.com/package/downlaude", "old_group": "bye / show / downlaude", "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://medium.com/@alirezarezvani/claude-agent-view-changes-how-you-run-your-engineering-day-ec7402221582", "old_group": "release / notes / claude", "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://medium.com/@developer_programmer/i-spent-47-000-on-claude-code-in-90-days-my-cto-asked-me-one-question-and-i-couldnt-answer-it-af3b203f81bb", "old_group": "plugin / intelligence / repository", "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://webkit.org/blog/18136/introducing-the-safari-mcp-server-for-web-developers/", "old_group": null, "new_group": "bye / safari / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/apexlocal-jz/claude-usage-tray", "old_group": "claude / code / network", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.xda-developers.com/anthropics-claude-subscriptions-no-longer-include-agent-sdk-and-claude-p-usage/", "old_group": "x2f / agent / view", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48546618", "old_group": "x2f / agent / view", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://codewithmukesh.com/blog/anatomy-claude-code-session/", "old_group": "typescript / lsp / claude", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/wavever/CCLimitPing", "old_group": "down / same / way", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://origami.sa/en/blog/anthropic-pauses-agent-sdk-subscription-billing-change/", "old_group": "x2f / agent / view", "new_group": "sdk / subscription / tray"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.cnbc.com/2026/06/28/google-limits-metas-use-of-its-gemini-ai-models-ft-reports.html", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://docs.cloud.google.com/gemini/docs/code-review/review-repo-code", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.thatprivacyguy.com/blog/google-ai-guardrails-protect-trump/", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48642229", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.businessinsider.com/google-3-5-pro-july-release-tokens-ai-agents-model-2026-6", "old_group": null, "new_group": "google / gemini / flash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://arxiv.org/abs/2607.02370v1", "old_group": null, "new_group": "arxivlabs / arxiv / values"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://arxiv.org/abs/2607.01590v1", "old_group": null, "new_group": "arxivlabs / arxiv / values"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://arxiv.org/abs/2607.00820v1", "old_group": null, "new_group": "arxivlabs / arxiv / values"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://arxiv.org/abs/2607.00700v1", "old_group": null, "new_group": "arxivlabs / arxiv / values"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://arxiv.org/abs/2607.00555v1", "old_group": null, "new_group": "arxivlabs / arxiv / values"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://old.reddit.com/r/ClaudeAI/comments/1t3aiqa/my_coworker_and_i_planning_a_feature_with_our_two/", "old_group": "claude / code / network", "new_group": "expensive / got / ago"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48230097", "old_group": "team / sub / person", "new_group": "expensive / got / ago"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://old.reddit.com/r/dataengineering/comments/1uiybbn/save_storage_by_deduplicating_parquet_data_at/", "old_group": null, "new_group": "expensive / got / ago"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.vincentschmalbach.com/claude-code-quietly-looks-5x-more-expensive/", "old_group": null, "new_group": "expensive / got / ago"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.andrewjesson.com/blog/the-engineering-practices-claude-code-and-codex-use-to-improve-ai-agents/", "old_group": "build / prompt / thing", "new_group": "improve / guessing / baseline"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.altimate.ai/blog/where-ai-agents-belong-in-data-engineering-the-correctness-layer/", "old_group": null, "new_group": "improve / guessing / baseline"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.revos.ai/blog/agentic-data-engineering", "old_group": null, "new_group": "improve / guessing / baseline"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://www.andrewjesson.com/blog/when-does-data-help-automated-agent-engineering/", "old_group": null, "new_group": "improve / guessing / baseline"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://johnstawinski.com/2026/06/18/repo-jacking-anthropics-claude-community-plugins-and-the-shas-that-saved-them/", "old_group": "plugin / intelligence / repository", "new_group": "plugins / graphql / graphiql"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48761798", "old_group": null, "new_group": "plugins / graphql / graphiql"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://graphql-mcp.com/", "old_group": null, "new_group": "plugins / graphql / graphiql"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://bull-run.org/", "old_group": null, "new_group": "plugins / graphql / graphiql"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/waldekmastykarz/atifact", "old_group": "build / prompt / thing", "new_group": "logs / broken / min"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/mirko-pira/skillhealth", "old_group": "cost-aware / agent / ide", "new_group": "logs / broken / min"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.youtube.com/watch?v=P2I2bR5y7NA", "old_group": null, "new_group": "logs / broken / min"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/", "old_group": null, "new_group": "alibaba / illicitly / extracted"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.reuters.com/world/china/anthropic-says-alibaba-illicitly-extracted-claude-ai-model-capabilities-2026-06-24/", "old_group": null, "new_group": "alibaba / illicitly / extracted"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://arstechnica.com/tech-policy/2026/06/anthropic-claims-alibaba-defied-trump-to-attack-claude-and-steal-capabilities/", "old_group": null, "new_group": "alibaba / illicitly / extracted"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/mjn298/ts7-lsp-plugin/tree/main", "old_group": "typescript / lsp / claude", "new_group": "lsp / grep / typescript"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://blog.codonomics.com/2026/04/pro-grade-java-development-in-claude.html", "old_group": "x2f / agent / view", "new_group": "lsp / grep / typescript"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.npmjs.com/package/miii-cli", "old_group": "api / key / live", "new_group": "keys / miii / code-level"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://apps.apple.com/us/app/sieve-secret-scanner/id6767409365?mt=12", "old_group": "privacy / installing / ios", "new_group": "keys / miii / code-level"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.theverge.com/tech/930447/microsoft-claude-code-discontinued-notepad", "old_group": "x2f / agent / view", "new_group": "microsoft / thousands / canceling"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.techbuzz.ai/articles/microsoft-starts-canceling-claude-code-licenses", "old_group": "claude / microsoft / foundry", "new_group": "microsoft / thousands / canceling"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://evgeniipendragon.com/posts/managing-claude-code-made-me-a-better-tech-lead/", "old_group": "claude / code / network", "new_group": "started / cleanup / engineers"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://puremint.co.uk/blog/stop-your-ai-memory-file-rotting/", "old_group": null, "new_group": "started / cleanup / engineers"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/FeroVolar/Decision-Framework-Skill/", "old_group": "signals / skill / guide", "new_group": "signals / bus / reverse"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.csselectronics.com/pages/can-bus-reverse-engineering-ai-llm-claude", "old_group": "signals / skill / guide", "new_group": "signals / bus / reverse"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.semafor.com/article/06/27/2026/us-releases-powerful-anthropic-model-mythos-to-some-us-companies", "old_group": null, "new_group": "mythos / restoring / tomorrow"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://twitter.com/AnthropicAI/status/2072106151890809341", "old_group": null, "new_group": "mythos / restoring / tomorrow"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://empirical.gauzza.com/", "old_group": null, "new_group": "empirical / memory / personal"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/hyperb1iss/sibyl", "old_group": null, "new_group": "empirical / memory / personal"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://flama.dev/blog/building_an_mcp_server_with_flama/", "old_group": null, "new_group": "definitions / servers / protocol"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://bump.sh/blog/4-rules-to-build-an-efficient-mcp-server/", "old_group": null, "new_group": "definitions / servers / protocol"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://quickchat.ai/post/expose-ai-agent-as-mcp-server", "old_group": null, "new_group": "openapi / ais / spec"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://corelayer0.com", "old_group": null, "new_group": "openapi / ais / spec"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://patrickmccanna.net/inspecting-claude-codes-network-traffic-with-linux-namespaces-and-mitm-proxying-part-1/", "old_group": "claude / code / network", "new_group": "namespaces / network / discover"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/GPire/claude-skills-swarm", "old_group": "claude / code / network", "new_group": "architectures / slash / haiku"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Toadoum/ai-research-skill", "old_group": "build / prompt / thing", "new_group": "openclaw / recursive / research"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Kulaxyz/self-learning-skills", "old_group": "build / prompt / thing", "new_group": "hard-won / standing-instructions / differs"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://astgl.com/p/skill-mining-claude-code-config-patterns", "old_group": "build / prompt / thing", "new_group": "patterns / files / memory"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://capacitor.kurrent.io/", "old_group": "build / prompt / thing", "new_group": "review / capacitor / mem"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/emson/claudoro", "old_group": "claude / code / network", "new_group": "pomodoro / timer / claudoro"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.apimatic.io/blog/agentic-engineering-claude-code", "old_group": "ouijit / terminal / agent", "new_group": "three-phase / left / gaps"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/dotdevdotdev/agentwire-dev", "old_group": "build / prompt / thing", "new_group": "agentwire / shims / cockpit"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.agentsessions.dev/", "old_group": "build / prompt / thing", "new_group": "agnostic / managed / alternative"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/LoganYangBo/rh-trading-agent", "old_group": "typescript / lsp / claude", "new_group": "sub-agents / desk / robinhood"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/anthropics/claude-code/issues/62476", "old_group": "claude / code / network", "new_group": "jsonl / beware / transcripts."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://statuslin.es", "old_group": "claude / code / network", "new_group": "section / status / bar"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/FredAntB/Spec-Driven-Development", "old_group": "build / prompt / thing", "new_group": "sdd / interviews / requirements.md"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/responsiblparty/claude-dmg-skill", "old_group": "build / prompt / thing", "new_group": "dmg / autocommit.sh / slash"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://chatcode.dev/", "old_group": "build / prompt / thing", "new_group": "key. / chatcode / chatcode.dev"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/davidpv/opsx-spec-driven-development-toolkit", "old_group": "build / prompt / thing", "new_group": "scaffolds / openspec / init"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48231575", "old_group": "code / plan / mode", "new_group": "sdd / docs.google.com / sjkxf7hkoqyin9-3tbgy..."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/sermakarevich/sddw", "old_group": "code / plan / mode", "new_group": "spec-driven / requirements / repeat."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/sverrirsig/claude-control", "old_group": "claude / code / network", "new_group": "managing / dashboard / instances"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.conan.sh/", "old_group": "claude / code / network", "new_group": "conan / hud / macos"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/grzegorz-raczek-unit8/claude-quota", "old_group": "claude / code / network", "new_group": "bar / menu / gauges"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/fashton28/mux", "old_group": "claude / code / network", "new_group": "tmux / mux / fzf"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/chigichan24/crune", "old_group": "x2f / agent / view", "new_group": "traces / reusable / semantic"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Incultnitollc/claude-code-live-bridge", "old_group": "x2f / agent / view", "new_group": "cc-bridge / message / monitor"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/nvwalj/ai-memory-reader", "old_group": "build / prompt / thing", "new_group": "jsonl / browsing / viewer"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/workweave/router", "old_group": "down / same / way", "new_group": "router / opencode / picks"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/idodekerobo/draft-cli-plugin", "old_group": "build / prompt / thing", "new_group": "draft-agent / persistent / installed"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/stellarshenson/jupyterlab_claude_code_extension", "old_group": "claude / code / network", "new_group": "jupyterlab / right / launcher"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://medium.com/zerogpu/how-to-reduce-ai-compute-costs-with-our-claude-code-plugin-routing-lightweight-ai-tasks-to-small-2a265e19c699", "old_group": "plugin / intelligence / repository", "new_group": "zerogpu / lightweight / specialized"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/5dive-com/5dive", "old_group": "build / prompt / thing", "new_group": "grok / antigravity / dive-cli"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.arguslab.co/", "old_group": "x2f / agent / view", "new_group": "argus / tells / per"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/FarzamMohammadi/the-engineer", "old_group": "build / prompt / thing", "new_group": "merged / engineer / opencode"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Farfield-Dev/deep-review", "old_group": "plugin / intelligence / repository", "new_group": "review / senior-engineer-grade / phases"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/jarrodwatts/claude-hud", "old_group": "plugin / intelligence / repository", "new_group": "happening / step / below"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/kernalix7/AIPS", "old_group": "build / prompt / thing", "new_group": "aips / claude.md / re-doing"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://code.claude.com/docs/en/settings", "old_group": "claude / code / network", "new_group": "erase / default / days"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/unboundinnov/specdd", "old_group": "build / prompt / thing", "new_group": "specdd / spec-driven / feature"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/juliensimon/canopy", "old_group": "claude / code / network", "new_group": "parallel / jsonl / view"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/inkeep/open-knowledge", "old_group": null, "new_group": "openknowledge / obsidian / ai-first"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/harveer10x/earned-vs-burned-skill", "old_group": "claude / code / network", "new_group": "measuring / delivery / earned"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/nandnijaiswal/wtfismyrepo", "old_group": "build / prompt / thing", "new_group": "wtfismyrepo / engine / mins"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://recallplugin.dev", "old_group": "claude / code / network", "new_group": "wasting / everytime / continue"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tigerless-labs/autoharness", "old_group": "build / prompt / thing", "new_group": "autoharness / self-learning / layer"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/joanseg/specmanager", "old_group": "typescript / lsp / claude", "new_group": "agile / product / specmanager"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tomreinert/claude-annotate", "old_group": "typescript / lsp / claude", "new_group": "draw / feedback / send"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://twitter.com/samelldev/status/2070213157357072794", "old_group": "claude / code / network", "new_group": "leaking / v2.1.179 / url"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/SMJAI/open-memory-protocol", "old_group": "build / prompt / thing", "new_group": "omp / memory / curso"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Kuberwastaken/VPSmaxxing", "old_group": "build / prompt / thing", "new_group": "vps / workbench / dedicated"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/samchon/ttsc/tree/master/packages/graph", "old_group": "typescript / lsp / claude", "new_group": "ttsc / graph / typescript"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/fsilavong/agent-eval", "old_group": "skill / build / eval", "new_group": "eval / agent-evals / repeatable"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.claudinho.xyz/", "old_group": "skill / build / eval", "new_group": "weekend / prds. / project."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/MerqryLabs/ai-crawler-visibility", "old_group": "build / prompt / thing", "new_group": "crawlers / search / site"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/farhan0167/cv-claw", "old_group": "api / claude / reasoning", "new_group": "resume / html / json"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48395460", "old_group": "claude / code / network", "new_group": "x27 / photosynthesizing. / glad"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/bhpark1013/claudenews", "old_group": "x2f / agent / view", "new_group": "news / auto-translated / wait"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://patrickmccanna.net/the-text-in-claude-codes-extended-thinking-output-is-not-authentic/", "old_group": "claude / anthropic / research", "new_group": "thinking / extended / records"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=47996198", "old_group": "claude / code / network", "new_group": "kirikiri / x27 / phones"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48154390", "old_group": "claude / code / network", "new_group": "single-agent / conductor / performance"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/firish/claude_code_vs", "old_group": "claude / code / network", "new_group": "visual / studio / reject"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48259288", "old_group": "prompts / claude / code", "new_group": "prompts / inject / needle"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48169701", "old_group": "typescript / lsp / claude", "new_group": "totp / wiki / give"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/faisalishfaq2005/loopflow", "old_group": "build / prompt / thing", "new_group": "loopflow / iterates / gate"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/ingram-technologies/claude-git-sessions", "old_group": "claude / code / network", "new_group": "ccgs / branch / transcripts"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/wartzar-bee/tokenscope", "old_group": "typescript / lsp / claude", "new_group": "re-sent / bills / etc."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/kishan-ptl/joystick/releases", "old_group": "claude / code / network", "new_group": "gold / ghostty / zsh"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://theconversationdaemon.com/p/what-you-made-as-real", "old_group": "down / same / way", "new_group": "subscribe / shipped / less."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/lfzds4399-cpu/claude-screen-mcp", "old_group": "live / strata / real-time", "new_group": "enumeration / screen / linux"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/manavgup/context-analyzer", "old_group": "claude / code / network", "new_group": "analyzer / red / tracks"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://flashtype.com/", "old_group": "flashtype / show / markdown", "new_group": "flashtype / in-line / proprietary"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48160604", "old_group": "always / failure / ask", "new_group": "failure / always / discussion"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://ecommerce-ai-starter.graycore.io", "old_group": "ecommerce / want / code", "new_group": "ecommerce / magento / store"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/microsoft/AI-Engineering-Coach", "old_group": "skill / build / eval", "new_group": "vsix / prerequisites / steps"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/jpajak/ai-gauge", "old_group": "build / prompt / thing", "new_group": "configured / accounts / openrouter"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/vukkt/token-warden", "old_group": "build / prompt / thing", "new_group": "measurably / token-warden / cheaper"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/lbj96347/compete", "old_group": "plugin / intelligence / repository", "new_group": "compete / competitive / intelligence"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/ibm777p2/Intelligence-Emotions", "old_group": "claude / code / network", "new_group": "emotions / intelligence / git"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Vinayak-Shukla-03/anti-ai-slop", "old_group": "skill / build / eval", "new_group": "deck / output / anti-ai"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/virgiliojr94/book-to-skill", "old_group": "x2f / agent / view", "new_group": "book / technical / books"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/kubestellar/hotshot", "old_group": "build / prompt / thing", "new_group": "screenshot / xcode / hotshot"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/codacy/codacy-cloud-cli", "old_group": "codacy / token / api", "new_group": "codacy / token / node.js"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/ToxicPine/offloads", "old_group": "cost-aware / agent / ide", "new_group": "offload / nix / remote"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Watari995/cc-preview", "old_group": "claude / code / network", "new_group": "images / cc-preview / pasted"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.xda-developers.com/anthropic-quietly-nerfed-claude-code-hour-cache-token-budget/", "old_group": "plugin / intelligence / repository", "new_group": "cache / hour / april"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/sheremetyev/sandfence", "old_group": "files / benchmark / claude.md", "new_group": "sandbox / wrong / skip-permissions"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/salmanjavaid/rapunzel/tree/main", "old_group": "bye / show / downlaude", "new_group": "rapunzel / tab / because"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://getatrium.dev", "old_group": "agents / valmis / system", "new_group": "atrium / workspace / fleet"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tjb/Runlet", "old_group": null, "new_group": "runlet / jvm / connectors"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://xorq.dev/blog/grammar-for-data-engineering/", "old_group": null, "new_group": "grammar / executable / horizontally"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.datadoghq.com/blog/engineering/data-pipeline-completeness/", "old_group": null, "new_group": "datadog / scale / completeness"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://buttondown.com/MaxQFrontier/archive/from-orbital-data-farms-to-hypersonic-prints-this/", "old_group": null, "new_group": "orbital / space / hypersonics"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://thereallo.dev/blog/claude-code-prompt-steganography", "old_group": null, "new_group": "steganographically / marking / reasons."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://antoine.fi/mri-analysis-using-claude-code-opus", "old_group": null, "new_group": "mri / agreed / grade"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://zcode.z.ai/cn", "old_group": null, "new_group": "zcode / makers / glm"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48641160", "old_group": null, "new_group": "banned / messages / know"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://twitter.com/IntCyberDigest/status/2071971609183678544", "old_group": null, "new_group": "spyware-like / embedded / hidden"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://home.robusta.dev/blog/you-really-shouldnt-copy-paste-errors-into-claude-code", "old_group": null, "new_group": "shouldn / copy-paste / reflex"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.nytimes.com/2026/06/23/us/politics/nsa-lost-access-anthropic-tool.html", "old_group": null, "new_group": "unlocked / www.nytimes.com / politics"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.anthropic.com/legal/privacy", "old_group": null, "new_group": "services / products / consumer"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.bloomberg.com/news/articles/2026-06-28/austria-lobbies-eu-to-host-anthropic-after-us-access-curbs", "old_group": null, "new_group": "austria / lobbies / curbs"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://xcancel.com/coinbureau/status/2071330294452666695", "old_group": null, "new_group": "ceo / dangerous / getting"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://parametric-memory.dev", "old_group": null, "new_group": "merkle / fact / committed."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://tenureai.dev/writing/every-ai-memory-benchmark-has-an-asterisk/", "old_group": null, "new_group": "benchmark / memory / asterisk"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/patibandlavenkatamanideep/memoryops-ai", "old_group": null, "new_group": "memoryops / governed / state."}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.indiehackers.com/post/the-ai-memory-problem-nobody-is-incentivized-to-solve-9c294bdcaa", "old_group": null, "new_group": "problem / retrieval / incentivized"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://kingofkimchi.substack.com/p/the-memory-files-case-01-ai-memory", "old_group": null, "new_group": "case / memory / basics"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://bisarray.com/articles/disarrayed-file-ingestion", "old_group": null, "new_group": "production / incremental / out-of-order"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://ingestlayer.com", "old_group": null, "new_group": "enriches / matched / entity"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Lumen-Labs/brainapi2", "old_group": null, "new_group": "brainapi / graph / text"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/neospe/autofit2", "old_group": null, "new_group": "multilingual / custom / autofit2"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://marmotdata.io/", "old_group": null, "new_group": "marmot / humans / means"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48721577", "old_group": null, "new_group": "metasearch / credit / metered"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://answerjournal.com/", "old_group": null, "new_group": "answerjournal / answers / save"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://bertolami.com/blog/cascade-neural-image-compression", "old_group": null, "new_group": "neural / compression / image"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://gemcities.com/", "old_group": null, "new_group": "gemcities / capsule / hosting"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/SynapCores/synapcores-llamaindex", "old_group": null, "new_group": "llamaindex / synapcores / graphrag"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/BetterDB-inc/monitor/tree/master/packages", "old_group": null, "new_group": "betterdb / packages / valkey-native"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://1shotgen.com/", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/afairai/afair", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/ouijit/ouijit", "old_group": "ouijit / terminal / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://code.claude.com/docs/en/desktop-linux", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://twitter.com/ClaudeDevs/status/2071988881717871065", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48737209", "old_group": "skills / shared / team", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://strata.space/show", "old_group": "live / strata / real-time", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/henryrobbins/open-atp", "old_group": "openatp / theorem / lean", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48728744", "old_group": "local / collaboration / dashboard", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://rileywrites.ai", "old_group": "riley / content / show", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48745664", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48734115", "old_group": "down / same / way", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://matrix-os.com", "old_group": "ouijit / terminal / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/off-grid-ai", "old_group": "across / every / running", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://chromewebstore.google.com/detail/bookxlate-archiveorg-book/mfefkdeojibnbabedjonpgmbgbfplbhe", "old_group": "canvas / blackboard / d2l", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.archytasdigital.com/", "old_group": "visibility / api / model", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48729630", "old_group": "team / sub / person", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/ymichael/bb", "old_group": "across / every / running", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48717385", "old_group": "project / perfumed / palaces", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48746752", "old_group": "api / claude / reasoning", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48743618", "old_group": "classifier / command / briefly", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://snaptoai.app", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/doordash-oss/agentic-orchestrator", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.jackfranklin.co.uk/blog/claude-code-ai-feedback-skill/", "old_group": "claude / game / loops", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/typedef-ai/fenic", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.agent-swarm.dev", "old_group": "openatp / theorem / lean", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://fan-pier-labs.github.io/crossbeam-cli/", "old_group": "api / claude / reasoning", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48750459", "old_group": "openatp / theorem / lean", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://cilock.dev/", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48737226", "old_group": "privacy / installing / ios", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/muxshed/shed", "old_group": "api / key / live", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://claude.com/blog/claude-in-microsoft-foundry", "old_group": "claude / microsoft / foundry", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://ama2.me/", "old_group": "across / every / running", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/kmcheung12/second-opinion", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/kuberwastaken/reference", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48754327", "old_group": "line / things / ask", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://kage-core.com/", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://matsumotory.github.io/claude-desktop-switcher/", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/anthropics/claude-code/releases", "old_group": "there / error / while", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/acip/slack-claude-agent", "old_group": "typescript / lsp / claude", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://clockjumper.com/", "old_group": "time / some / simple", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48730357", "old_group": "team / sub / person", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48420833", "old_group": "ouijit / terminal / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.sqim.dev/", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://nexttrain.london", "old_group": "line / london / see", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tilework-tech/nori-skillsets", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://priorcontext.substack.com/p/we-can-now-read-what-claude-is-thinking", "old_group": "claude / anthropic / research", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48650494", "old_group": "skills / shared / team", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48081266", "old_group": "plan / coding / would", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://eventerm.com/", "old_group": "ouijit / terminal / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/SpecStudio-net/Aspectarian", "old_group": "transit / aspectarian / show", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/devenjarvis/lathe", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Lore-Hex/QuillUI", "old_group": "linux / swiftui / appkit", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/tozzilla/claudebar/", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.tryguildly.com/", "old_group": "code / plan / mode", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/djt53/liiists", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48260430", "old_group": "only / agents / review", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.williamangel.net/blog/2026/05/20/ClaudeAI-Pro-Plan-Gives-Single-Deep-Research.html", "old_group": "plan / coding / would", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.reddit.com/r/Bard/s/4SvwzqPdKm", "old_group": "plan / coding / would", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48517340", "old_group": "claude / anthropic / research", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48208281", "old_group": "ask / suggest / google", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/anthropics/claude-code/issues/65697", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/aaddrick/claude-desktop-debian", "old_group": "claude / desktop / linux", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/jrecyclebin/jabsco", "old_group": "agent / rdp / screenshots", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48533334", "old_group": "claude / desktop / linux", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://claude.com/blog/running-an-ai-native-engineering-org", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://jynx.app/", "old_group": "skill / jynx / gaming", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Meehai/microecs", "old_group": "microecs / python / per-entity", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48144540", "old_group": "quot / claude / free", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/emiliolugo/clawmark", "old_group": "files / benchmark / claude.md", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48233125", "old_group": "analytics / web / cheap", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://zanestjohn.com/blog/reing-with-claude-code", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/valmishq/valmis", "old_group": "agents / valmis / system", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.getadb.com/", "old_group": "provision / uuid / show", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/TylerJaacks/AndKensakuResearch", "old_group": "wii / game / and-kensaku", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://layers.jamiemill.com/", "old_group": "skill / build / eval", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://hyperbox.sh", "old_group": "analytics / web / cheap", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.minicor.com/", "old_group": "agent / windows / workflow", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://superlog.sh/", "old_group": "x2f / https / superlog", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://clor.com/", "old_group": "agent / rdp / screenshots", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://sourcelibrary.org", "old_group": "books / divine / comedy", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/akshay2211/universal-context-pipeline", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/BKDDFS/shamefile", "old_group": "shamefile / code / linter", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48327218", "old_group": "hybrid / cloud / regulated", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.gadgetreview.com/peppa-pigs-ai-voice-clause-draws-nearly-1000-industry-objections", "old_group": "agents / child / peppa", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://support.claude.com/en/articles/15425996-data-retention-practices-for-mythos-class-models", "old_group": "claude / microsoft / foundry", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.theverge.com/report/947575/microsoft-claude-fable-5-restricted-internally", "old_group": "claude / microsoft / foundry", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "http://www.thelowdownblog.com/2026/05/microsoft-cancels-internal-anthropic.html", "old_group": "claude / microsoft / foundry", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://scienspire.com/article/microsoft-breach-ai-code-assistants", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://haussner.me/2026/05/24/claude-team-rce.html", "old_group": "team / sub / person", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://sdk.churnkey.co", "old_group": "open / churnkey / analytics", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48668199", "old_group": "time / mistakes / derivations", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Humblemonk/shurectl", "old_group": "hid / msvc / c++", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://geturbacon.dev", "old_group": "claude / bacon / pays", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://new.roman-names.com/", "old_group": "map / roman / data", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://cost.dev/", "old_group": "cost-aware / agent / ide", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48555543", "old_group": "cli / access / token", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48461670", "old_group": "only / agents / review", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/lucastononro/tiny-claude-recycler", "old_group": "api / key / live", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48048726", "old_group": "process / agent-assisted / ask", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/TerseAI/Terse", "old_group": "build / prompt / thing", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://x.com/i/trending/2054617957440143639", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.conductor.build/blog/claude-subscription-update", "old_group": "claude / code / network", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://twitter.com/ClaudeDevs/status/2054610152817619388", "old_group": "x2f / agent / view", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://vercel.com/changelog/claude-design-and-vercel", "old_group": "skills / shared / team", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48622280", "old_group": "subsidized / frontier / models", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48508187", "old_group": "alignment / agent / padding", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://spanly.com/", "old_group": "across / every / running", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://medium.com/@sharvanath/effective-software-engineering-with-claude-codex-bf39f296b233", "old_group": "lessons / building / sqlite", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.runtm.com/", "old_group": "across / every / running", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.reco.ai/blog/inside-claude-fable-5-red-team-findings", "old_group": "security / claude / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.youtube.com/watch?v=tRsQsTMvPNg", "old_group": "lessons / building / sqlite", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.youtube.com/watch?v=AUQKjgKQF7w", "old_group": "lessons / building / sqlite", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48434240", "old_group": "down / same / way", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48337689", "old_group": "lessons / building / sqlite", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://naviadratp.com/", "old_group": "navia / dratp / online", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48198681", "old_group": "ouijit / terminal / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48256389", "old_group": "x2f / https / superlog", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48205190", "old_group": "make / setup / source", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48184549", "old_group": "far / experience / created", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/sarhej/claude-fix", "old_group": "claude / desktop / linux", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48305822", "old_group": "x2f / https / superlog", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/marketingskills/open-source-growth", "old_group": "agent / rdp / screenshots", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48538778", "old_group": "changes / generated / code", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://pulse.latio.tech/p/building-an-ai-ready-vulnerability", "old_group": "security / claude / agent", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48130374", "old_group": "plan / coding / would", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48221327", "old_group": "opus / sonnet / task", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48173182", "old_group": "people / human / ask", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48072594", "old_group": "quot / claude / free", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://thenewstack.io/claude-word-excel-powerpoint-outlook-microsoft-office/", "old_group": "claude / microsoft / foundry", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://www.theverge.com/tech/947197/microsoft-ai-mustafa-suleyman-anthropic-claude-conscious", "old_group": "really / anthropic / suleyman", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48427735", "old_group": "microsoft / publish / outlook", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://news.ycombinator.com/item?id=48014734", "old_group": "employers / companies / see", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://codifycli.com/", "old_group": "codify / show / terraform", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/xyzcoordinate/TopoGlyph/tree/main", "old_group": "topoglyph / language / system", "new_group": "(off-topic holding)"}
+{"at": "2026-07-06T04:34:59.857899+00:00", "url": "https://github.com/Akylas/SimulatorCamera", "old_group": "camera / show / ios", "new_group": "(off-topic holding)"}
