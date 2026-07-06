@@ -6,6 +6,8 @@ Offline throughout — no network, no LLM. Run:
 
 from __future__ import annotations
 
+import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -227,6 +229,76 @@ def test_collect_respects_max_new_cap():
          patch("scraper.scrape", return_value=None):
         records, _ = collect_category("C", ["q1", "q2"], 0, set(), {}, 5, now.isoformat())
     assert len(records) == 5
+
+
+# ---------- P4: freshness checker ----------
+
+def test_check_input_validation():
+    import importlib
+    check_mod = importlib.import_module("api.check")
+    assert check_mod.check({})[0] == 400
+    assert check_mod.check({"url": "ftp://nope"})[0] == 400
+
+
+def test_check_retrieval_and_mocked_verdict():
+    import importlib
+    import pytest
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+
+    article = ("Claude Code memory skills persistence: how to configure the "
+               "memory vault and session recall for daily driver workflows.")
+    evidence = check_mod.retrieve_evidence(article)
+    assert evidence, "expected on-topic evidence for a memory/skills article"
+    assert all(e["url"] or e["kind"] == "timeline" for e in evidence)
+
+    good = SimpleNamespace(content=[SimpleNamespace(type="text", text=json.dumps({
+        "verdict": "partially_outdated",
+        "summary": "Some claims superseded.",
+        "reasons": ["Newer memory tooling exists per evidence 0"],
+        "evidence_indices": [0],
+    }))])
+    client = MagicMock()
+    client.messages.create.return_value = good
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        status, body = check_mod.check({"text": article})
+    assert status == 200
+    assert body["verdict"] == "partially_outdated"
+    assert body["evidence"] and body["evidence"][0]["url"]
+
+
+def test_check_unknown_when_no_coverage():
+    import importlib
+    import pytest
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+    status, body = check_mod.check({"text": "zzqx qqzz vvxx nothing relevant here at all"})
+    assert status == 200 and body["verdict"] == "unknown"
+
+
+def test_check_rejects_invalid_model_verdict():
+    import importlib
+    import pytest
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+
+    bad = SimpleNamespace(content=[SimpleNamespace(type="text",
+                                                   text='{"verdict": "sideways"}')])
+    client = MagicMock()
+    client.messages.create.return_value = bad
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        status, body = check_mod.check({"text": "claude code memory skills tools"})
+    assert status == 500 and "verdict" in body["error"]
 
 
 # ---------- M5: serving + site ----------
