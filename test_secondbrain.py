@@ -6,6 +6,8 @@ Offline throughout — no network, no LLM. Run:
 
 from __future__ import annotations
 
+import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -171,6 +173,134 @@ def test_retrieval_ranking_and_noise_floor(tmp_path):
     assert r.search("zzqx qqzz vvxx") == []
 
 
+# ---------- P2: category-driven collection ----------
+
+def test_collect_category_tagging_dedupe_rotation():
+    from unittest.mock import patch
+    from secondbrain.collect import collect_category
+
+    now = datetime.now(timezone.utc)
+
+    def fake_ingest(query, sources_config):
+        return [
+            Item(source="hn", title=f"{query} story", url=f"https://x/{query}",
+                 score=5, published_at=now, summary_raw="raw excerpt"),
+            Item(source="rss", title="duplicate", url="https://x/known",
+                 score=0, published_at=now, summary_raw="dup"),
+        ]
+
+    known = {"https://x/known"}
+    with patch("main.ingest", side_effect=fake_ingest), \
+         patch("scraper.scrape", return_value=None):
+        records, cursor = collect_category(
+            category="Data Engineering",
+            queries=["dbt", "spark", "airflow"],
+            cursor=1,
+            known_urls=known,
+            sources_config={},
+            max_new=8,
+            fetched_at=now.isoformat(),
+        )
+
+    # rotation: cursor 1 picks queries[1], queries[2]; advances to 0 (mod 3)
+    assert [r["query"] for r in records] == ["spark", "airflow"]
+    assert cursor == 0
+    # tagging + citation fields on every record
+    for r in records:
+        assert r["category"] == "Data Engineering"
+        assert r["url"].startswith("https://")
+        assert r["summary"]  # scrape=None → falls back to excerpt
+        assert r["scraped"] is False
+    # dedupe: the known URL was skipped both times
+    assert all(r["url"] != "https://x/known" for r in records)
+
+
+def test_collect_respects_max_new_cap():
+    from unittest.mock import patch
+    from secondbrain.collect import collect_category
+
+    now = datetime.now(timezone.utc)
+
+    def flood(query, sources_config):
+        return [Item(source="hn", title=f"s{i}", url=f"https://x/{query}/{i}",
+                     score=1, published_at=now, summary_raw="e") for i in range(20)]
+
+    with patch("main.ingest", side_effect=flood), \
+         patch("scraper.scrape", return_value=None):
+        records, _ = collect_category("C", ["q1", "q2"], 0, set(), {}, 5, now.isoformat())
+    assert len(records) == 5
+
+
+# ---------- P4: freshness checker ----------
+
+def test_check_input_validation():
+    import importlib
+    check_mod = importlib.import_module("api.check")
+    assert check_mod.check({})[0] == 400
+    assert check_mod.check({"url": "ftp://nope"})[0] == 400
+
+
+def test_check_retrieval_and_mocked_verdict():
+    import importlib
+    import pytest
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+
+    article = ("Claude Code memory skills persistence: how to configure the "
+               "memory vault and session recall for daily driver workflows.")
+    evidence = check_mod.retrieve_evidence(article)
+    assert evidence, "expected on-topic evidence for a memory/skills article"
+    assert all(e["url"] or e["kind"] == "timeline" for e in evidence)
+
+    good = SimpleNamespace(content=[SimpleNamespace(type="text", text=json.dumps({
+        "verdict": "partially_outdated",
+        "summary": "Some claims superseded.",
+        "reasons": ["Newer memory tooling exists per evidence 0"],
+        "evidence_indices": [0],
+    }))])
+    client = MagicMock()
+    client.messages.create.return_value = good
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        status, body = check_mod.check({"text": article})
+    assert status == 200
+    assert body["verdict"] == "partially_outdated"
+    assert body["evidence"] and body["evidence"][0]["url"]
+
+
+def test_check_unknown_when_no_coverage():
+    import importlib
+    import pytest
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+    status, body = check_mod.check({"text": "zzqx qqzz vvxx nothing relevant here at all"})
+    assert status == 200 and body["verdict"] == "unknown"
+
+
+def test_check_rejects_invalid_model_verdict():
+    import importlib
+    import pytest
+    from types import SimpleNamespace
+    from unittest.mock import MagicMock, patch
+    if not Path("snapshots/search_index.json").exists():
+        pytest.skip("snapshots not present")
+    check_mod = importlib.import_module("api.check")
+
+    bad = SimpleNamespace(content=[SimpleNamespace(type="text",
+                                                   text='{"verdict": "sideways"}')])
+    client = MagicMock()
+    client.messages.create.return_value = bad
+    with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+         patch("anthropic.Anthropic", return_value=client):
+        status, body = check_mod.check({"text": "claude code memory skills tools"})
+    assert status == 500 and "verdict" in body["error"]
+
+
 # ---------- M5: serving + site ----------
 
 def test_api_routes():
@@ -197,18 +327,48 @@ def test_api_routes():
         assert h["url"].startswith("http")
 
 
-def test_site_builds_with_search_and_citations(tmp_path):
+def test_site_builds_embedded_and_dataurl(tmp_path):
+    import pytest
+    if not Path("snapshots/meta.json").exists():
+        pytest.skip("snapshots not present — run export_snapshots first")
+    from secondbrain.site_build import build
+
+    # embedded mode: snapshots inlined, citations everywhere
+    out = build(tmp_path / "embedded.html")
+    page = out.read_text()
+    assert "<title>UpToDate — AI & Data Engineering Timelines</title>" in page
+    assert "const EMBEDDED={" in page
+    assert page.count("https://") > 50
+    for marker in ('id="q"', 'id="checker"', 'id="tabs"', "/api/check"):
+        assert marker in page, f"missing {marker}"
+
+    # data-url mode: small page, no embedded data, fetches the base URL
+    out2 = build(tmp_path / "remote.html", data_url="https://blob.example/snap/")
+    page2 = out2.read_text()
+    assert 'const DATA_URL="https://blob.example/snap"' in page2
+    assert "const EMBEDDED=null" in page2
+    assert out2.stat().st_size < 30_000, "data-url page should be small"
+
+
+def test_snapshot_export_schema(tmp_path):
     import pytest
     if not Path("output/second-brain-tests/consolidated/doc_vectors.json").exists():
         pytest.skip("live artifacts not present")
-    from secondbrain.site_build import build
-    out = build(tmp_path / "index.html")
-    page = out.read_text()
-    assert "<title>Claude Tools — Second Brain</title>" in page
-    assert 'id="q"' in page                      # search box
-    assert "const IDX=" in page                  # embedded index
-    assert page.count("https://") > 50           # citations everywhere
-    assert "storylines" in page
+    import json
+    from secondbrain.export_snapshots import export
+    meta = export(tmp_path)
+    for name in ("topics", "timelines", "search_index", "meta"):
+        assert (tmp_path / f"{name}.json").exists()
+    topics = json.loads((tmp_path / "topics.json").read_text())
+    assert meta["storylines"] == len(topics) > 0
+    for t in topics:
+        assert set(t) == {"label", "size", "period", "category", "urls"}
+    index = json.loads((tmp_path / "search_index.json").read_text())
+    assert meta["articles"] == len(index)
+    for row in index[:5]:
+        assert row["u"].startswith("http") and row["v"]
+    timelines = json.loads((tmp_path / "timelines.json").read_text())
+    assert meta["analyses"] == sum(len(v) for v in timelines.values())
 
 
 def test_consolidated_artifacts_on_disk():

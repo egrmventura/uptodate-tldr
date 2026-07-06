@@ -1,0 +1,13 @@
+{
+  "docs": 78,
+  "vector_edges": 25,
+  "concept_edges": 5,
+  "edge_jaccard": 0.2,
+  "pairwise_agreement": 0.9863,
+  "vector_clusters_multi": 11,
+  "concept_clusters_multi": 3,
+  "vector_singletons": 43,
+  "concept_singletons": 71,
+  "vector_temporal_span_weeks": 2.91,
+  "concept_temporal_span_weeks": 2.0
+}
