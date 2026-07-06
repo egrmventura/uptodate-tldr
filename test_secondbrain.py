@@ -197,18 +197,48 @@ def test_api_routes():
         assert h["url"].startswith("http")
 
 
-def test_site_builds_with_search_and_citations(tmp_path):
+def test_site_builds_embedded_and_dataurl(tmp_path):
+    import pytest
+    if not Path("snapshots/meta.json").exists():
+        pytest.skip("snapshots not present — run export_snapshots first")
+    from secondbrain.site_build import build
+
+    # embedded mode: snapshots inlined, citations everywhere
+    out = build(tmp_path / "embedded.html")
+    page = out.read_text()
+    assert "<title>UpToDate — AI & Data Engineering Timelines</title>" in page
+    assert "const EMBEDDED={" in page
+    assert page.count("https://") > 50
+    for marker in ('id="q"', 'id="checker"', 'id="tabs"', "/api/check"):
+        assert marker in page, f"missing {marker}"
+
+    # data-url mode: small page, no embedded data, fetches the base URL
+    out2 = build(tmp_path / "remote.html", data_url="https://blob.example/snap/")
+    page2 = out2.read_text()
+    assert 'const DATA_URL="https://blob.example/snap"' in page2
+    assert "const EMBEDDED=null" in page2
+    assert out2.stat().st_size < 30_000, "data-url page should be small"
+
+
+def test_snapshot_export_schema(tmp_path):
     import pytest
     if not Path("output/second-brain-tests/consolidated/doc_vectors.json").exists():
         pytest.skip("live artifacts not present")
-    from secondbrain.site_build import build
-    out = build(tmp_path / "index.html")
-    page = out.read_text()
-    assert "<title>Claude Tools — Second Brain</title>" in page
-    assert 'id="q"' in page                      # search box
-    assert "const IDX=" in page                  # embedded index
-    assert page.count("https://") > 50           # citations everywhere
-    assert "storylines" in page
+    import json
+    from secondbrain.export_snapshots import export
+    meta = export(tmp_path)
+    for name in ("topics", "timelines", "search_index", "meta"):
+        assert (tmp_path / f"{name}.json").exists()
+    topics = json.loads((tmp_path / "topics.json").read_text())
+    assert meta["storylines"] == len(topics) > 0
+    for t in topics:
+        assert set(t) == {"label", "size", "period", "category", "urls"}
+    index = json.loads((tmp_path / "search_index.json").read_text())
+    assert meta["articles"] == len(index)
+    for row in index[:5]:
+        assert row["u"].startswith("http") and row["v"]
+    timelines = json.loads((tmp_path / "timelines.json").read_text())
+    assert meta["analyses"] == sum(len(v) for v in timelines.values())
 
 
 def test_consolidated_artifacts_on_disk():
