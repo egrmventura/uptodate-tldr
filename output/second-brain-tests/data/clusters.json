@@ -1,0 +1,198 @@
+{
+  "vector": [
+    {
+      "label": "teams / sessions / subagent",
+      "size": 5,
+      "weeks": [
+        "2026-01-15",
+        "2026-02-05",
+        "2026-03-12",
+        "2026-05-14"
+      ],
+      "titles": [
+        "I was a top 0.01% Cursor user, then switched to Claude Code 2.0",
+        "Claude Code is being dumbed down?",
+        "Orchestrate teams of Claude Code sessions",
+        "Show HN: Rudel \u2013\u00a0Claude Code Session Analytics",
+        "How Claude Code works in large codebases"
+      ]
+    },
+    {
+      "label": "skills / forgets / memory",
+      "size": 5,
+      "weeks": [
+        "2026-02-05",
+        "2026-05-21",
+        "2026-05-28",
+        "2026-06-11",
+        "2026-06-18"
+      ],
+      "titles": [
+        "Show HN: Total Recall \u2013 write-gated memory for Claude Code",
+        "Claude Code as a Daily Driver: Claude.md, Skills, Subagents, Plugins, and MCPs",
+        "Claude Code \u2013 Everything you can configure that the docs don't tell you",
+        "Anthropic pauses credit change for Claude Code",
+        "Show HN: Recall \u2013 Local project memory for Claude Code"
+      ]
+    },
+    {
+      "label": "on-the-go / phone. / pocket",
+      "size": 4,
+      "weeks": [
+        "2026-01-01",
+        "2026-02-12",
+        "2026-03-19",
+        "2026-06-04"
+      ],
+      "titles": [
+        "Claude Code On-the-Go",
+        "Show HN: Skill that lets Claude Code/Codex spin up VMs and GPUs",
+        "How I'm Productive with Claude Code",
+        "Show HN: Boxes.dev: ditch localhost; run Claude Code and Codex in the cloud"
+      ]
+    },
+    {
+      "label": "microsoft / copilot / months",
+      "size": 4,
+      "weeks": [
+        "2026-01-29",
+        "2026-04-30",
+        "2026-05-14",
+        "2026-05-21"
+      ],
+      "titles": [
+        "Claude Code is suddenly everywhere inside Microsoft",
+        "Uber torches 2026 AI budget on Claude Code in four months",
+        "Microsoft starts canceling Claude Code licenses",
+        "Microsoft starts canceling Claude Code licenses"
+      ]
+    },
+    {
+      "label": "remote / ran / web",
+      "size": 4,
+      "weeks": [
+        "2026-02-12",
+        "2026-02-19",
+        "2026-04-09",
+        "2026-06-25"
+      ],
+      "titles": [
+        "Launch HN: Omnara (YC S25) \u2013 Run Claude Code and Codex from anywhere",
+        "Claude Code Remote Control",
+        "Claude Code Routines",
+        "Claude Code is steganographically marking requests"
+      ]
+    },
+    {
+      "label": "plugin / mcp / server",
+      "size": 3,
+      "weeks": [
+        "2026-02-26",
+        "2026-04-09",
+        "2026-05-14"
+      ],
+      "titles": [
+        "MCP server that reduces Claude Code context consumption by 98%",
+        "The Vercel plugin on Claude Code wants to read your prompts",
+        "A Claude Code and Codex Skill for Deliberate Skill Development"
+      ]
+    },
+    {
+      "label": "sometimes / coherent / edit",
+      "size": 2,
+      "weeks": [
+        "2026-01-08",
+        "2026-02-19"
+      ],
+      "titles": [
+        "How to code Claude Code in 200 lines of code",
+        "How I use Claude Code: Separation of planning and execution"
+      ]
+    },
+    {
+      "label": "leaked / registry / map",
+      "size": 2,
+      "weeks": [
+        "2026-03-26"
+      ],
+      "titles": [
+        "Claude Code's source code has been leaked via a map file in their NPM registry",
+        "The Claude Code Source Leak: fake tools, frustration regexes, undercover mode"
+      ]
+    },
+    {
+      "label": "thinking / complex / analysis",
+      "size": 2,
+      "weeks": [
+        "2026-04-02",
+        "2026-06-18"
+      ],
+      "titles": [
+        "Issue: Claude Code is unusable for complex engineering tasks with Feb updates",
+        "The text in Claude Code\u2019s \u201cExtended Thinking\u201d output"
+      ]
+    },
+    {
+      "label": "x2f / theamolavasare / status",
+      "size": 2,
+      "weeks": [
+        "2026-04-16"
+      ],
+      "titles": [
+        "Claude Code to be removed from Anthropic's Pro plan?",
+        "Claude Code to be removed from Pro Tier?"
+      ]
+    },
+    {
+      "label": "windows / linux / deepclaude",
+      "size": 2,
+      "weeks": [
+        "2026-04-30",
+        "2026-05-21"
+      ],
+      "titles": [
+        "DeepClaude \u2013 Claude Code agent loop with DeepSeek V4 Pro",
+        "Why Ctrl+V won't paste images in Claude Code on WSL, with a fix"
+      ]
+    }
+  ],
+  "concept": [
+    {
+      "label": "microsoft / copilot / thousands",
+      "size": 3,
+      "weeks": [
+        "2026-01-29",
+        "2026-05-14",
+        "2026-05-21"
+      ],
+      "titles": [
+        "Claude Code is suddenly everywhere inside Microsoft",
+        "Microsoft starts canceling Claude Code licenses",
+        "Microsoft starts canceling Claude Code licenses"
+      ]
+    },
+    {
+      "label": "x2f / theamolavasare / status",
+      "size": 2,
+      "weeks": [
+        "2026-04-16"
+      ],
+      "titles": [
+        "Claude Code to be removed from Anthropic's Pro plan?",
+        "Claude Code to be removed from Pro Tier?"
+      ]
+    },
+    {
+      "label": "windows / linux / deepclaude",
+      "size": 2,
+      "weeks": [
+        "2026-04-30",
+        "2026-05-21"
+      ],
+      "titles": [
+        "DeepClaude \u2013 Claude Code agent loop with DeepSeek V4 Pro",
+        "Why Ctrl+V won't paste images in Claude Code on WSL, with a fix"
+      ]
+    }
+  ]
+}

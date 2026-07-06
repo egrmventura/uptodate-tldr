@@ -1,0 +1,1904 @@
+{
+  "consolidated_at": "2026-07-05T17:08:07.908006+00:00",
+  "corpus_size": 249,
+  "groups": [
+    {
+      "label": "sdk / tray / windows",
+      "size": 5,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/apexlocal-jz/claude-usage-tray",
+        "https://www.xda-developers.com/anthropics-claude-subscriptions-no-longer-include-agent-sdk-and-claude-p-usage/",
+        "https://news.ycombinator.com/item?id=48546618",
+        "https://github.com/wavever/CCLimitPing",
+        "https://origami.sa/en/blog/anthropic-pauses-agent-sdk-subscription-billing-change/"
+      ],
+      "member_indices": [
+        127,
+        178,
+        196,
+        218,
+        237
+      ],
+      "period": [
+        "2026-05-14",
+        "2026-06-16"
+      ]
+    },
+    {
+      "label": "bye / view / downlaude",
+      "size": 3,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48124057",
+        "https://github.com/tejpalv/cc-wiki",
+        "https://www.npmjs.com/package/downlaude"
+      ],
+      "member_indices": [
+        75,
+        121,
+        191
+      ],
+      "period": [
+        "2026-05-13",
+        "2026-06-22"
+      ]
+    },
+    {
+      "label": "zerogpu / architectures / slash",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/GPire/claude-skills-swarm",
+        "https://medium.com/zerogpu/how-to-reduce-ai-compute-costs-with-our-claude-code-plugin-routing-lightweight-ai-tasks-to-small-2a265e19c699"
+      ],
+      "member_indices": [
+        6,
+        167
+      ],
+      "period": [
+        "2026-06-17",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "erase / days / default",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/anthropics/claude-code/issues/62476",
+        "https://code.claude.com/docs/en/settings"
+      ],
+      "member_indices": [
+        57,
+        212
+      ],
+      "period": [
+        "2026-06-17",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "bar / gauges / menu",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://statuslin.es",
+        "https://github.com/grzegorz-raczek-unit8/claude-quota"
+      ],
+      "member_indices": [
+        63,
+        102
+      ],
+      "period": [
+        "2026-06-10",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "keys / miii / code-level",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://www.npmjs.com/package/miii-cli",
+        "https://apps.apple.com/us/app/sieve-secret-scanner/id6767409365?mt=12"
+      ],
+      "member_indices": [
+        100,
+        200
+      ],
+      "period": [
+        "2026-05-11",
+        "2026-05-19"
+      ]
+    },
+    {
+      "label": "microsoft / thousands / canceling",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://www.theverge.com/tech/930447/microsoft-claude-code-discontinued-notepad",
+        "https://www.techbuzz.ai/articles/microsoft-starts-canceling-claude-code-licenses"
+      ],
+      "member_indices": [
+        157,
+        160
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-05-22"
+      ]
+    },
+    {
+      "label": "intelligence / emotions / compete",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/lbj96347/compete",
+        "https://github.com/ibm777p2/Intelligence-Emotions"
+      ],
+      "member_indices": [
+        165,
+        170
+      ],
+      "period": [
+        "2026-06-12",
+        "2026-06-28"
+      ]
+    },
+    {
+      "label": "notes / cto / bill",
+      "size": 2,
+      "singleton": false,
+      "off_topic": false,
+      "urls": [
+        "https://medium.com/@alirezarezvani/claude-agent-view-changes-how-you-run-your-engineering-day-ec7402221582",
+        "https://medium.com/@developer_programmer/i-spent-47-000-on-claude-code-in-90-days-my-cto-asked-me-one-question-and-i-couldnt-answer-it-af3b203f81bb"
+      ],
+      "member_indices": [
+        197,
+        243
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-06-17"
+      ]
+    },
+    {
+      "label": "namespaces / network / discover",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://patrickmccanna.net/inspecting-claude-codes-network-traffic-with-linux-namespaces-and-mitm-proxying-part-1/"
+      ],
+      "member_indices": [
+        3
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "measuring / delivery / earned",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/harveer10x/earned-vs-burned-skill"
+      ],
+      "member_indices": [
+        7
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "wtfismyrepo / engine / codebases",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/nandnijaiswal/wtfismyrepo"
+      ],
+      "member_indices": [
+        8
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "openclaw / recursive / research",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Toadoum/ai-research-skill"
+      ],
+      "member_indices": [
+        10
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "hard-won / standing-instructions / differs",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Kulaxyz/self-learning-skills"
+      ],
+      "member_indices": [
+        11
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "patterns / memory / files",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://astgl.com/p/skill-mining-claude-code-config-patterns"
+      ],
+      "member_indices": [
+        25
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "review / capacitor / mem",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://capacitor.kurrent.io/"
+      ],
+      "member_indices": [
+        29
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "agentwire / shims / cockpit",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/dotdevdotdev/agentwire-dev"
+      ],
+      "member_indices": [
+        48
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "desk / robinhood / sub-agents",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/LoganYangBo/rh-trading-agent"
+      ],
+      "member_indices": [
+        53
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "sdd / interviews / requirements.md",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/FredAntB/Spec-Driven-Development"
+      ],
+      "member_indices": [
+        66
+      ],
+      "period": [
+        "2026-05-21",
+        "2026-05-21"
+      ]
+    },
+    {
+      "label": "dmg / autocommit.sh / persistent",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/responsiblparty/claude-dmg-skill"
+      ],
+      "member_indices": [
+        69
+      ],
+      "period": [
+        "2026-06-10",
+        "2026-06-10"
+      ]
+    },
+    {
+      "label": "key. / chatcode / chatcode.dev",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://chatcode.dev/"
+      ],
+      "member_indices": [
+        76
+      ],
+      "period": [
+        "2026-06-04",
+        "2026-06-04"
+      ]
+    },
+    {
+      "label": "scaffolds / openspec / init",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/davidpv/opsx-spec-driven-development-toolkit"
+      ],
+      "member_indices": [
+        85
+      ],
+      "period": [
+        "2026-06-18",
+        "2026-06-18"
+      ]
+    },
+    {
+      "label": "sdd / docs.google.com / sjkxf7hkoqyin9-3tbgy...",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48231575"
+      ],
+      "member_indices": [
+        88
+      ],
+      "period": [
+        "2026-05-22",
+        "2026-05-22"
+      ]
+    },
+    {
+      "label": "spec-driven / requirements / repeat.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/sermakarevich/sddw"
+      ],
+      "member_indices": [
+        89
+      ],
+      "period": [
+        "2026-05-18",
+        "2026-05-18"
+      ]
+    },
+    {
+      "label": "managing / dashboard / monitoring",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/sverrirsig/claude-control"
+      ],
+      "member_indices": [
+        90
+      ],
+      "period": [
+        "2026-05-08",
+        "2026-05-08"
+      ]
+    },
+    {
+      "label": "conan / hud / macos",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.conan.sh/"
+      ],
+      "member_indices": [
+        92
+      ],
+      "period": [
+        "2026-06-15",
+        "2026-06-15"
+      ]
+    },
+    {
+      "label": "tmux / mux / overlay",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/fashton28/mux"
+      ],
+      "member_indices": [
+        122
+      ],
+      "period": [
+        "2026-06-28",
+        "2026-06-28"
+      ]
+    },
+    {
+      "label": "traces / reusable / semantic",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/chigichan24/crune"
+      ],
+      "member_indices": [
+        123
+      ],
+      "period": [
+        "2026-05-30",
+        "2026-05-30"
+      ]
+    },
+    {
+      "label": "cc-bridge / monitor / message",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Incultnitollc/claude-code-live-bridge"
+      ],
+      "member_indices": [
+        126
+      ],
+      "period": [
+        "2026-06-09",
+        "2026-06-09"
+      ]
+    },
+    {
+      "label": "jsonl / memory / browsing",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/nvwalj/ai-memory-reader"
+      ],
+      "member_indices": [
+        135
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-05-16"
+      ]
+    },
+    {
+      "label": "router / opencode / routing",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/workweave/router"
+      ],
+      "member_indices": [
+        144
+      ],
+      "period": [
+        "2026-06-26",
+        "2026-06-26"
+      ]
+    },
+    {
+      "label": "draft-agent / persistent / installed",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/idodekerobo/draft-cli-plugin"
+      ],
+      "member_indices": [
+        162
+      ],
+      "period": [
+        "2026-05-10",
+        "2026-05-10"
+      ]
+    },
+    {
+      "label": "grok / antigravity / dive",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/5dive-com/5dive"
+      ],
+      "member_indices": [
+        169
+      ],
+      "period": [
+        "2026-06-11",
+        "2026-06-11"
+      ]
+    },
+    {
+      "label": "argus / tells / per",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.arguslab.co/"
+      ],
+      "member_indices": [
+        173
+      ],
+      "period": [
+        "2026-06-28",
+        "2026-06-28"
+      ]
+    },
+    {
+      "label": "review / senior-engineer-grade / phases",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Farfield-Dev/deep-review"
+      ],
+      "member_indices": [
+        206
+      ],
+      "period": [
+        "2026-06-02",
+        "2026-06-02"
+      ]
+    },
+    {
+      "label": "happening / step / separate",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/jarrodwatts/claude-hud"
+      ],
+      "member_indices": [
+        207
+      ],
+      "period": [
+        "2026-05-31",
+        "2026-05-31"
+      ]
+    },
+    {
+      "label": "aips / re-doing / v7.0",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/kernalix7/AIPS"
+      ],
+      "member_indices": [
+        208
+      ],
+      "period": [
+        "2026-05-19",
+        "2026-05-19"
+      ]
+    },
+    {
+      "label": "specdd / spec-driven / feature",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/unboundinnov/specdd"
+      ],
+      "member_indices": [
+        221
+      ],
+      "period": [
+        "2026-05-14",
+        "2026-05-14"
+      ]
+    },
+    {
+      "label": "parallel / jsonl / view",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/juliensimon/canopy"
+      ],
+      "member_indices": [
+        227
+      ],
+      "period": [
+        "2026-06-15",
+        "2026-06-15"
+      ]
+    },
+    {
+      "label": "wasting / everytime / continue",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://recallplugin.dev"
+      ],
+      "member_indices": [
+        17
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "autoharness / layer / self-learning",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/tigerless-labs/autoharness"
+      ],
+      "member_indices": [
+        32
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "pomodoro / timer / claudoro",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/emson/claudoro"
+      ],
+      "member_indices": [
+        35
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "three-phase / left / gaps",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.apimatic.io/blog/agentic-engineering-claude-code"
+      ],
+      "member_indices": [
+        43
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "lsp / typescript / tsc",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/mjn298/ts7-lsp-plugin/tree/main"
+      ],
+      "member_indices": [
+        45
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "agile / product / specmanager",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/joanseg/specmanager"
+      ],
+      "member_indices": [
+        46
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "draw / send / feedback",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/tomreinert/claude-annotate"
+      ],
+      "member_indices": [
+        47
+      ],
+      "period": [
+        "2026-06-29",
+        "2026-06-29"
+      ]
+    },
+    {
+      "label": "leaking / v2.1.179 / url",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://twitter.com/samelldev/status/2070213157357072794"
+      ],
+      "member_indices": [
+        49
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "agnostic / managed / alternative",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.agentsessions.dev/"
+      ],
+      "member_indices": [
+        50
+      ],
+      "period": [
+        "2026-07-02",
+        "2026-07-02"
+      ]
+    },
+    {
+      "label": "omp / memory / curso",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/SMJAI/open-memory-protocol"
+      ],
+      "member_indices": [
+        62
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "vps / workbench / dedicated",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Kuberwastaken/VPSmaxxing"
+      ],
+      "member_indices": [
+        64
+      ],
+      "period": [
+        "2026-06-30",
+        "2026-06-30"
+      ]
+    },
+    {
+      "label": "ttsc / graph / typescript",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/samchon/ttsc/tree/master/packages/graph"
+      ],
+      "member_indices": [
+        65
+      ],
+      "period": [
+        "2026-07-01",
+        "2026-07-01"
+      ]
+    },
+    {
+      "label": "eval / agent-evals / evaluating",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/fsilavong/agent-eval"
+      ],
+      "member_indices": [
+        67
+      ],
+      "period": [
+        "2026-05-04",
+        "2026-05-04"
+      ]
+    },
+    {
+      "label": "weekend / prds. / person",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.claudinho.xyz/"
+      ],
+      "member_indices": [
+        68
+      ],
+      "period": [
+        "2026-06-02",
+        "2026-06-02"
+      ]
+    },
+    {
+      "label": "crawlers / search / site",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/MerqryLabs/ai-crawler-visibility"
+      ],
+      "member_indices": [
+        70
+      ],
+      "period": [
+        "2026-06-26",
+        "2026-06-26"
+      ]
+    },
+    {
+      "label": "resume / html / json",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/farhan0167/cv-claw"
+      ],
+      "member_indices": [
+        71
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-05-16"
+      ]
+    },
+    {
+      "label": "x27 / photosynthesizing. / glad",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48395460"
+      ],
+      "member_indices": [
+        78
+      ],
+      "period": [
+        "2026-06-04",
+        "2026-06-04"
+      ]
+    },
+    {
+      "label": "news / auto-translated / wait",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/bhpark1013/claudenews"
+      ],
+      "member_indices": [
+        79
+      ],
+      "period": [
+        "2026-06-25",
+        "2026-06-25"
+      ]
+    },
+    {
+      "label": "thinking / docs / extended",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://patrickmccanna.net/the-text-in-claude-codes-extended-thinking-output-is-not-authentic/"
+      ],
+      "member_indices": [
+        82
+      ],
+      "period": [
+        "2026-06-22",
+        "2026-06-22"
+      ]
+    },
+    {
+      "label": "kirikiri / x27 / phones",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=47996198"
+      ],
+      "member_indices": [
+        84
+      ],
+      "period": [
+        "2026-05-03",
+        "2026-05-03"
+      ]
+    },
+    {
+      "label": "grep / lsp / issue",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://blog.codonomics.com/2026/04/pro-grade-java-development-in-claude.html"
+      ],
+      "member_indices": [
+        86
+      ],
+      "period": [
+        "2026-05-05",
+        "2026-05-05"
+      ]
+    },
+    {
+      "label": "coworker / codes / room.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://old.reddit.com/r/ClaudeAI/comments/1t3aiqa/my_coworker_and_i_planning_a_feature_with_our_two/"
+      ],
+      "member_indices": [
+        96
+      ],
+      "period": [
+        "2026-05-04",
+        "2026-05-04"
+      ]
+    },
+    {
+      "label": "single-agent / conductor / performance",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48154390"
+      ],
+      "member_indices": [
+        99
+      ],
+      "period": [
+        "2026-05-15",
+        "2026-05-15"
+      ]
+    },
+    {
+      "label": "visual / studio / reject",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/firish/claude_code_vs"
+      ],
+      "member_indices": [
+        101
+      ],
+      "period": [
+        "2026-06-15",
+        "2026-06-15"
+      ]
+    },
+    {
+      "label": "prompts / inject / needle",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48259288"
+      ],
+      "member_indices": [
+        108
+      ],
+      "period": [
+        "2026-05-24",
+        "2026-05-24"
+      ]
+    },
+    {
+      "label": "totp / wiki / give",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48169701"
+      ],
+      "member_indices": [
+        112
+      ],
+      "period": [
+        "2026-05-17",
+        "2026-05-17"
+      ]
+    },
+    {
+      "label": "loopflow / iterates / gate",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/faisalishfaq2005/loopflow"
+      ],
+      "member_indices": [
+        115
+      ],
+      "period": [
+        "2026-06-20",
+        "2026-06-20"
+      ]
+    },
+    {
+      "label": "improve / baseline / practices",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.andrewjesson.com/blog/the-engineering-practices-claude-code-and-codex-use-to-improve-ai-agents/"
+      ],
+      "member_indices": [
+        116
+      ],
+      "period": [
+        "2026-06-17",
+        "2026-06-17"
+      ]
+    },
+    {
+      "label": "ccgs / branch / transcripts",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/ingram-technologies/claude-git-sessions"
+      ],
+      "member_indices": [
+        120
+      ],
+      "period": [
+        "2026-06-06",
+        "2026-06-06"
+      ]
+    },
+    {
+      "label": "re-sent / bills / etc.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/wartzar-bee/tokenscope"
+      ],
+      "member_indices": [
+        124
+      ],
+      "period": [
+        "2026-05-28",
+        "2026-05-28"
+      ]
+    },
+    {
+      "label": "gold / ghostty / zsh",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/kishan-ptl/joystick/releases"
+      ],
+      "member_indices": [
+        125
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "user / subscribe / shipped",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://theconversationdaemon.com/p/what-you-made-as-real"
+      ],
+      "member_indices": [
+        128
+      ],
+      "period": [
+        "2026-06-06",
+        "2026-06-06"
+      ]
+    },
+    {
+      "label": "enumeration / screen / linux",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/lfzds4399-cpu/claude-screen-mcp"
+      ],
+      "member_indices": [
+        129
+      ],
+      "period": [
+        "2026-05-12",
+        "2026-05-12"
+      ]
+    },
+    {
+      "label": "analyzer / red / tracks",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/manavgup/context-analyzer"
+      ],
+      "member_indices": [
+        131
+      ],
+      "period": [
+        "2026-06-10",
+        "2026-06-10"
+      ]
+    },
+    {
+      "label": "atif / convert / logs",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/waldekmastykarz/atifact"
+      ],
+      "member_indices": [
+        132
+      ],
+      "period": [
+        "2026-06-06",
+        "2026-06-06"
+      ]
+    },
+    {
+      "label": "flashtype / in-line / proprietary",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://flashtype.com/"
+      ],
+      "member_indices": [
+        133
+      ],
+      "period": [
+        "2026-07-02",
+        "2026-07-02"
+      ]
+    },
+    {
+      "label": "failure / always / spend",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48160604"
+      ],
+      "member_indices": [
+        136
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-05-16"
+      ]
+    },
+    {
+      "label": "ecommerce / magento / store",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://ecommerce-ai-starter.graycore.io"
+      ],
+      "member_indices": [
+        145
+      ],
+      "period": [
+        "2026-06-01",
+        "2026-06-01"
+      ]
+    },
+    {
+      "label": "vsix / prerequisites / steps",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/microsoft/AI-Engineering-Coach"
+      ],
+      "member_indices": [
+        154
+      ],
+      "period": [
+        "2026-05-16",
+        "2026-05-16"
+      ]
+    },
+    {
+      "label": "configured / accounts / monitor",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/jpajak/ai-gauge"
+      ],
+      "member_indices": [
+        155
+      ],
+      "period": [
+        "2026-06-04",
+        "2026-06-04"
+      ]
+    },
+    {
+      "label": "jupyterlab / right / launcher",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/stellarshenson/jupyterlab_claude_code_extension"
+      ],
+      "member_indices": [
+        163
+      ],
+      "period": [
+        "2026-05-03",
+        "2026-05-03"
+      ]
+    },
+    {
+      "label": "measurably / token-warden / cheaper",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/vukkt/token-warden"
+      ],
+      "member_indices": [
+        164
+      ],
+      "period": [
+        "2026-06-16",
+        "2026-06-16"
+      ]
+    },
+    {
+      "label": "community / plugins. / plugins",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://johnstawinski.com/2026/06/18/repo-jacking-anthropics-claude-community-plugins-and-the-shas-that-saved-them/"
+      ],
+      "member_indices": [
+        166
+      ],
+      "period": [
+        "2026-06-19",
+        "2026-06-19"
+      ]
+    },
+    {
+      "label": "robelkidin / ago / next",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://news.ycombinator.com/item?id=48230097"
+      ],
+      "member_indices": [
+        171
+      ],
+      "period": [
+        "2026-05-21",
+        "2026-05-21"
+      ]
+    },
+    {
+      "label": "started / engineers / field",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://evgeniipendragon.com/posts/managing-claude-code-made-me-a-better-tech-lead/"
+      ],
+      "member_indices": [
+        179
+      ],
+      "period": [
+        "2026-06-25",
+        "2026-06-25"
+      ]
+    },
+    {
+      "label": "merged / engineer / opencode",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/FarzamMohammadi/the-engineer"
+      ],
+      "member_indices": [
+        185
+      ],
+      "period": [
+        "2026-06-14",
+        "2026-06-14"
+      ]
+    },
+    {
+      "label": "deck / output / anti-ai",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Vinayak-Shukla-03/anti-ai-slop"
+      ],
+      "member_indices": [
+        186
+      ],
+      "period": [
+        "2026-07-02",
+        "2026-07-02"
+      ]
+    },
+    {
+      "label": "signals / guide / inspired",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/FeroVolar/Decision-Framework-Skill/"
+      ],
+      "member_indices": [
+        187
+      ],
+      "period": [
+        "2026-06-24",
+        "2026-06-24"
+      ]
+    },
+    {
+      "label": "book / measured / technical",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/virgiliojr94/book-to-skill"
+      ],
+      "member_indices": [
+        188
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "skillhealth / hot / dead",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/mirko-pira/skillhealth"
+      ],
+      "member_indices": [
+        189
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "screenshot / xcode / hotshot",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/kubestellar/hotshot"
+      ],
+      "member_indices": [
+        198
+      ],
+      "period": [
+        "2026-06-18",
+        "2026-06-18"
+      ]
+    },
+    {
+      "label": "codacy / token / command-line",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/codacy/codacy-cloud-cli"
+      ],
+      "member_indices": [
+        199
+      ],
+      "period": [
+        "2026-06-10",
+        "2026-06-10"
+      ]
+    },
+    {
+      "label": "bus / python-can / reverse",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.csselectronics.com/pages/can-bus-reverse-engineering-ai-llm-claude"
+      ],
+      "member_indices": [
+        205
+      ],
+      "period": [
+        "2026-06-23",
+        "2026-06-23"
+      ]
+    },
+    {
+      "label": "offload / nix / software",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/ToxicPine/offloads"
+      ],
+      "member_indices": [
+        209
+      ],
+      "period": [
+        "2026-06-16",
+        "2026-06-16"
+      ]
+    },
+    {
+      "label": "images / cc-preview / pasted",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/Watari995/cc-preview"
+      ],
+      "member_indices": [
+        210
+      ],
+      "period": [
+        "2026-06-25",
+        "2026-06-25"
+      ]
+    },
+    {
+      "label": "anatomy / trace / call.",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://codewithmukesh.com/blog/anatomy-claude-code-session/"
+      ],
+      "member_indices": [
+        211
+      ],
+      "period": [
+        "2026-06-05",
+        "2026-06-05"
+      ]
+    },
+    {
+      "label": "cache / quietly / hour",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://www.xda-developers.com/anthropic-quietly-nerfed-claude-code-hour-cache-token-budget/"
+      ],
+      "member_indices": [
+        220
+      ],
+      "period": [
+        "2026-05-05",
+        "2026-05-05"
+      ]
+    },
+    {
+      "label": "sandbox / wrong / copy",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/sheremetyev/sandfence"
+      ],
+      "member_indices": [
+        228
+      ],
+      "period": [
+        "2026-06-06",
+        "2026-06-06"
+      ]
+    },
+    {
+      "label": "rapunzel / tab / because",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://github.com/salmanjavaid/rapunzel/tree/main"
+      ],
+      "member_indices": [
+        232
+      ],
+      "period": [
+        "2026-05-11",
+        "2026-05-11"
+      ]
+    },
+    {
+      "label": "atrium / workspace / fleet",
+      "size": 1,
+      "singleton": true,
+      "off_topic": false,
+      "urls": [
+        "https://getatrium.dev"
+      ],
+      "member_indices": [
+        235
+      ],
+      "period": [
+        "2026-05-20",
+        "2026-05-20"
+      ]
+    },
+    {
+      "label": "(off-topic holding)",
+      "size": 137,
+      "singleton": false,
+      "off_topic": true,
+      "urls": [
+        "https://1shotgen.com/",
+        "https://github.com/afairai/afair",
+        "https://github.com/ouijit/ouijit",
+        "https://code.claude.com/docs/en/desktop-linux",
+        "https://twitter.com/ClaudeDevs/status/2071988881717871065",
+        "https://news.ycombinator.com/item?id=48737209",
+        "https://strata.space/show",
+        "https://github.com/henryrobbins/open-atp",
+        "https://news.ycombinator.com/item?id=48728744",
+        "https://rileywrites.ai",
+        "https://news.ycombinator.com/item?id=48745664",
+        "https://news.ycombinator.com/item?id=48734115",
+        "https://matrix-os.com",
+        "https://github.com/off-grid-ai",
+        "https://chromewebstore.google.com/detail/bookxlate-archiveorg-book/mfefkdeojibnbabedjonpgmbgbfplbhe",
+        "https://www.archytasdigital.com/",
+        "https://news.ycombinator.com/item?id=48729630",
+        "https://github.com/ymichael/bb",
+        "https://news.ycombinator.com/item?id=48717385",
+        "https://news.ycombinator.com/item?id=48746752",
+        "https://news.ycombinator.com/item?id=48743618",
+        "https://snaptoai.app",
+        "https://github.com/doordash-oss/agentic-orchestrator",
+        "https://www.jackfranklin.co.uk/blog/claude-code-ai-feedback-skill/",
+        "https://github.com/typedef-ai/fenic",
+        "https://www.agent-swarm.dev",
+        "https://fan-pier-labs.github.io/crossbeam-cli/",
+        "https://news.ycombinator.com/item?id=48750459",
+        "https://cilock.dev/",
+        "https://news.ycombinator.com/item?id=48737226",
+        "https://github.com/muxshed/shed",
+        "https://claude.com/blog/claude-in-microsoft-foundry",
+        "https://ama2.me/",
+        "https://github.com/kmcheung12/second-opinion",
+        "https://github.com/kuberwastaken/reference",
+        "https://news.ycombinator.com/item?id=48754327",
+        "https://kage-core.com/",
+        "https://matsumotory.github.io/claude-desktop-switcher/",
+        "https://github.com/anthropics/claude-code/releases",
+        "https://github.com/acip/slack-claude-agent",
+        "https://clockjumper.com/",
+        "https://news.ycombinator.com/item?id=48730357",
+        "https://news.ycombinator.com/item?id=48420833",
+        "https://www.sqim.dev/",
+        "https://nexttrain.london",
+        "https://github.com/tilework-tech/nori-skillsets",
+        "https://priorcontext.substack.com/p/we-can-now-read-what-claude-is-thinking",
+        "https://news.ycombinator.com/item?id=48650494",
+        "https://news.ycombinator.com/item?id=48081266",
+        "https://eventerm.com/",
+        "https://github.com/SpecStudio-net/Aspectarian",
+        "https://github.com/devenjarvis/lathe",
+        "https://github.com/Lore-Hex/QuillUI",
+        "https://github.com/tozzilla/claudebar/",
+        "https://www.tryguildly.com/",
+        "https://github.com/djt53/liiists",
+        "https://news.ycombinator.com/item?id=48260430",
+        "https://www.williamangel.net/blog/2026/05/20/ClaudeAI-Pro-Plan-Gives-Single-Deep-Research.html",
+        "https://www.reddit.com/r/Bard/s/4SvwzqPdKm",
+        "https://news.ycombinator.com/item?id=48517340",
+        "https://news.ycombinator.com/item?id=48208281",
+        "https://github.com/anthropics/claude-code/issues/65697",
+        "https://github.com/aaddrick/claude-desktop-debian",
+        "https://github.com/jrecyclebin/jabsco",
+        "https://news.ycombinator.com/item?id=48533334",
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5",
+        "https://claude.com/blog/running-an-ai-native-engineering-org",
+        "https://jynx.app/",
+        "https://github.com/Meehai/microecs",
+        "https://news.ycombinator.com/item?id=48144540",
+        "https://github.com/emiliolugo/clawmark",
+        "https://news.ycombinator.com/item?id=48233125",
+        "https://zanestjohn.com/blog/reing-with-claude-code",
+        "https://github.com/valmishq/valmis",
+        "https://www.getadb.com/",
+        "https://github.com/TylerJaacks/AndKensakuResearch",
+        "https://layers.jamiemill.com/",
+        "https://hyperbox.sh",
+        "https://www.minicor.com/",
+        "https://superlog.sh/",
+        "https://clor.com/",
+        "https://sourcelibrary.org",
+        "https://github.com/akshay2211/universal-context-pipeline",
+        "https://github.com/BKDDFS/shamefile",
+        "https://news.ycombinator.com/item?id=48327218",
+        "https://www.gadgetreview.com/peppa-pigs-ai-voice-clause-draws-nearly-1000-industry-objections",
+        "https://support.claude.com/en/articles/15425996-data-retention-practices-for-mythos-class-models",
+        "https://www.theverge.com/report/947575/microsoft-claude-fable-5-restricted-internally",
+        "http://www.thelowdownblog.com/2026/05/microsoft-cancels-internal-anthropic.html",
+        "https://scienspire.com/article/microsoft-breach-ai-code-assistants",
+        "https://haussner.me/2026/05/24/claude-team-rce.html",
+        "https://sdk.churnkey.co",
+        "https://news.ycombinator.com/item?id=48668199",
+        "https://github.com/Humblemonk/shurectl",
+        "https://geturbacon.dev",
+        "https://new.roman-names.com/",
+        "https://cost.dev/",
+        "https://news.ycombinator.com/item?id=48555543",
+        "https://news.ycombinator.com/item?id=48461670",
+        "https://github.com/lucastononro/tiny-claude-recycler",
+        "https://news.ycombinator.com/item?id=48048726",
+        "https://github.com/TerseAI/Terse",
+        "https://x.com/i/trending/2054617957440143639",
+        "https://www.conductor.build/blog/claude-subscription-update",
+        "https://twitter.com/ClaudeDevs/status/2054610152817619388",
+        "https://vercel.com/changelog/claude-design-and-vercel",
+        "https://news.ycombinator.com/item?id=48622280",
+        "https://news.ycombinator.com/item?id=48508187",
+        "https://spanly.com/",
+        "https://medium.com/@sharvanath/effective-software-engineering-with-claude-codex-bf39f296b233",
+        "https://www.runtm.com/",
+        "https://www.reco.ai/blog/inside-claude-fable-5-red-team-findings",
+        "https://www.youtube.com/watch?v=tRsQsTMvPNg",
+        "https://www.youtube.com/watch?v=AUQKjgKQF7w",
+        "https://news.ycombinator.com/item?id=48434240",
+        "https://news.ycombinator.com/item?id=48337689",
+        "https://naviadratp.com/",
+        "https://news.ycombinator.com/item?id=48198681",
+        "https://news.ycombinator.com/item?id=48256389",
+        "https://news.ycombinator.com/item?id=48205190",
+        "https://news.ycombinator.com/item?id=48184549",
+        "https://github.com/sarhej/claude-fix",
+        "https://news.ycombinator.com/item?id=48305822",
+        "https://github.com/marketingskills/open-source-growth",
+        "https://news.ycombinator.com/item?id=48538778",
+        "https://pulse.latio.tech/p/building-an-ai-ready-vulnerability",
+        "https://news.ycombinator.com/item?id=48130374",
+        "https://news.ycombinator.com/item?id=48221327",
+        "https://news.ycombinator.com/item?id=48173182",
+        "https://news.ycombinator.com/item?id=48072594",
+        "https://thenewstack.io/claude-word-excel-powerpoint-outlook-microsoft-office/",
+        "https://www.theverge.com/tech/947197/microsoft-ai-mustafa-suleyman-anthropic-claude-conscious",
+        "https://news.ycombinator.com/item?id=48427735",
+        "https://news.ycombinator.com/item?id=48014734",
+        "https://codifycli.com/",
+        "https://github.com/xyzcoordinate/TopoGlyph/tree/main",
+        "https://github.com/Akylas/SimulatorCamera"
+      ],
+      "member_indices": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        9,
+        12,
+        13,
+        14,
+        15,
+        16,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26,
+        27,
+        28,
+        30,
+        31,
+        33,
+        34,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        44,
+        51,
+        52,
+        54,
+        55,
+        56,
+        58,
+        59,
+        60,
+        61,
+        72,
+        73,
+        74,
+        77,
+        80,
+        81,
+        83,
+        87,
+        91,
+        93,
+        94,
+        95,
+        97,
+        98,
+        103,
+        104,
+        105,
+        106,
+        107,
+        109,
+        110,
+        111,
+        113,
+        114,
+        117,
+        118,
+        119,
+        130,
+        134,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        156,
+        158,
+        159,
+        161,
+        168,
+        172,
+        174,
+        175,
+        176,
+        177,
+        180,
+        181,
+        182,
+        183,
+        184,
+        190,
+        192,
+        193,
+        194,
+        195,
+        201,
+        202,
+        203,
+        204,
+        213,
+        214,
+        215,
+        216,
+        217,
+        219,
+        222,
+        223,
+        224,
+        225,
+        226,
+        229,
+        230,
+        231,
+        233,
+        234,
+        236,
+        238,
+        239,
+        240,
+        241,
+        242,
+        244,
+        245,
+        246,
+        247,
+        248
+      ],
+      "period": [
+        "2026-05-04",
+        "2026-07-02"
+      ]
+    }
+  ]
+}
