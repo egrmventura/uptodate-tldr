@@ -40,6 +40,7 @@ jobs:
       - name: Restore analyses.db + corpus from Blob (best-effort)
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          SNAPSHOT_BASE_URL: ${{ vars.SNAPSHOT_BASE_URL }}
         run: |
           mkdir -p output/second-brain-tests/live
           python3 - <<'EOF'
@@ -57,8 +58,6 @@ jobs:
               except Exception as exc:
                   print(f"no prior {path} ({exc}) — starting fresh")
           EOF
-        env:
-          SNAPSHOT_BASE_URL: ${{ vars.SNAPSHOT_BASE_URL }}
 
       - name: Collect (HN + arXiv + RSS, category-driven)
         run: python3 -m secondbrain.collect
