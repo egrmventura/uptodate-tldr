@@ -11,3 +11,5 @@ output/analyses.db
 output/second-brain-tests/live/
 output/second-brain-tests/consolidated/doc_vectors.json
 snapshots/
+.vercel
+.env*
