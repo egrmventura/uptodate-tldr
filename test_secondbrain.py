@@ -278,7 +278,13 @@ def test_check_unknown_when_no_coverage():
     if not Path("snapshots/search_index.json").exists():
         pytest.skip("snapshots not present")
     check_mod = importlib.import_module("api.check")
-    status, body = check_mod.check({"text": "zzqx qqzz vvxx nothing relevant here at all"})
+    # Pure non-dictionary tokens => zero corpus overlap => retrieve_evidence is
+    # empty => judge() short-circuits to "unknown" WITHOUT an LLM call. Keeping
+    # this text free of real English words is what makes the test hermetic (no
+    # ANTHROPIC_API_KEY needed); common words would weakly match and trip the
+    # LLM path, which 500s in a keyless CI run.
+    assert not check_mod.retrieve_evidence("zzqx qqzz vvxx wrdp mnbb kkjjhh flooble zibzab")
+    status, body = check_mod.check({"text": "zzqx qqzz vvxx wrdp mnbb kkjjhh flooble zibzab"})
     assert status == 200 and body["verdict"] == "unknown"
 
 
@@ -338,7 +344,15 @@ def test_site_builds_embedded_and_dataurl(tmp_path):
     page = out.read_text()
     assert "<title>UpToDate — AI & Data Engineering Timelines</title>" in page
     assert "const EMBEDDED={" in page
-    assert page.count("https://") > 50
+    # Every corpus doc's URL is embedded as a citation, so the page must contain
+    # at least one https:// per https-sourced doc. Tie the floor to the actual
+    # snapshot size rather than a magic number — a fresh/small CI corpus has far
+    # fewer docs than the local 300+ one, but citations must still be present.
+    https_docs = sum(1 for d in json.loads(
+        Path("snapshots/search_index.json").read_text())
+        if str(d.get("u", "")).startswith("https://"))
+    assert https_docs > 0, "snapshot has no https-sourced docs to cite"
+    assert page.count("https://") >= https_docs
     for marker in ('id="q"', 'id="checker"', 'id="tabs"', "/api/check"):
         assert marker in page, f"missing {marker}"
 

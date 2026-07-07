@@ -93,7 +93,7 @@ python analyze.py --timeline "Anthropic MCP"
 ## Project Constraints
 
 - Python 3.12, flat layout at repo root.
-- All secrets live in `.env` (symlinked outside repo). Never read `.env` contents into conversation.
+- Secrets live outside the repo: `ANTHROPIC_API_KEY` is exported in `~/.zshrc` (present in every shell's env); GitHub/Vercel tokens are in `~/Projects/.config/secrets/{github,vercel}.env`. Never read secret values into conversation. (The repo's `.env` symlink is dead — its old target `~/Projects/secrets/.env.uptodate-tldr` no longer exists; use the env var / `.config/secrets` sources instead.)
 - LinkedIn source is disabled by default and documented as fragile — do not enable it without a working RapidAPI key.
 - Reddit source was permanently removed (June 2026); do not re-add without confirmed API access.
 - Branching: cut from `staging`, PR back to `staging`. Never open PRs directly to `main`.
