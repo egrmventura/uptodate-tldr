@@ -49,6 +49,11 @@ def doc_text(article: dict) -> str:
 
 
 def is_relevant(article: dict) -> bool:
+    # Records collected by a curated category query (secondbrain/collect.py)
+    # are relevant by provenance. The title heuristic below only screens
+    # legacy untagged records from the Claude-era trial loop.
+    if article.get("category"):
+        return True
     t = (article.get("hn_title") or article.get("title") or "").lower()
     if "claude" not in t and "anthropic" not in t:
         return False

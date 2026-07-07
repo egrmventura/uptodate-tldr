@@ -5,3 +5,11 @@ __pycache__/
 output/*.md
 !output/.gitkeep
 uptodate-tldr-devvit
+# second-brain data artifacts: SQLite is the private system of record;
+# Vercel Blob serves the derived snapshots. Neither belongs in git.
+output/analyses.db
+output/second-brain-tests/live/
+output/second-brain-tests/consolidated/doc_vectors.json
+snapshots/
+.vercel
+.env*
